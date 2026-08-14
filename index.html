@@ -1,0 +1,2639 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Boss — AI аналітика конкурентів</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0a0b0f;--bg2:#111318;--card:#16181f;--card2:#1c1f28;--inp:#1e2130;
+  --br:#252836;--bra:#3d4263;--t1:#f0f2ff;--t2:#8b90a8;--t3:#555a72;
+  --ac:#6c63ff;--acg:rgba(108,99,255,.2);--ok:#51cf66;--warn:#ffd43b;--bad:#ff6b6b;
+  --sw:250px;--r:14px;--rs:8px;--sh:0 4px 24px rgba(0,0,0,.4);--tr:.18s ease;
+}
+html{font-size:calc(16px * var(--ui,1))}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--bra);border-radius:99px}
+.app{display:flex;min-height:100vh}
+
+/* sidebar */
+.sb{width:var(--sw);background:var(--bg2);border-right:1px solid var(--br);
+  display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sb-logo{padding:20px 16px 16px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:10px}
+.logo-ico{width:40px;height:40px;background:linear-gradient(135deg,var(--ac),#a78bfa);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.logo-n{font-size:1.3125rem;font-weight:700}.logo-s{font-size:0.8438rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
+.sb-sec{padding:12px 10px 4px}
+.sb-lbl{font-size:0.8438rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;padding:0 8px;margin-bottom:4px}
+.nav{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:var(--rs);
+  color:var(--t2);font-size:1.2188rem;font-weight:500;cursor:pointer;transition:all var(--tr);margin-bottom:1px}
+.nav:hover{background:var(--card);color:var(--t1)}.nav.on{background:var(--acg);color:var(--ac)}
+.nav .ni{width:18px;text-align:center;font-size:1.125rem;flex-shrink:0}
+.nb{margin-left:auto;background:var(--ac);color:#fff;font-size:0.8438rem;font-weight:700;padding:2px 6px;border-radius:99px}
+.nb.gpt{background:linear-gradient(135deg,#10a37f,#0d8a6c)}
+.pl-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--rs);
+  cursor:pointer;transition:all var(--tr);margin-bottom:2px;position:relative}
+.pl-item:hover{background:var(--card)}.pl-item.on{background:var(--card)}
+.pl-item.on::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:3px;height:55%;border-radius:0 3px 3px 0;background:var(--pc,var(--ac))}
+.pl-dot{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.125rem;flex-shrink:0}
+.pl-nm{font-size:1.125rem;font-weight:500;color:var(--t2);flex:1}.pl-item.on .pl-nm{color:var(--t1)}
+.pl-tog{width:13px;height:13px;border-radius:50%;border:2px solid var(--bra);transition:all var(--tr)}
+.pl-item.on .pl-tog{background:var(--pc,var(--ac));border-color:var(--pc,var(--ac))}
+.sb-ft{margin-top:auto;padding:14px;border-top:1px solid var(--br);display:flex;flex-direction:column;gap:8px}
+.sb-btn{width:100%;padding:11px 13px;border-radius:var(--rs);background:var(--inp);border:1px solid var(--br);
+  color:var(--t2);font-size:1.125rem;font-weight:500;cursor:pointer;transition:all var(--tr);
+  display:flex;align-items:center;gap:7px;font-family:inherit}
+.sb-btn:hover{border-color:var(--bra);color:var(--t1)}
+.api-dot{width:7px;height:7px;border-radius:50%;background:var(--t3);margin-left:auto;flex-shrink:0}
+.api-dot.ok{background:var(--ok)}
+
+/* main */
+.main{margin-left:var(--sw);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{padding:14px 26px;border-bottom:1px solid var(--br);background:rgba(17,19,24,.93);backdrop-filter:blur(12px);box-shadow:0 2px 14px rgba(0,0,0,.28);
+  display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.srch{flex:1;max-width:520px;position:relative}
+.srch-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:1.2188rem}
+.srch-inp{width:100%;padding:11px 14px 11px 38px;background:var(--inp);border:1.5px solid var(--br);
+  border-radius:9px;color:var(--t1);font-size:1.2188rem;font-family:inherit;outline:none;transition:all var(--tr)}
+.srch-inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--acg)}
+.srch-inp::placeholder{color:var(--t3)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
+.tag{padding:4px 10px;border-radius:99px;background:var(--acg);border:1px solid var(--ac);
+  font-size:1.0312rem;font-weight:500;color:var(--ac);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.tag .x{opacity:.6;cursor:pointer;font-size:0.9375rem}.tag .x:hover{opacity:1}
+.tbar-r{display:flex;gap:9px;margin-left:auto;flex-shrink:0;align-items:center}
+.tbar-r .sw{background:var(--inp);border:1px solid var(--br);border-radius:99px;padding:2px;gap:2px}
+.tbar-r .sw .mt-i{border:none;border-radius:99px}
+.tbar-r .sw .mt-i.on{background:var(--ac);color:#fff}
+.btn{padding:10px 16px;border-radius:8px;font-size:1.125rem;font-weight:600;cursor:pointer;
+  transition:all var(--tr);border:none;display:flex;align-items:center;gap:6px;font-family:inherit}
+.btn-p{background:var(--ac);color:#fff}.btn-p:hover{background:#7c75ff;box-shadow:0 4px 14px var(--acg);transform:translateY(-1px)}
+.btn-p:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-s{background:var(--inp);border:1px solid var(--br);color:var(--t2)}.btn-s:hover{border-color:var(--bra);color:var(--t1)}
+.btn-gpt{background:linear-gradient(135deg,#10a37f,#0d8a6c);color:#fff}
+.btn-gpt:hover{opacity:.88;transform:translateY(-1px)}
+
+/* content */
+.content{padding:26px 28px;flex:1;max-width:1680px;width:100%}
+.page{display:none}.page.on{display:block}
+.sec{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+.sec-t{font-size:1.35rem;font-weight:800;letter-spacing:-.01em}.sec-s{font-size:1.0312rem;color:var(--t3);margin-top:2px}
+.mt{display:flex;gap:4px;flex-wrap:wrap}
+.mt-i{padding:6px 13px;border-radius:99px;font-size:1.0312rem;font-weight:500;cursor:pointer;
+  border:1px solid var(--br);color:var(--t3);transition:all var(--tr)}
+.mt-i:hover,.mt-i.on{border-color:var(--ac);color:var(--ac);background:var(--acg)}
+
+/* welcome */
+.wl{background:linear-gradient(135deg,var(--acg),rgba(0,212,170,.08));border:1px solid var(--bra);
+  border-radius:var(--r);padding:20px 22px;margin-bottom:18px}
+.wl-t{font-size:1.25rem;font-weight:800;margin-bottom:6px}
+.wl-s{font-size:.95rem;color:var(--t2);line-height:1.6;margin-bottom:14px;max-width:760px}
+.wl-l{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.wl-i{font-size:.88rem;color:var(--t2);display:flex;gap:9px;align-items:flex-start;line-height:1.5}
+.wl-i::before{content:'→';color:var(--ac);font-weight:800;flex-shrink:0}
+.wl-a{display:flex;gap:9px;flex-wrap:wrap}
+/* metrics picker */
+.pop-w{position:relative}
+.pop{position:absolute;right:0;top:calc(100% + 8px);width:290px;background:var(--bg2);border:1px solid var(--bra);
+  border-radius:12px;padding:12px;box-shadow:0 12px 40px rgba(0,0,0,.55);z-index:120;display:none}
+.pop.open{display:block}
+.pop-h{display:flex;gap:7px;margin-bottom:10px}
+.pop-h .pg-b{flex:1;text-align:center;padding:7px 6px;white-space:nowrap}
+.pop-g{display:flex;flex-direction:column;gap:1px;max-height:52vh;overflow-y:auto}
+.mrow{display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:8px;cursor:pointer;transition:background var(--tr)}
+.mrow:hover{background:var(--card)}
+.mbox{width:17px;height:17px;border-radius:5px;border:2px solid var(--bra);flex-shrink:0;display:grid;place-items:center;
+  font-size:.62rem;color:#fff;transition:all var(--tr)}
+.mrow.on .mbox{background:var(--ac);border-color:var(--ac)}
+.mrow .mnm{font-size:.82rem;font-weight:600;color:var(--t2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mrow.on .mnm{color:var(--t1)}
+.mdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.mlock{font-size:.62rem;color:var(--warn);flex-shrink:0}
+.pop-sec{font-size:.6rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;padding:9px 9px 5px}
+/* heatmap */
+.hm{display:grid;grid-template-columns:auto repeat(8,1fr);gap:3px;font-size:.6rem}
+.hm-h{color:var(--t3);text-align:center;padding:2px 0;font-weight:700}
+.hm-d{color:var(--t3);padding-right:7px;text-align:right;font-weight:700;line-height:26px}
+.hm-c{height:26px;border-radius:5px;background:var(--inp);display:grid;place-items:center;
+  font-size:.55rem;color:var(--t1);font-weight:700;transition:transform var(--tr);cursor:default}
+.hm-c:hover{transform:scale(1.12)}
+.tw-r{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--br)}
+.tw-r:last-child{border:none}
+.tw-w{font-size:.8rem;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tw-c{font-size:.68rem;color:var(--t3);flex-shrink:0}
+.tw-v{font-size:.78rem;font-weight:800;color:var(--ac);flex-shrink:0;min-width:56px;text-align:right}
+.tw-b{height:4px;border-radius:99px;background:var(--acg);flex-shrink:0;width:60px;overflow:hidden}
+.tw-bf{height:100%;background:var(--ac);border-radius:99px}
+/* analytics control bar */
+.ctl{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;background:var(--card);border:1px solid var(--br);
+  border-radius:var(--r);padding:15px 18px;margin-bottom:18px}
+.ctl-b{display:flex;flex-direction:column;gap:8px}
+.ctl-l{font-size:.61rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.09em}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:99px;cursor:pointer;
+  border:1.5px solid var(--br);color:var(--t3);font-size:.78rem;font-weight:600;transition:all var(--tr);background:var(--inp)}
+.chip:hover{border-color:var(--bra);color:var(--t2)}
+.chip.on{border-color:var(--pc);color:var(--t1);background:color-mix(in srgb,var(--pc) 14%,transparent)}
+.chip i{font-size:.82rem;color:var(--t3)}
+.chip.on i{color:var(--pc)}
+.chip .dotx{width:7px;height:7px;border-radius:50%;background:var(--br)}
+.chip.on .dotx{background:var(--pc);box-shadow:0 0 8px var(--pc)}
+.chip.nosrc{opacity:.45}
+/* kpi */
+.kpi-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:17px 18px;display:flex;flex-direction:column;
+  transition:all var(--tr);position:relative;overflow:hidden}
+.kpi:hover{border-color:var(--bra);transform:translateY(-2px);box-shadow:var(--sh)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--cc,var(--ac))}
+.kpi-l{font-size:0.8438rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
+.kpi-v{font-size:2.0625rem;font-weight:800;line-height:1;margin-bottom:6px;transition:opacity .2s}
+.kpi-c{font-size:.86rem;font-weight:600;display:flex;align-items:flex-start;gap:4px;line-height:1.35;min-height:2.3em;margin-top:auto}
+.kpi-c.up{color:var(--ok)}.kpi-c.dn{color:var(--bad)}
+.kpi-ico{position:absolute;right:14px;top:14px;font-size:1.5rem;opacity:.12}
+
+/* charts */
+.ch-row{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:20px}
+.ch-card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:18px 20px}
+.ch-t{font-size:1.15rem;font-weight:800;margin-bottom:3px;letter-spacing:-.01em}.ch-s{font-size:0.9375rem;color:var(--t3);margin-bottom:12px}
+.ch-w{position:relative;height:240px}
+
+/* platform cards */
+.pl-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:12px;margin-bottom:20px}
+.pl-card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:18px;transition:all var(--tr)}
+.pl-card:hover{border-color:var(--bra);transform:translateY(-2px)}
+.pc-h{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.pc-ico{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3125rem}
+.pc-n{font-size:1.125rem;font-weight:700}.pc-c{font-size:0.9375rem;color:var(--t3)}
+.pm{margin-bottom:7px}.pm-l{font-size:0.8438rem;color:var(--t3);margin-bottom:2px}.pm-v{font-size:1.2188rem;font-weight:700}
+.pm-b{width:100%;height:3px;background:var(--br);border-radius:99px;margin-top:3px;overflow:hidden}
+.pm-f{height:100%;border-radius:99px}
+
+/* table */
+.tbl-card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
+.tbl-h{padding:14px 18px;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.twrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{padding:9px 12px;text-align:left;font-size:0.8438rem;font-weight:700;color:var(--t3);
+  text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--br);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--br);transition:background var(--tr);cursor:pointer}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--card2)}
+tbody td{padding:10px 12px;font-size:1.125rem;vertical-align:middle}
+.td-r{color:var(--t3);font-weight:700;font-size:0.9375rem}
+.td-t{font-weight:600;max-width:none;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+table td:nth-child(2){min-width:300px;max-width:460px}
+th.lock{opacity:.45}
+tbody tr:hover{background:var(--card2)}
+.td-s{font-size:.8rem;color:var(--t3);margin-top:3px}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:99px;font-size:0.9375rem;font-weight:600}
+.b-ok{background:rgba(81,207,102,.15);color:var(--ok)}
+.b-wn{background:rgba(255,212,59,.15);color:var(--warn)}
+.b-bd{background:rgba(255,107,107,.15);color:var(--bad)}
+.b-pu{background:var(--acg);color:var(--ac)}
+.ptag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:6px;font-size:0.9375rem;font-weight:600}
+.sbar{width:100%;height:3px;background:var(--br);border-radius:99px;overflow:hidden;margin-top:3px}
+.sbar-f{height:100%;border-radius:99px}
+
+/* chat */
+.chat-card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
+.chat-h{padding:12px 18px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:9px}
+.chat-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--ac),#a78bfa);
+  display:flex;align-items:center;justify-content:center;font-size:1.2188rem;flex-shrink:0}
+.chat-st{font-size:0.8438rem}
+.chat-msgs{padding:16px 18px;min-height:200px;max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.msg{display:flex;gap:7px}.msg.u{flex-direction:row-reverse}
+.mb{max-width:80%;padding:9px 13px;border-radius:13px;font-size:1.125rem;line-height:1.65}
+.msg.b .mb{background:var(--inp);border-radius:4px 13px 13px 13px}
+.msg.u .mb{background:var(--ac);color:#fff;border-radius:13px 4px 13px 13px}
+.mav{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.0312rem}
+.b-av{background:linear-gradient(135deg,var(--ac),#a78bfa)}.u-av{background:var(--inp)}
+.chat-inp-row{padding:10px 18px;border-top:1px solid var(--br);display:flex;gap:7px}
+.chat-inp{flex:1;padding:8px 12px;background:var(--inp);border:1.5px solid var(--br);border-radius:9px;
+  color:var(--t1);font-size:1.125rem;font-family:inherit;outline:none;transition:all var(--tr)}
+.chat-inp:focus{border-color:var(--ac)}
+.chat-inp::placeholder{color:var(--t3)}
+.chat-send{width:36px;height:36px;border-radius:8px;border:none;background:var(--ac);color:#fff;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.125rem;transition:all var(--tr);flex-shrink:0}
+.chat-send:hover{background:#7c75ff}.chat-send:disabled{opacity:.4;cursor:not-allowed}
+.dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--t3);margin:0 1px;
+  animation:bo .75s infinite}
+.dots span:nth-child(2){animation-delay:.13s}.dots span:nth-child(3){animation-delay:.26s}
+@keyframes bo{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+
+/* ai cards */
+.ai-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.ai-card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:18px}
+.ai-ct{font-size:1.125rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.ai-b{font-size:0.8438rem;font-weight:700;padding:2px 6px;border-radius:99px;
+  background:linear-gradient(135deg,var(--ac),#a78bfa);color:#fff}
+.ai-b.gpt{background:linear-gradient(135deg,#10a37f,#0d8a6c)}
+.ins-i{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--br)}
+.ins-i:last-child{border-bottom:none;padding-bottom:0}
+.ins-ico{width:28px;height:28px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.125rem}
+.ins-t{font-size:1.0312rem;color:var(--t2);line-height:1.55}.ins-t strong{color:var(--t1)}
+.idea{background:var(--inp);border:1px solid var(--br);border-radius:var(--rs);padding:11px 13px;margin-bottom:8px;
+  transition:all var(--tr);cursor:pointer}
+.idea:hover{border-color:var(--ac)}.idea:last-child{margin-bottom:0}
+.idea-t{font-size:1.125rem;font-weight:600;margin-bottom:4px}
+.idea-m{display:flex;gap:5px;flex-wrap:wrap}
+.itag{font-size:0.9375rem;padding:2px 6px;border-radius:99px;background:var(--card);border:1px solid var(--br);color:var(--t3)}
+
+/* competitor finder */
+.comp-finder{background:var(--card);border:1px solid var(--br);border-radius:var(--r);padding:18px;margin-bottom:20px}
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:12px}
+.comp-item{background:var(--inp);border:1px solid var(--br);border-radius:var(--rs);padding:12px;
+  transition:all var(--tr);cursor:pointer}
+.comp-item:hover{border-color:var(--ac);background:var(--card2)}
+.comp-name{font-size:1.125rem;font-weight:700;margin-bottom:3px}
+.comp-handle{font-size:0.9375rem;color:var(--t3);margin-bottom:6px}
+.comp-plats{display:flex;gap:4px;flex-wrap:wrap}
+.comp-p{font-size:0.8438rem;padding:2px 6px;border-radius:99px}
+
+/* loading */
+.ldo{position:fixed;inset:0;background:rgba(10,11,15,.88);z-index:2000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s}
+.ldo.show{opacity:1;pointer-events:all}
+.ld-l{font-size:1.2188rem;font-weight:600;color:var(--t2)}
+.ld-p{width:200px;height:3px;background:var(--br);border-radius:99px;overflow:hidden}
+.ld-b{height:100%;background:linear-gradient(90deg,var(--ac),#a78bfa);border-radius:99px;width:0;transition:width .4s ease}
+.spin{width:30px;height:30px;border:2.5px solid var(--br);border-top-color:var(--ac);border-radius:50%;animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* modal */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:1000;padding:20px;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);
+  opacity:0;pointer-events:none;transition:opacity var(--tr)}
+.mo.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--br);border-radius:16px;padding:24px;width:520px;max-width:96vw;
+  max-height:92vh;overflow-y:auto;position:relative;
+  transform:translateY(10px) scale(.97);transition:transform var(--tr)}
+.mo.open .modal{transform:translateY(0) scale(1)}
+.m-t{font-size:1.5rem;font-weight:800;margin-bottom:3px;position:sticky;top:-24px;background:var(--bg2);padding:6px 0 4px;z-index:2}.m-s{font-size:1.0312rem;color:var(--t3);margin-bottom:18px}
+.m-f{margin-bottom:12px}
+.m-l{font-size:0.9375rem;font-weight:700;color:var(--t2);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
+.m-l a{color:var(--ac);text-decoration:none;font-size:0.8438rem}.m-l a:hover{text-decoration:underline}
+.m-inp{width:100%;padding:9px 12px;background:var(--inp);border:1.5px solid var(--br);border-radius:8px;
+  color:var(--t1);font-size:1.125rem;font-family:inherit;outline:none;transition:all var(--tr)}
+.m-inp:focus{border-color:var(--ac)}
+select.m-inp{cursor:pointer}
+select.m-inp option{background:#16181d;color:var(--t1)}
+.m-note{font-size:0.9375rem;color:var(--t3);margin-top:3px}
+.m-warn{background:rgba(255,212,59,.08);border:1px solid rgba(255,212,59,.3);border-radius:8px;
+  padding:10px 12px;font-size:1.0312rem;color:var(--warn);margin-bottom:14px}
+.m-acts{display:flex;gap:8px;margin-top:18px;position:sticky;bottom:-24px;
+  background:var(--bg2);padding:14px 0 0;border-top:1px solid var(--br);margin-bottom:-4px}
+
+/* notify */
+.nt{position:fixed;bottom:20px;right:20px;z-index:3000;background:var(--bg2);border:1px solid var(--br);
+  border-radius:11px;padding:10px 14px;display:flex;align-items:center;gap:9px;min-width:240px;
+  box-shadow:var(--sh);transform:translateY(16px);opacity:0;transition:all .28s}
+.nt.show{transform:translateY(0);opacity:1}
+
+/* empty */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center}
+.ei{font-size:4.125rem;margin-bottom:12px;opacity:.3}.et{font-size:1.4062rem;font-weight:700;margin-bottom:5px}
+.es{font-size:1.125rem;color:var(--t3);max-width:260px;line-height:1.6}
+
+/* stream cursor */
+.stream-cursor::after{content:'▋';animation:blink .8s infinite;color:var(--ac);font-size:.9em}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* responsive */
+@media(max-width:1250px){.ch-row{grid-template-columns:1fr}}
+@media(max-width:700px){.sb{display:none}.main{margin-left:0}.kpi-g{grid-template-columns:repeat(2,1fr)}.ai-g{grid-template-columns:1fr}}
+/* sources panel */
+.src-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:11px;margin-bottom:18px}
+.src-c{background:var(--card);border:1px solid var(--br);border-radius:10px;padding:11px 13px;display:flex;gap:10px;align-items:center}
+.src-c .src-s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.src-c.live .src-s{-webkit-line-clamp:1}
+.src-c.live{border-color:rgba(0,212,170,.45);background:linear-gradient(180deg,rgba(0,212,170,.06),transparent)}
+.src-i{width:34px;height:34px;border-radius:7px;display:grid;place-items:center;font-size:1.2188rem;flex-shrink:0}
+.src-n{font-size:1.0781rem;font-weight:700;margin-bottom:2px}
+.src-s{font-size:0.9375rem;color:var(--t3);line-height:1.45}
+.src-s a{color:var(--ac);text-decoration:none}
+.src-b{font-size:0.8438rem;font-weight:800;padding:2px 6px;border-radius:4px;margin-left:auto;flex-shrink:0}
+.b-live{background:rgba(0,212,170,.15);color:var(--ok)}
+.b-offl{background:rgba(139,144,168,.13);color:var(--t3)}
+/* creo categories */
+.cat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.cat-c{background:var(--card);border:1px solid var(--br);border-radius:11px;padding:14px 15px;cursor:pointer;transition:all var(--tr);position:relative;overflow:hidden}
+.cat-c:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.cat-c::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cc,var(--ac));opacity:.75}
+.cat-t{font-size:1.1719rem;font-weight:800;margin-bottom:4px}
+.cat-n{font-size:2.0625rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--ac),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cat-s{font-size:0.9375rem;color:var(--t3);margin-top:5px}
+.cat-c.on{border-color:var(--ac);background:linear-gradient(180deg,var(--acg),transparent)}
+.creo-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.creo-h-t{font-size:1.3125rem;font-weight:800}
+.idea-full{background:var(--card);border:1px solid var(--br);border-radius:10px;padding:13px 15px;margin-bottom:9px;cursor:pointer;transition:all var(--tr)}
+.idea-full:hover{border-color:var(--ac);background:var(--card2)}
+.if-t{font-size:1.1719rem;font-weight:700;line-height:1.45;margin-bottom:5px}
+.if-d{font-size:1.0312rem;color:var(--t3);line-height:1.6;margin-bottom:7px}
+.if-hook{font-size:1.0312rem;background:var(--acg);border:1px solid var(--bra);border-radius:6px;padding:6px 9px;margin-bottom:7px;color:var(--ac);line-height:1.5}
+.if-n{position:absolute;font-size:0.9375rem;color:var(--t3)}
+/* detail modal */
+.dm{position:fixed;inset:0;background:rgba(8,9,13,.82);backdrop-filter:blur(6px);z-index:220;display:none;align-items:center;justify-content:center;padding:18px}
+.dm.open{display:flex}
+.dmw{background:var(--card);border:1px solid var(--br);border-radius:14px;width:100%;max-width:720px;max-height:88vh;overflow-y:auto;padding:20px 22px}
+.dm-h{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.dm-t{font-size:1.4062rem;font-weight:800;line-height:1.35}
+.dm-s{font-size:1.0312rem;color:var(--t3);margin-top:3px}
+.dm-x{margin-left:auto;background:var(--card2);border:1px solid var(--br);border-radius:7px;width:28px;height:28px;color:var(--t2);cursor:pointer;flex-shrink:0}
+.dm-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px;margin:14px 0}
+.dm-m{background:var(--card2);border:1px solid var(--br);border-radius:9px;padding:9px 11px}
+.dm-ml{font-size:0.8906rem;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.dm-mv{font-size:1.4062rem;font-weight:800}
+.dm-mc{font-size:0.8906rem;margin-top:2px}
+.dm-sec{font-size:1.0312rem;font-weight:800;color:var(--t2);margin:14px 0 7px;text-transform:uppercase;letter-spacing:.05em}
+.dm-p{font-size:1.125rem;color:var(--t2);line-height:1.65}
+.dm-thumb{width:100%;border-radius:9px;margin-bottom:12px;display:block}
+.pager{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:14px}
+.pg-b{background:var(--card2);border:1px solid var(--br);border-radius:7px;padding:6px 12px;font-size:1.0312rem;font-weight:700;color:var(--t2);cursor:pointer}
+.pg-b:hover:not(:disabled){border-color:var(--ac);color:var(--t1)}
+.pg-b:disabled{opacity:.35;cursor:not-allowed}
+.pg-i{font-size:1.0312rem;color:var(--t3);padding:0 8px}
+.comp-item{cursor:pointer}
+tbody tr{cursor:pointer}
+.btn-an{background:linear-gradient(135deg,var(--ac),#8b7bff);color:#fff;font-weight:800;padding:8px 18px;font-size:1.1719rem;box-shadow:0 4px 14px rgba(108,99,255,.4)}
+.btn-an:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(108,99,255,.55)}
+.btn-an:disabled{opacity:.55;box-shadow:none}
+.est{background:rgba(255,169,77,.14);color:var(--warn)}
+.sw{flex-shrink:0}.sw .mt-i{padding:5px 9px;font-size:1.0312rem;font-weight:700}
+.grad{background:linear-gradient(135deg,var(--ac),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-logo">
+    <div class="logo-ico">📊</div>
+    <div><div class="logo-n">Marketing Boss</div><div class="logo-s">AI Analytics</div></div>
+  </div>
+  <div class="sb-sec">
+    <div class="sb-lbl" data-i18n="nav_lbl">Навігація</div>
+    <div class="nav on" onclick="goPage('dash',this)"><span class="ni"><i class="fa-solid fa-gauge-high"></i></span><span data-i18n="nav_dash">Дашборд</span><span class="nb" id="liveNb">Live</span></div>
+    <div class="nav" onclick="goPage('comp',this)"><span class="ni"><i class="fa-solid fa-crosshairs"></i></span><span data-i18n="nav_comp">Конкуренти</span></div>
+    <div class="nav" onclick="goPage('creo',this)"><span class="ni"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span data-i18n="nav_creo">Крео-ідеї</span><span class="nb gpt">AI</span></div>
+    <div class="nav" onclick="goPage('ai',this)"><span class="ni"><i class="fa-solid fa-robot"></i></span><span data-i18n="nav_ai">AI-Аналітик</span><span class="nb gpt">AI</span></div>
+  </div>
+  <div class="sb-ft">
+    <button class="sb-btn" onclick="openMo()"><i class="fa-solid fa-key"></i><span data-i18n="sb_keys">API ключі</span><div class="api-dot" id="apiDot"></div></button>
+    <button class="sb-btn btn-gpt" id="findCompBtn" onclick="autoFindComps()" style="color:#fff;border-color:transparent">
+      <i class="fa-solid fa-magnifying-glass-chart"></i><span data-i18n="sb_find">Знайти конкурентів AI</span>
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="srch">
+      <i class="fa-solid fa-hashtag srch-ico"></i>
+      <input class="srch-inp" id="si" data-i18n-ph="search_ph" placeholder="Хештег, ніша, ключове слово..." onkeydown="onKey(event)">
+    </div>
+    <div class="tags" id="tags"></div>
+    <div class="tbar-r">
+      <div class="mt sw"><div class="mt-i on" id="lg-ua" onclick="setLang('ua')">УКР</div><div class="mt-i" id="lg-en" onclick="setLang('en')">EN</div></div>
+      <div class="mt sw"><div class="mt-i on" id="cu-UAH" onclick="setCur('UAH')">₴</div><div class="mt-i" id="cu-USD" onclick="setCur('USD')">$</div></div>
+      <button class="btn btn-s" onclick="resetAll()" data-i18n-title="btn_reset" title="Скинути"><i class="fa-solid fa-rotate-right"></i></button>
+      <button class="btn btn-an" id="aBtn" onclick="doAnalyze()"><i class="fa-solid fa-bolt"></i><span data-i18n="btn_analyze">Аналізувати</span></button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page on" id="page-dash">
+      <div class="sec">
+        <div>
+          <div class="sec-t"><span data-i18n="an">Аналіз</span> <span class="grad" id="qT"></span></div>
+          <div class="sec-s" id="qS" data-i18n="hint_start">Введи хештег і натисни «Аналізувати» — AI знайде реальних конкурентів і метрики ніші</div>
+        </div>
+      </div>
+      <div class="ctl">
+        <div class="ctl-b">
+          <div class="ctl-l" data-i18n="sb_plats">Платформи</div>
+          <div class="chips" id="platChips"></div>
+        </div>
+        <div class="ctl-b">
+          <div class="ctl-l" data-i18n="ctl_period">Період</div>
+          <div class="mt" id="perChips">
+            <div class="mt-i on" onclick="setPer('7d',this)" data-i18n="p7">7 днів</div>
+            <div class="mt-i" onclick="setPer('30d',this)" data-i18n="p30">30 днів</div>
+            <div class="mt-i" onclick="setPer('90d',this)" data-i18n="p90">90 днів</div>
+            <div class="mt-i" onclick="setPer('180d',this)" data-i18n="p180">180 днів</div>
+          </div>
+        </div>
+        <div class="ctl-b" style="margin-left:auto">
+          <div class="ctl-l" data-i18n="ctl_metrics">Метрики</div>
+          <div class="pop-w">
+            <button class="btn btn-s" id="mBtn" onclick="toggleMPop(event)"><i class="fa-solid fa-sliders"></i><span id="mBtnL">—</span></button>
+            <div class="pop" id="mPop"></div>
+          </div>
+        </div>
+        <div class="ctl-b">
+          <div class="ctl-l" data-i18n="ctl_export">Експорт</div>
+          <button class="btn btn-s" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i>CSV</button>
+        </div>
+      </div>
+      <div id="welcome"></div>
+      <div class="src-row" id="srcRow"></div>
+      <div class="kpi-g">
+        <div class="kpi" id="kpi-views" data-tip="tip_views" style="--cc:#6c63ff"><div class="kpi-ico"><i class="fa-solid fa-eye"></i></div><div class="kpi-l" data-i18n="kpi_views">Перегляди</div><div class="kpi-v" id="kv-views">—</div><div class="kpi-c" id="kc-views" data-i18n="nodata">Немає даних</div></div>
+        <div class="kpi" id="kpi-er" data-tip="tip_er" style="--cc:#00d4aa"><div class="kpi-ico"><i class="fa-solid fa-heart"></i></div><div class="kpi-l" data-i18n="kpi_er">Engagement Rate</div><div class="kpi-v" id="kv-er">—</div><div class="kpi-c" id="kc-er" data-i18n="er_niche">ER по ніші</div></div>
+        <div class="kpi" id="kpi-vel" data-tip="tip_vel" style="--cc:#74c0fc"><div class="kpi-ico"><i class="fa-solid fa-gauge-high"></i></div><div class="kpi-l" data-i18n="kpi_vel">Швидкість</div><div class="kpi-v" id="kv-vel">—</div><div class="kpi-c" id="kc-vel" data-i18n="vel_sub">переглядів/день</div></div>
+        <div class="kpi" id="kpi-med" data-tip="tip_med" style="--cc:#a78bfa"><div class="kpi-ico"><i class="fa-solid fa-arrows-left-right-to-line"></i></div><div class="kpi-l" data-i18n="kpi_med">Медіана</div><div class="kpi-v" id="kv-med">—</div><div class="kpi-c" id="kc-med" data-i18n="med_sub">типовий перегляд</div></div>
+        <div class="kpi" id="kpi-likes" data-tip="tip_likes" style="--cc:#f06595"><div class="kpi-ico"><i class="fa-solid fa-thumbs-up"></i></div><div class="kpi-l" data-i18n="kpi_likes">Лайки</div><div class="kpi-v" id="kv-likes">—</div><div class="kpi-c" id="kc-likes" data-i18n="likes_sub">усього</div></div>
+        <div class="kpi" id="kpi-com" data-tip="tip_com" style="--cc:#ffa94d"><div class="kpi-ico"><i class="fa-solid fa-comments"></i></div><div class="kpi-l" data-i18n="kpi_com">Коментарі</div><div class="kpi-v" id="kv-com">—</div><div class="kpi-c" id="kc-com" data-i18n="com_sub">% що коментують</div></div>
+        <div class="kpi" id="kpi-conc" data-tip="tip_conc" style="--cc:#cc5de8"><div class="kpi-ico"><i class="fa-solid fa-chart-pie"></i></div><div class="kpi-l" data-i18n="kpi_conc">Концентрація</div><div class="kpi-v" id="kv-conc">—</div><div class="kpi-c" id="kc-conc" data-i18n="conc_sub">частка топ-10%</div></div>
+        <div class="kpi" id="kpi-cad" data-tip="tip_cad" style="--cc:#51cf66"><div class="kpi-ico"><i class="fa-solid fa-calendar-day"></i></div><div class="kpi-l" data-i18n="kpi_cad">Частота</div><div class="kpi-v" id="kv-cad">—</div><div class="kpi-c" id="kc-cad" data-i18n="cad_sub">матеріалів/день</div></div>
+        <div class="kpi" id="kpi-cpr" data-tip="tip_locked" style="--cc:#ffd43b;opacity:.72"><div class="kpi-ico"><i class="fa-solid fa-dollar-sign"></i></div><div class="kpi-l" data-i18n="kpi_cpr">Сер. CPR</div><div class="kpi-v" id="kv-cpr">—</div><div class="kpi-c" id="kc-cpr" data-i18n="cpr_sub">Cost Per Result</div></div>
+        <div class="kpi" id="kpi-ctr" data-tip="tip_locked" style="--cc:#ff6b6b;opacity:.72"><div class="kpi-ico"><i class="fa-solid fa-arrow-pointer"></i></div><div class="kpi-l" data-i18n="kpi_ctr">Сер. CTR</div><div class="kpi-v" id="kv-ctr">—</div><div class="kpi-c" id="kc-ctr" data-i18n="ctr_sub">Click-Through Rate</div></div>
+        <div class="kpi" id="kpi-cpm" data-tip="tip_locked" style="--cc:#8b90a8;opacity:.72"><div class="kpi-ico"><i class="fa-solid fa-chart-bar"></i></div><div class="kpi-l" data-i18n="kpi_cpm">Сер. CPM</div><div class="kpi-v" id="kv-cpm">—</div><div class="kpi-c" id="kc-cpm" data-i18n="cpm_sub">Ціна за 1000</div></div>
+        <div class="kpi" id="kpi-saves" data-tip="tip_locked" style="--cc:#20c997;opacity:.72"><div class="kpi-ico"><i class="fa-solid fa-bookmark"></i></div><div class="kpi-l" data-i18n="kpi_saves">Save Rate</div><div class="kpi-v" id="kv-saves">—</div><div class="kpi-c" id="kc-saves" data-i18n="saves_sub">Збереження</div></div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-card"><div class="ch-t" data-i18n="ch_trend_t">Динаміка переглядів</div><div class="ch-s" data-i18n="ch_trend_s">По платформах за період</div><div class="ch-w"><canvas id="cTrend"></canvas></div></div>
+        <div class="ch-card"><div class="ch-t" data-i18n="ch_fmt_t">Формати контенту</div><div class="ch-s" data-i18n="ch_fmt_s">Що працює у конкурентів</div><div class="ch-w"><canvas id="cFmt"></canvas></div></div>
+      </div>
+      <div class="sec"><div><div class="sec-t" data-i18n="plat_metrics">Метрики по платформах</div><div class="sec-s" id="plSub"></div></div></div>
+      <div class="pl-row" id="plRow"></div>
+      <div class="tbl-card">
+        <div class="tbl-h">
+          <div><div class="sec-t" style="font-size:1.125rem" data-i18n="tbl_t">🔥 Топ-контент конкурентів</div><div class="sec-s" data-i18n="tbl_s">Тільки реальні дані з підключених API — клікни рядок для деталей</div></div>
+          <div class="mt">
+            <div class="mt-i on" onclick="fTbl('all',this)" data-i18n="f_all">Всі</div>
+            <div class="mt-i" onclick="fTbl('instagram',this)">Instagram</div>
+            <div class="mt-i" onclick="fTbl('tiktok',this)">TikTok</div>
+            <div class="mt-i" onclick="fTbl('youtube',this)">YouTube</div>
+            <div class="mt-i" onclick="fTbl('google',this)">Google</div>
+          </div>
+        </div>
+        <div class="twrap">
+          <table><thead><tr><th>#</th><th data-i18n="th_content">Контент / Конкурент</th><th data-i18n="th_plat">Платформа</th><th data-i18n="th_views">👁 Перегляди</th><th>❤️ ER%</th><th class="lock" title="Ads API">🔒 CPR</th><th class="lock" title="Ads API">🔒 CTR%</th><th class="lock" title="Ads API">🔒 CPM</th><th class="lock" data-i18n="th_saves" title="Instagram Graph">🔖 Збереж.</th><th>🔥 Eng.</th></tr></thead>
+          <tbody id="tBody"><tr><td colspan="10" style="text-align:center;padding:32px;color:var(--t3)" data-i18n="tbl_empty">Запусти аналіз для завантаження даних</td></tr></tbody>
+          </table>
+        </div>
+        <div class="pager" id="tblPager" style="padding:0 18px 16px"></div>
+      </div>
+      <div class="ch-row" style="grid-template-columns:1.35fr 1fr">
+        <div class="ch-card"><div class="ch-t" data-i18n="hm_t">🗓 Коли постять лідери</div><div class="ch-s" data-i18n="hm_s">Сума переглядів за днем тижня та годиною публікації</div>
+          <div id="heat"></div></div>
+        <div class="ch-card"><div class="ch-t" data-i18n="tw_t">🔤 Слова-переможці в заголовках</div><div class="ch-s" data-i18n="tw_s">Що є у заголовках топ-контенту</div>
+          <div id="topWords"></div></div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-card"><div class="ch-t" data-i18n="ch_sc_t">CPR vs ER — Scatter</div><div class="ch-s" data-i18n="ch_sc_s">Оптимальні матеріали — низький CPR + високий ER</div><div class="ch-w"><canvas id="cScatter"></canvas></div></div>
+        <div class="ch-card"><div class="ch-t" data-i18n="ch_er_t">ER по платформах</div><div class="ch-s" data-i18n="ch_er_s">Де аудиторія активніша</div><div class="ch-w"><canvas id="cER"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- COMPETITORS -->
+    <div class="page" id="page-comp">
+      <div class="sec">
+        <div><div class="sec-t" data-i18n="comp_t">Конкуренти</div><div class="sec-s" data-i18n="comp_s">Реальні акаунти в ніші — знайдені AI</div></div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-gpt" onclick="autoFindComps()"><i class="fa-solid fa-robot"></i><span data-i18n="btn_find">Знайти AI</span></button>
+          <button class="btn btn-s" onclick="addComp()"><i class="fa-solid fa-plus"></i><span data-i18n="btn_add">Додати</span></button>
+        </div>
+      </div>
+      <div class="comp-finder" id="compFinder" style="display:none">
+        <div class="ai-ct"><span>🤖</span><span data-i18n="comp_found">AI знайшов конкурентів у ніші</span> <span class="ai-b gpt">AI</span></div>
+        <div class="comp-grid" id="compGrid"></div>
+        <div class="pager" id="compPager"></div>
+      </div>
+      <div id="compList"></div>
+    </div>
+
+    <!-- CREATIVES -->
+    <div class="page" id="page-creo">
+      <div class="sec">
+        <div><div class="sec-t"><span data-i18n="creo_t">Крео-ідеї</span> <span class="ai-b gpt" style="vertical-align:middle">AI</span></div>
+        <div class="sec-s" data-i18n="creo_s">Генеруються Claude / GPT на основі аналізу конкурентів</div></div>
+        <button class="btn btn-gpt" id="genBtn" onclick="genCreatives()"><i class="fa-solid fa-wand-magic-sparkles"></i><span data-i18n="btn_gen">Згенерувати</span></button>
+      </div>
+      <div id="creoWrap">
+        <div class="empty"><div class="ei">✨</div><div class="et" data-i18n="creo_e_t">Немає ідей</div><div class="es" data-i18n="creo_e_s">Запусти аналіз по ніші — потім AI згенерує крео-ідеї спеціально під твою тему</div></div>
+      </div>
+    </div>
+
+    <!-- AI ANALYST -->
+    <div class="page" id="page-ai">
+      <div class="sec">
+        <div><div class="sec-t"><span data-i18n="ai_t">AI-Аналітик</span> <span class="ai-b gpt" style="vertical-align:middle">LIVE</span></div>
+        <div class="sec-s" id="aiSub">—</div></div>
+        <button class="btn btn-s" onclick="clearChat()"><i class="fa-solid fa-broom"></i><span data-i18n="btn_clear">Очистити</span></button>
+      </div>
+      <div class="chat-card">
+        <div class="chat-h">
+          <div class="chat-av">🤖</div>
+          <div>
+            <div style="font-size:1.125rem;font-weight:700">Marketing Boss AI</div>
+            <div class="chat-st" id="chatSt" style="color:var(--bad)">—</div>
+          </div>
+          <div style="margin-left:auto;font-size:0.9375rem;color:var(--t3)" id="modelLbl"></div>
+        </div>
+        <div class="chat-msgs" id="chatMsgs"></div>
+        <div class="chat-inp-row">
+          <input class="chat-inp" id="chatInp" data-i18n-ph="chat_ph" placeholder="Запитай що завгодно про конкурентів, метрики, стратегію..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="chat-send" id="sendBtn" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+      <div class="ai-g" id="aiIns"></div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="mo" id="mo" onclick="if(event.target===this)closeMo()">
+  <div class="modal">
+    <div class="m-t" data-i18n="mo_t">🔑 API Ключі</div>
+    <div class="m-s" data-i18n="mo_s">Ключі зберігаються лише у твоєму браузері (localStorage). Нікуди не відправляються.</div>
+    <div class="m-warn" data-i18n="mo_warn">⚠️ Ніколи не публікуй ключі в чатах чи репозиторіях. Якщо ключ випадково злили — заміни його негайно.</div>
+    <div class="m-f">
+      <div class="m-l" data-i18n="mo_lang">🌐 Мова / Language</div>
+      <select class="m-inp" id="k-lang" onchange="setLang(this.value)">
+        <option value="ua">Українська</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+    <div class="m-f">
+      <div class="m-l" data-i18n="mo_ui">🔠 Розмір тексту</div>
+      <select class="m-inp" id="k-ui" onchange="setUI(this.value)">
+        <option value="0.88">Компактний</option>
+        <option value="1">Стандартний</option>
+        <option value="1.15">Великий</option>
+        <option value="1.3">Дуже великий</option>
+      </select>
+    </div>
+    <div class="m-f">
+      <div class="m-l" data-i18n="mo_cur">💱 Валюта</div>
+      <select class="m-inp" id="k-cur" onchange="setCur(this.value)">
+        <option value="UAH">₴ Гривня (UAH)</option>
+        <option value="USD">$ Долар (USD)</option>
+      </select>
+      <input class="m-inp" id="k-rate" type="number" step="0.01" style="margin-top:6px" placeholder="41.5">
+      <div class="m-note" data-i18n="mo_rate_n">Курс USD → UAH. Усі внутрішні розрахунки в USD, показ — у вибраній валюті.</div>
+    </div>
+    <div class="m-f">
+      <div class="m-l" data-i18n="mo_eng">🧠 Рушій AI</div>
+      <select class="m-inp" id="k-prov" onchange="onProvChange()">
+        <option value="claude">Claude (Anthropic)</option>
+        <option value="openai">OpenAI (GPT)</option>
+      </select>
+      <div class="m-note" data-i18n="mo_eng_n">Обидва рушії вміють одне й те саме: аналіз ніші, крео, чат-аналітик</div>
+    </div>
+    <div class="m-f" id="f-ant">
+      <div class="m-l">Anthropic API Key <span style="color:var(--ok);font-weight:700" data-i18n="mo_main">★ Основний</span>
+        <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com ↗</a></div>
+      <input class="m-inp" id="k-ant" type="password" placeholder="sk-ant-api03-...">
+      <select class="m-inp" id="k-amodel" style="margin-top:6px">
+        <option value="claude-sonnet-5">Claude Sonnet 5</option>
+        <option value="claude-opus-5">Claude Opus 5</option>
+        <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
+      </select>
+      <div class="m-note" data-i18n="mo_ant_n">Claude — аналітик, крео-ідеї, пошук конкурентів, стратегії</div>
+    </div>
+    <div class="m-f" id="f-oai">
+      <div class="m-l">OpenAI API Key
+        <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com ↗</a></div>
+      <input class="m-inp" id="k-oai" type="password" placeholder="sk-proj-...">
+      <div class="m-note" data-i18n="mo_oai_n">GPT-4o-mini — альтернативний рушій</div>
+    </div>
+    <div class="m-f">
+      <div class="m-l">YouTube Data API v3 <span style="color:var(--ac);font-size:0.8438rem" data-i18n="mo_free">Безкоштовно</span>
+        <a href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank">Google Cloud ↗</a></div>
+      <input class="m-inp" id="k-yt" type="password" placeholder="AIza...">
+      <div class="m-note" data-i18n="mo_yt_n">Реальні перегляди, лайки, ER відео по будь-якому хештегу</div>
+    </div>
+    <div class="m-f">
+      <div class="m-l">RapidAPI Key <span style="color:var(--t3);font-size:0.8438rem">Instagram + TikTok</span>
+        <a href="https://rapidapi.com/social-api1-instagram/api/instagram-scraper-api2" target="_blank">RapidAPI ↗</a></div>
+      <input class="m-inp" id="k-rap" type="password" placeholder="...">
+      <input class="m-inp" id="k-ighost" style="margin-top:6px" placeholder="instagram-scraper-api2.p.rapidapi.com">
+      <input class="m-inp" id="k-tthost" style="margin-top:6px" placeholder="tiktok-scraper7.p.rapidapi.com">
+      <div class="m-note" data-i18n="mo_rap_n">Реальні дані Instagram і TikTok (~$10/міс)</div>
+    </div>
+    <div class="m-acts">
+      <button class="btn btn-s" style="flex:1" onclick="closeMo()" data-i18n="btn_cancel">Скасувати</button>
+      <button class="btn btn-p" style="flex:1" onclick="saveKeys()"><i class="fa-solid fa-floppy-disk"></i><span data-i18n="btn_save">Зберегти</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="dm" id="dm" onclick="if(event.target===this)closeDm()">
+  <div class="dmw" id="dmw"></div>
+</div>
+
+<!-- LOADING -->
+<div class="ldo" id="ldo">
+  <div class="spin"></div>
+  <div class="ld-l" id="ldl">…</div>
+  <div class="ld-p"><div class="ld-b" id="ldb"></div></div>
+</div>
+
+<!-- NOTIFY -->
+<div class="nt" id="nt"><span id="ni">✅</span><span id="ntxt" style="font-size:1.125rem;font-weight:500"></span></div>
+
+<script>
+// ═══════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════
+const PC={'instagram':'#e1306c','tiktok':'#69C9D0','youtube':'#FF0000','google':'#4285F4'};
+const PI={'instagram':'fa-brands fa-instagram','tiktok':'fa-brands fa-tiktok','youtube':'fa-brands fa-youtube','google':'fa-brands fa-google'};
+const PL={'instagram':'Instagram','tiktok':'TikTok','youtube':'YouTube','google':'Google Ads'};
+const PDAYS={'7d':7,'30d':30,'90d':90,'180d':180};
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+const S={
+  tags:[],period:'7d',
+  plats:{instagram:true,tiktok:true,youtube:true,google:true},
+  rawItems:null, viewData:null,
+  nicheData:null,   // AI niche intelligence
+  chatHist:[],
+  keys:{},
+  prov:'claude',    // 'claude' | 'openai'
+  amodel:'claude-sonnet-5',
+  busy:false, chatBusy:false,
+  tblF:'all',
+  savedComps:[],
+  lang:'ua', cur:'UAH', rate:41.5,
+  compPage:0, foundComps:[],
+  creoCat:'all', creoPage:0, ui:1, tblPage:0, kpiOn:null, wlHid:false,
+};
+
+// ═══════════════════════════════════════
+// I18N  —  UA / EN
+// ═══════════════════════════════════════
+const I18N={
+ua:{
+ nav_lbl:'Навігація',nav_dash:'Дашборд',nav_comp:'Конкуренти',nav_creo:'Крео-ідеї',nav_ai:'AI-Аналітик',
+ sb_plats:'Платформи',sb_keys:'API ключі',sb_find:'Знайти конкурентів AI',
+ search_ph:'Хештег, ніша, ключове слово...',btn_reset:'Скинути',btn_analyze:'Аналізувати',
+ an:'Аналіз',hint_start:'Введи хештег і натисни «Аналізувати» — AI знайде реальних конкурентів і метрики ніші',
+ p7:'7 днів',p30:'30 днів',p90:'90 днів',days:'днів',items:'матеріалів',
+ kpi_views:'Перегляди',kpi_er:'Engagement Rate',kpi_cpr:'Сер. CPR',kpi_ctr:'Сер. CTR',kpi_cpm:'Сер. CPM',
+ kpi_reach:'Охоплення',kpi_saves:'Save Rate',kpi_vir:'Віральність',
+ nodata:'Немає даних',er_niche:'ER по ніші',cpr_sub:'Cost Per Result',ctr_sub:'Click-Through Rate',
+ cpm_sub:'Ціна за 1000',reach_sub:'Охоплення аудиторії',saves_sub:'Збереження',shares_sub:'Шери + репости',
+ vs_prev:'vs попередній період',er_hi:'Вище середнього по ніші',er_lo:'Нижче середнього по ніші',
+ cpr_hi:'Ніша не перегріта',cpr_lo:'Висока конкуренція',ctr_hi:'Сильні хуки у конкурентів',ctr_lo:'Слабкі хуки — шанс обійти',
+ vs_market:'vs середній ринок',new_contacts:'нових контактів',
+ ch_trend_t:'Динаміка переглядів',ch_trend_s:'По платформах за період',
+ ch_fmt_t:'Формати контенту',ch_fmt_s:'Що працює у конкурентів',
+ ch_sc_t:'CPR vs ER — Scatter',ch_sc_s:'Оптимальні матеріали — низький CPR + високий ER',
+ ch_er_t:'ER по платформах',ch_er_s:'Де аудиторія активніша',plat_metrics:'Метрики по платформах',
+ tbl_t:'🔥 Топ-контент конкурентів',tbl_s:'Тільки реальні дані з підключених API — клікни рядок для деталей',
+ f_all:'Всі',th_content:'Контент / Конкурент',th_plat:'Платформа',th_views:'👁 Перегляди',th_saves:'🔖 Збереж.',
+ tbl_empty:'Запусти аналіз для завантаження даних',tbl_empty_p:'Немає даних для обраної платформи',
+ pm_views:'👁 Перегляди',filter:'Фільтр',
+ comp_t:'Конкуренти',comp_s:'Реальні акаунти в ніші — знайдені AI',btn_find:'Знайти AI',btn_add:'Додати',
+ comp_found:'AI знайшов конкурентів у ніші',comp_e_t:'Немає конкурентів',
+ comp_e_s:'Натисни «Знайти AI» — AI сам знайде реальних конкурентів у твоїй ніші',
+ comp_tracked:'Акаунти під наглядом',th_comp:'Конкурент',th_plats:'Платформи',th_status:'Статус',
+ st_active:'● Активний',btn_analysis:'Аналіз',add_to_list:'+ Додати в список',subs:'підп.',ai_found:'🤖 знайдено AI',
+ pr_name:'Назва конкурента:',pr_handle:'@хендл або URL:',pr_niche:'Введи нішу:',pr_niche_c:'Введи нішу для пошуку конкурентів:',
+ added:'додано до списку',already:'вже у списку',found_n:'Знайдено конкурентів:',
+ creo_t:'Крео-ідеї',creo_s:'Генеруються Claude / GPT на основі аналізу конкурентів',btn_gen:'Згенерувати',
+ creo_e_t:'Немає ідей',creo_e_s:'Запусти аналіз по ніші — потім AI згенерує крео-ідеї спеціально під твою тему',
+ creo_gen:'генерує ідеї...',creo_gen_s:'Секунду, створюю крео-ідеї спеціально під нішу',
+ creo_strat:'💡 Стратегія AI для',creo_video:'🎬 Відео-ідеї',creo_static:'🖼 Статичний контент',
+ creo_hooks:'🎣 Хуки — скопіюй і встав',creo_ab:'🔬 A/B тести',hook:'Хук',copy:'📋 Копіювати',copied:'Скопійовано!',
+ ai_t:'AI-Аналітик',btn_clear:'Очистити',chat_ph:'Запитай що завгодно про конкурентів, метрики, стратегію...',
+ chat_cleared:'Чат очищено. Став питання! 🚀',
+ chat_on:'● Онлайн —',chat_off:'● Офлайн — потрібен ключ',
+ ai_sub_on:'Живий {ai} з даними ніші в контексті — відповідає на будь-які питання',
+ ai_sub_off:'Додай {key} API ключ → кнопка «API ключі» внизу зліва',
+ ins_t:'🔍 Інсайти по ніші',ins_rec:'📌 Рекомендації',
+ ins_e_t:'Немає даних',ins_e_s:'Запусти аналіз — з’являться AI інсайти з реальними метриками',
+ ins_top:'Топ-матеріал:',ins_views_on:'переглядів на',ins_sat:'Насиченість ніші:',
+ sat_low:'🟢 Низька',sat_med:'🟡 Середня',sat_hi:'🔴 Висока',
+ ins_er:'ER у ніші:',ins_er_hi:'🔥 високий, аудиторія активна',ins_er_lo:'⚠️ є потенціал зростання',
+ ins_best_er:'Найкращий ER у',ins_time:'Найкращий час публікації:',
+ ins_cpr:'CPR у ніші:',ins_cpr_ok:'🟢 ніша не перегріта, гарний час заходити',ins_cpr_bad:'🟡 конкуренція росте, важливі унікальні хуки',
+ ins_goal:'Твоя ціль:',ins_ctr:'CTR конкурентів:',ins_hooks_top:'Топ хуки в ніші:',
+ ins_ctr_tip:'Перші 3 секунди відео визначають 70% CTR.',
+ rec_fmt:'Формат:',rec_fmt_2:'лідирує у конкурентів',rec_posts:'постів',rec_fmt_3:'Тестуй у першу чергу.',
+ rec_budget:'Бюджет тесту:',rec_budget_2:'При CPR',rec_budget_3:'потрібно',rec_budget_4:'для 50 результатів (мінімум для навчання алгоритму).',
+ rec_aud:'Аудиторія:',rec_aud_d:'Визначається за метриками конкурентів.',
+ rec_funnel:'Воронка:',rec_funnel_d:'Органіка/віральне → Ретаргетинг залучених (>50% перегляду) → Конверсія. Бюджет: 60% пошук, 40% конверсія.',
+ mo_t:'🔑 API Ключі',mo_s:'Ключі зберігаються лише у твоєму браузері (localStorage). Нікуди не відправляються.',
+ mo_warn:'⚠️ Ніколи не публікуй ключі в чатах чи репозиторіях. Якщо ключ випадково злили — заміни його негайно.',
+ mo_lang:'🌐 Мова / Language',mo_cur:'💱 Валюта',mo_rate_n:'Курс USD → UAH. Усі внутрішні розрахунки в USD, показ — у вибраній валюті.',
+ mo_eng:'🧠 Рушій AI',mo_eng_n:'Обидва рушії вміють одне й те саме: аналіз ніші, крео, чат-аналітик',
+ mo_main:'★ Основний',mo_ant_n:'Claude — аналітик, крео-ідеї, пошук конкурентів, стратегії',
+ mo_oai_n:'GPT-4o-mini — альтернативний рушій',mo_free:'Безкоштовно',
+ mo_yt_n:'Реальні перегляди, лайки, ER відео по будь-якому хештегу',
+ mo_rap_n:'Реальні дані Instagram і TikTok (~$10/міс)',btn_cancel:'Скасувати',btn_save:'Зберегти',
+ ld_start:'Запускаємо аналіз...',ld_niche:'аналізує нішу...',ld_build:'Будуємо дані конкурентів...',
+ ld_yt:'YouTube API: шукаємо відео...',ld_yt_s:'YouTube: пошук...',ld_yt_st:'YouTube: статистика...',
+ ld_render:'Рендеримо дашборд...',ld_done:'Готово!',ld_find:'шукає конкурентів...',
+ n_plat:'Потрібна хоча б одна платформа',n_niche:'Введи нішу або хештег!',n_err:'Помилка:',
+ n_saved:'Ключі збережено',n_conn:'підключено!',n_need:'Потрібен ключ',n_need_creo:'для AI-ідей',
+ n_found:'знайшов конкурентів у ніші:',n_demo:'Демо-дані — додай ключ',n_demo2:'для реального аналізу',
+ n_creo_ok:'згенерував крео-ідеї!',n_tip:'Додай ключ {key} для AI-аналітики → кнопка внизу зліва',
+ src_yt:'📡 YouTube реальні дані',src_ai:'нішевий аналіз',src_demo:'⚡ Демо-дані',
+ chat_nokey:'🔑 Додай ключ {key} в налаштуваннях — тоді зможу відповідати на будь-які питання через {ai}.<br>Кнопка «API ключі» внизу лівої панелі.',
+ chat_err:'Помилка',chat_err_s:'Перевір ключ у налаштуваннях. Переконайся, що ключ активний і на балансі є кредити.',
+ hello:`Привіт! Я Marketing Boss AI. 🚀<br><br>Що вмію:<br>• Аналізую нішу через AI — знаходжу реальні бенчмарки<br>• Шукаю реальних конкурентів у твоїй ніші<br>• Генерую крео-ідеї під конкретну тему<br>• Відповідаю на будь-які маркетингові питання<br><br>`,
+ hello_on:'активний! Введи нішу і натисни «Аналізувати».',
+ hello_off:'Додай ключ <b>Anthropic (Claude)</b> в налаштуваннях API — кнопка внизу зліва.',
+ err_nokey:'ключ не додано',err_json:'повернув невалідний JSON:',
+ src_t:'Джерела даних',src_live:'LIVE',src_off:'ВИМК',
+ src_yt_n:'YouTube Data API v3',src_yt_d:'Реальні перегляди, лайки, коментарі. Безкоштовно в Google Cloud Console.',
+ src_rap_n:'RapidAPI — Instagram + TikTok',src_rap_d:'Реальні пости за хештегом. Потрібна підписка на скрапер (~$10/міс).',
+ src_ads_n:'Мої кампанії (Meta / Google Ads)',src_ads_d:'Потрібен бекенд з OAuth — у браузері неможливо. Дані власної реклами: витрати, CPR, конверсії.',
+ src_own_n:'Мої акаунти (Instagram Graph)',src_own_d:'Потрібен бекенд з OAuth. Охоплення, збереження, ER твоїх постів.',
+ src_connect:'Підключити ключ',src_backend:'Потрібен бекенд',
+ empty_src_t:'Немає підключених джерел',
+ empty_src_s:'Щоб побачити реальні метрики — додай ключ YouTube Data API або RapidAPI у налаштуваннях. Вигаданих чисел тут не буде.',
+ no_metrics:'Немає метрик — джерело не підключено',
+ n_real:'реальних матеріалів завантажено',n_no_src:'Не підключено жодного джерела реальних даних',
+ ld_ig:'RapidAPI: Instagram...',ld_tt:'RapidAPI: TikTok...',ld_comp:'шукає конкурентів...',
+ item_t:'Детальна аналітика',item_open:'Відкрити оригінал',item_vs:'Порівняння з середнім по вибірці',
+ item_ai:'🤖 Розбір від AI',item_ai_run:'Розібрати через AI',item_ai_wait:'AI аналізує матеріал...',
+ item_real:'РЕАЛЬНІ ДАНІ',item_src:'Джерело',item_pub:'Опубліковано',item_eng:'Взаємодії',
+ above:'вище середнього',below:'нижче середнього',
+ comp_desc:'Опис',comp_style:'Стиль контенту',comp_why:'Чому важливий',comp_rank:'Позиція в ніші',
+ comp_er_est:'ER (оцінка AI)',comp_fmt:'Найкращий формат',comp_subs_l:'Аудиторія',
+ comp_analyze:'Аналізувати цього конкурента',comp_add:'Додати у список',comp_open:'Відкрити профіль',
+ comp_est_note:'Опис і оцінки — знання AI про нішу, не виміряні дані. Реальні цифри з’являться після підключення API.',
+ pg_prev:'← Назад',pg_next:'Далі →',pg_of:'з',pg_more:'Знайти ще конкурентів',
+ ai_ctx_t:'🧭 AI-контекст ніші',ai_ctx_n:'Якісний аналіз від AI — не виміряні метрики',
+ l_trends:'Тренди',l_aud:'Аудиторія',l_time:'Найкращий час',l_sat:'Насиченість',l_rec:'Рекомендація',l_hooks:'Топ-хуки',
+ cat_all:'Все разом',cat_video:'🎬 Відео-ідеї',cat_static:'🖼 Статика',cat_hooks:'🎣 Хуки',cat_ab:'🔬 A/B тести',
+ creo_more:'Згенерувати ще',creo_back:'← Всі категорії',creo_open:'Відкрити категорію →',
+ creo_cnt:'ідей',creo_empty_cat:'У цій категорії поки порожньо',
+ creo_gen_more:'генерує ще ідеї...',variant:'Варіант',what_test:'Що тестуємо',
+ ctl_period:'Період',ctl_export:'Експорт',p180:'180 днів',
+ kpi_vel:'Швидкість',kpi_med:'Медіана',kpi_com:'Коментарі',kpi_conc:'Концентрація',
+ kpi_likes:'Лайки',kpi_cad:'Частота',
+ vel_sub:'переглядів/день на матеріал',med_sub:'типовий перегляд, без викидів',
+ com_sub:'% глядачів що коментують',conc_sub:'частка топ-10% контенту',
+ likes_sub:'усього по вибірці',cad_sub:'матеріалів/день у ніші',
+ hm_t:'🗓 Коли постять лідери',hm_s:'Сума переглядів за днем тижня та годиною публікації — реальні дати',
+ tw_t:'🔤 Слова-переможці в заголовках',tw_s:'Що є у заголовках топ-контенту та скільки переглядів це дає',
+ tw_word:'Слово',tw_n:'Разів',tw_views:'Сер. перегляди',
+ no_time:'Немає дат публікації для цієї вибірки',
+ mo_ui:'🔠 Розмір тексту',ui_s:'Компактний',ui_m:'Стандартний',ui_l:'Великий',ui_xl:'Дуже великий',
+ exp_ok:'CSV завантажено',exp_no:'Немає даних для експорту',
+ nosrc_chip:'джерело не підключено',
+ need_ads:'🔒 Потрібен Ads API',need_own:'🔒 Потрібен Instagram Graph',
+ tip_views:'Сума переглядів усіх матеріалів вибірки за обраний період',
+ tip_er:'Engagement Rate — (лайки + коментарі) / перегляди. Показує наскільки контент чіпляє',
+ tip_vel:'Скільки переглядів матеріал набирає за добу життя. Вирівнює старий і новий контент',
+ tip_med:'Медіана переглядів. Якщо сильно менша за середнє — один вірусний ролик спотворює картину',
+ tip_likes:'Сумарні лайки по вибірці',
+ tip_com:'Частка глядачів, що залишили коментар. Високий % = жива дискусія, алгоритми люблять',
+ tip_conc:'Яку частку всіх переглядів забирають топ-10% матеріалів. >60% = ніша живе на вірусних викидах',
+ tip_cad:'Скільки матеріалів на день виходить у ніші. Задає темп, який треба тримати',
+ tip_locked:'Ці метрики приходять з рекламного кабінету — потрібен бекенд з OAuth',
+ ctl_metrics:'Метрики',m_shown:'показано',m_all:'Усі',m_none:'Зняти',m_reset:'Скинути',
+ m_measured:'Виміряні з API',m_locked:'Потребують інших API',m_min:'Залиш хоча б одну метрику',
+ wl_t:'👋 Привіт! Тут поки немає жодного ключа',
+ wl_s:'Застосунок працює на твоїх власних API-ключах — вони зберігаються тільки у твоєму браузері й нікуди не передаються. Займе 2 хвилини.',
+ wl_1:'<b>Claude</b> — AI-аналітик, пошук конкурентів, крео-ідеї',
+ wl_2:'<b>YouTube Data API</b> — реальні перегляди й ER, безкоштовно',
+ wl_3:'<b>RapidAPI</b> — Instagram і TikTok, опційно (~$10/міс)',
+ wl_btn:'Додати ключі',wl_skip:'Пізніше',
+ niche_word:'ніші',mkt_word:'маркетингу',
+},
+en:{
+ nav_lbl:'Navigation',nav_dash:'Dashboard',nav_comp:'Competitors',nav_creo:'Creative Ideas',nav_ai:'AI Analyst',
+ sb_plats:'Platforms',sb_keys:'API Keys',sb_find:'Find competitors with AI',
+ search_ph:'Hashtag, niche, keyword...',btn_reset:'Reset',btn_analyze:'Analyze',
+ an:'Analysis',hint_start:'Enter a hashtag and hit "Analyze" — AI will find real competitors and niche metrics',
+ p7:'7 days',p30:'30 days',p90:'90 days',days:'days',items:'items',
+ kpi_views:'Views',kpi_er:'Engagement Rate',kpi_cpr:'Avg CPR',kpi_ctr:'Avg CTR',kpi_cpm:'Avg CPM',
+ kpi_reach:'Reach',kpi_saves:'Save Rate',kpi_vir:'Virality',
+ nodata:'No data',er_niche:'ER across niche',cpr_sub:'Cost Per Result',ctr_sub:'Click-Through Rate',
+ cpm_sub:'Cost Per 1000',reach_sub:'Audience reach',saves_sub:'Saves',shares_sub:'Shares + reposts',
+ vs_prev:'vs previous period',er_hi:'Above niche average',er_lo:'Below niche average',
+ cpr_hi:'Niche not overheated',cpr_lo:'High competition',ctr_hi:'Strong hooks from competitors',ctr_lo:'Weak hooks — room to win',
+ vs_market:'vs market average',new_contacts:'new contacts',
+ ch_trend_t:'Views over time',ch_trend_s:'By platform for the period',
+ ch_fmt_t:'Content formats',ch_fmt_s:'What works for competitors',
+ ch_sc_t:'CPR vs ER — Scatter',ch_sc_s:'Best material — low CPR + high ER',
+ ch_er_t:'ER by platform',ch_er_s:'Where the audience is most active',plat_metrics:'Metrics by platform',
+ tbl_t:'🔥 Top competitor content',tbl_s:'Real API data only — click a row for details',
+ f_all:'All',th_content:'Content / Competitor',th_plat:'Platform',th_views:'👁 Views',th_saves:'🔖 Saves',
+ tbl_empty:'Run an analysis to load data',tbl_empty_p:'No data for the selected platform',
+ pm_views:'👁 Views',filter:'Filter',
+ comp_t:'Competitors',comp_s:'Real accounts in the niche — found by AI',btn_find:'Find with AI',btn_add:'Add',
+ comp_found:'AI found competitors in the niche',comp_e_t:'No competitors',
+ comp_e_s:'Hit "Find with AI" — AI will find real competitors in your niche',
+ comp_tracked:'Tracked accounts',th_comp:'Competitor',th_plats:'Platforms',th_status:'Status',
+ st_active:'● Active',btn_analysis:'Analyze',add_to_list:'+ Add to list',subs:'followers',ai_found:'🤖 found by AI',
+ pr_name:'Competitor name:',pr_handle:'@handle or URL:',pr_niche:'Enter a niche:',pr_niche_c:'Enter a niche to search competitors:',
+ added:'added to the list',already:'is already in the list',found_n:'Competitors found:',
+ creo_t:'Creative Ideas',creo_s:'Generated by Claude / GPT from competitor analysis',btn_gen:'Generate',
+ creo_e_t:'No ideas yet',creo_e_s:'Run a niche analysis — then AI will generate creative ideas for your topic',
+ creo_gen:'is generating ideas...',creo_gen_s:'One moment, building creative ideas for the niche',
+ creo_strat:'💡 AI strategy for',creo_video:'🎬 Video ideas',creo_static:'🖼 Static content',
+ creo_hooks:'🎣 Hooks — copy & paste',creo_ab:'🔬 A/B tests',hook:'Hook',copy:'📋 Copy',copied:'Copied!',
+ ai_t:'AI Analyst',btn_clear:'Clear',chat_ph:'Ask anything about competitors, metrics, strategy...',
+ chat_cleared:'Chat cleared. Ask away! 🚀',
+ chat_on:'● Online —',chat_off:'● Offline — key required:',
+ ai_sub_on:'Live {ai} with your niche data in context — answers anything',
+ ai_sub_off:'Add your {key} API key → "API Keys" button bottom-left',
+ ins_t:'🔍 Niche insights',ins_rec:'📌 Recommendations',
+ ins_e_t:'No data',ins_e_s:'Run an analysis — AI insights with real metrics will appear',
+ ins_top:'Top item:',ins_views_on:'views on',ins_sat:'Niche saturation:',
+ sat_low:'🟢 Low',sat_med:'🟡 Medium',sat_hi:'🔴 High',
+ ins_er:'Niche ER:',ins_er_hi:'🔥 high, the audience is active',ins_er_lo:'⚠️ there is room to grow',
+ ins_best_er:'Best ER on',ins_time:'Best posting time:',
+ ins_cpr:'Niche CPR:',ins_cpr_ok:'🟢 niche is not overheated, good time to enter',ins_cpr_bad:'🟡 competition is rising, unique hooks matter',
+ ins_goal:'Your target:',ins_ctr:'Competitor CTR:',ins_hooks_top:'Top hooks in the niche:',
+ ins_ctr_tip:'The first 3 seconds of a video drive 70% of CTR.',
+ rec_fmt:'Format:',rec_fmt_2:'leads among competitors',rec_posts:'posts',rec_fmt_3:'Test it first.',
+ rec_budget:'Test budget:',rec_budget_2:'At a CPR of',rec_budget_3:'you need',rec_budget_4:'for 50 results (minimum for algorithm learning).',
+ rec_aud:'Audience:',rec_aud_d:'Derived from competitor metrics.',
+ rec_funnel:'Funnel:',rec_funnel_d:'Organic/viral → Retarget engaged (>50% view) → Conversion. Budget: 60% prospecting, 40% conversion.',
+ mo_t:'🔑 API Keys',mo_s:'Keys are stored only in your browser (localStorage). Nothing is sent anywhere.',
+ mo_warn:'⚠️ Never publish keys in chats or repositories. If a key leaks — rotate it immediately.',
+ mo_lang:'🌐 Language',mo_cur:'💱 Currency',mo_rate_n:'USD → UAH rate. All internal math is in USD; display uses your chosen currency.',
+ mo_eng:'🧠 AI engine',mo_eng_n:'Both engines do the same: niche analysis, creatives, analyst chat',
+ mo_main:'★ Primary',mo_ant_n:'Claude — analyst, creative ideas, competitor search, strategy',
+ mo_oai_n:'GPT-4o-mini — alternative engine',mo_free:'Free',
+ mo_yt_n:'Real views, likes and ER for any hashtag',
+ mo_rap_n:'Real Instagram and TikTok data (~$10/mo)',btn_cancel:'Cancel',btn_save:'Save',
+ ld_start:'Starting analysis...',ld_niche:'is analyzing the niche...',ld_build:'Building competitor data...',
+ ld_yt:'YouTube API: searching videos...',ld_yt_s:'YouTube: search...',ld_yt_st:'YouTube: statistics...',
+ ld_render:'Rendering dashboard...',ld_done:'Done!',ld_find:'is searching for competitors...',
+ n_plat:'At least one platform is required',n_niche:'Enter a niche or hashtag!',n_err:'Error:',
+ n_saved:'Keys saved',n_conn:'connected!',n_need:'Key required:',n_need_creo:'for AI ideas',
+ n_found:'found competitors in the niche:',n_demo:'Demo data — add a',n_demo2:'key for real analysis',
+ n_creo_ok:'generated creative ideas!',n_tip:'Add your {key} key for AI analytics → button bottom-left',
+ src_yt:'📡 YouTube real data',src_ai:'niche analysis',src_demo:'⚡ Demo data',
+ chat_nokey:'🔑 Add your {key} key in settings — then I can answer anything via {ai}.<br>The "API Keys" button is at the bottom of the left panel.',
+ chat_err:'Error',chat_err_s:'Check the key in settings. Make sure it is active and has credits.',
+ hello:`Hi! I'm Marketing Boss AI. 🚀<br><br>What I do:<br>• Analyze a niche with AI — real benchmarks<br>• Find real competitors in your niche<br>• Generate creative ideas for your topic<br>• Answer any marketing question<br><br>`,
+ hello_on:'is active! Enter a niche and hit "Analyze".',
+ hello_off:'Add your <b>Anthropic (Claude)</b> key in API settings — button bottom-left.',
+ err_nokey:'key is not set',err_json:'returned invalid JSON:',
+ src_t:'Data sources',src_live:'LIVE',src_off:'OFF',
+ src_yt_n:'YouTube Data API v3',src_yt_d:'Real views, likes, comments. Free in Google Cloud Console.',
+ src_rap_n:'RapidAPI — Instagram + TikTok',src_rap_d:'Real posts by hashtag. Requires a scraper subscription (~$10/mo).',
+ src_ads_n:'My campaigns (Meta / Google Ads)',src_ads_d:'Needs a backend with OAuth — impossible in the browser. Your own ad data: spend, CPR, conversions.',
+ src_own_n:'My accounts (Instagram Graph)',src_own_d:'Needs a backend with OAuth. Reach, saves and ER for your own posts.',
+ src_connect:'Add key',src_backend:'Backend required',
+ empty_src_t:'No data sources connected',
+ empty_src_s:'To see real metrics, add a YouTube Data API or RapidAPI key in settings. No invented numbers will appear here.',
+ no_metrics:'No metrics — source not connected',
+ n_real:'real items loaded',n_no_src:'No real data source connected',
+ ld_ig:'RapidAPI: Instagram...',ld_tt:'RapidAPI: TikTok...',ld_comp:'is finding competitors...',
+ item_t:'Detailed analytics',item_open:'Open original',item_vs:'Compared to the sample average',
+ item_ai:'🤖 AI breakdown',item_ai_run:'Analyze with AI',item_ai_wait:'AI is analyzing this item...',
+ item_real:'REAL DATA',item_src:'Source',item_pub:'Published',item_eng:'Engagements',
+ above:'above average',below:'below average',
+ comp_desc:'Description',comp_style:'Content style',comp_why:'Why it matters',comp_rank:'Niche rank',
+ comp_er_est:'ER (AI estimate)',comp_fmt:'Best format',comp_subs_l:'Audience',
+ comp_analyze:'Analyze this competitor',comp_add:'Add to list',comp_open:'Open profile',
+ comp_est_note:'Description and estimates come from AI knowledge of the niche, not measured data. Real numbers appear once an API is connected.',
+ pg_prev:'← Prev',pg_next:'Next →',pg_of:'of',pg_more:'Find more competitors',
+ ai_ctx_t:'🧭 AI niche context',ai_ctx_n:'Qualitative AI analysis — not measured metrics',
+ l_trends:'Trends',l_aud:'Audience',l_time:'Best time',l_sat:'Saturation',l_rec:'Recommendation',l_hooks:'Top hooks',
+ cat_all:'Everything',cat_video:'🎬 Video ideas',cat_static:'🖼 Static',cat_hooks:'🎣 Hooks',cat_ab:'🔬 A/B tests',
+ creo_more:'Generate more',creo_back:'← All categories',creo_open:'Open category →',
+ creo_cnt:'ideas',creo_empty_cat:'This category is empty so far',
+ creo_gen_more:'is generating more ideas...',variant:'Variant',what_test:'What to test',
+ ctl_period:'Period',ctl_export:'Export',p180:'180 days',
+ kpi_vel:'Velocity',kpi_med:'Median',kpi_com:'Comments',kpi_conc:'Concentration',
+ kpi_likes:'Likes',kpi_cad:'Cadence',
+ vel_sub:'views/day per item',med_sub:'typical view count, outliers excluded',
+ com_sub:'% of viewers who comment',conc_sub:'share held by top 10% of content',
+ likes_sub:'total across the sample',cad_sub:'items/day in the niche',
+ hm_t:'🗓 When the leaders post',hm_s:'Total views by weekday and publish hour — real timestamps',
+ tw_t:'🔤 Winning words in titles',tw_s:'What appears in top content titles and how many views it earns',
+ tw_word:'Word',tw_n:'Count',tw_views:'Avg views',
+ no_time:'No publish timestamps in this sample',
+ mo_ui:'🔠 Text size',ui_s:'Compact',ui_m:'Standard',ui_l:'Large',ui_xl:'Extra large',
+ exp_ok:'CSV downloaded',exp_no:'Nothing to export',
+ nosrc_chip:'source not connected',
+ need_ads:'🔒 Ads API required',need_own:'🔒 Instagram Graph required',
+ tip_views:'Total views across every item in the sample for the selected period',
+ tip_er:'Engagement Rate — (likes + comments) / views. How well the content hooks people',
+ tip_vel:'Views an item earns per day of its life. Normalises old vs new content',
+ tip_med:'Median views. Far below the average means one viral hit is distorting the picture',
+ tip_likes:'Total likes across the sample',
+ tip_com:'Share of viewers who comment. High % = real discussion, algorithms reward it',
+ tip_conc:'Share of all views held by the top 10% of items. >60% means the niche runs on viral spikes',
+ tip_cad:'Items published per day in the niche. Sets the tempo you need to match',
+ tip_locked:'These come from your ad account — a backend with OAuth is required',
+ ctl_metrics:'Metrics',m_shown:'shown',m_all:'All',m_none:'Clear',m_reset:'Reset',
+ m_measured:'Measured from API',m_locked:'Need other APIs',m_min:'Keep at least one metric',
+ wl_t:'👋 Hi! No API key is set yet',
+ wl_s:'This app runs on your own API keys — they stay in your browser only and are never sent anywhere else. Takes 2 minutes.',
+ wl_1:'<b>Claude</b> — AI analyst, competitor search, creative ideas',
+ wl_2:'<b>YouTube Data API</b> — real views and ER, free',
+ wl_3:'<b>RapidAPI</b> — Instagram and TikTok, optional (~$10/mo)',
+ wl_btn:'Add keys',wl_skip:'Later',
+ niche_word:'the niche',mkt_word:'marketing',
+}};
+
+function t(k){const d=I18N[S.lang]||I18N.ua;return d[k]!==undefined?d[k]:(I18N.ua[k]!==undefined?I18N.ua[k]:k);}
+function tf(k,vars){let x=t(k);for(const n in vars)x=x.split('{'+n+'}').join(vars[n]);return x;}
+function langCode(){return S.lang==='ua'?'uk':'en';}
+function aiLangName(){return S.lang==='ua'?'Ukrainian':'English';}
+
+// ── CURRENCY ──
+function curSym(){return S.cur==='UAH'?'₴':'$';}
+function money(v){
+  const n=parseFloat(v)||0;
+  if(S.cur==='UAH'){const u=n*(S.rate||41.5);return '₴'+(u>=100?Math.round(u).toLocaleString(langCode()):u.toFixed(2));}
+  return '$'+(n>=100?Math.round(n).toLocaleString('en'):n.toFixed(2));
+}
+function setCur(c){
+  S.cur=c;
+  try{localStorage.setItem('mb_cur',c);}catch(e){}
+  const a=document.getElementById('cu-UAH'),b=document.getElementById('cu-USD'),sel=document.getElementById('k-cur');
+  if(a)a.classList.toggle('on',c==='UAH');
+  if(b)b.classList.toggle('on',c==='USD');
+  if(sel)sel.value=c;
+  if(cScatter){cScatter.options.scales.x.title.text='CPR ('+curSym()+')';cScatter.update('none');}
+  if(S.rawItems)applyFilters();
+  renderAIIns();
+}
+function setLang(l){
+  S.lang=l;
+  try{localStorage.setItem('mb_lang',l);}catch(e){}
+  const a=document.getElementById('lg-ua'),b=document.getElementById('lg-en'),sel=document.getElementById('k-lang');
+  if(a)a.classList.toggle('on',l==='ua');
+  if(b)b.classList.toggle('on',l==='en');
+  if(sel)sel.value=l;
+  document.documentElement.lang=langCode();
+  applyLang();
+}
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(e=>{e.textContent=t(e.dataset.i18n);});
+  document.querySelectorAll('[data-i18n-ph]').forEach(e=>{e.placeholder=t(e.dataset.i18nPh);});
+  document.querySelectorAll('[data-i18n-title]').forEach(e=>{e.title=t(e.dataset.i18nTitle);});
+  document.querySelectorAll('[data-tip]').forEach(e=>{e.title=t(e.dataset.tip);});
+  renderMPop();
+  updStatus();
+  renderCompList();
+  renderSources();
+  renderPlatChips();
+  drawComps();
+  if(S.rawItems)applyFilters();else{resetKPIs();renderTable([]);renderPlatCards(null,Object.keys(S.plats).filter(x=>S.plats[x]));}
+  renderAIIns();
+  if(creativesCache)renderCreativesFromCache();
+  if(!S.chatHist.length&&document.getElementById('chatMsgs'))greet();
+}
+
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  loadKeys();
+  try{initCharts();}catch(e){console.warn('Chart.js unavailable',e);}
+  renderSources();
+  setLang(S.lang);
+  setCur(S.cur);
+  greet();
+});
+function greet(){
+  document.getElementById('chatMsgs').innerHTML='';
+  addBotMsg(t('hello')+(hasAI()?`✅ ${aiName()} ${t('hello_on')}`:t('hello_off')));
+}
+
+// ── AI PROVIDER HELPERS ──
+function hasAI(){ return S.prov==='claude' ? !!S.keys.ant : !!S.keys.oai; }
+function aiModel(){ return S.prov==='claude' ? (S.amodel||'claude-sonnet-5') : 'gpt-4o-mini'; }
+function aiName(){ return S.prov==='claude' ? 'Claude' : 'GPT-4'; }
+function aiKeyHint(){ return S.prov==='claude' ? 'Anthropic (Claude)' : 'OpenAI'; }
+
+function onProvChange(){
+  const p=document.getElementById('k-prov').value;
+  document.getElementById('f-ant').style.display = p==='claude'?'':'none';
+  document.getElementById('f-oai').style.display = p==='openai'?'':'none';
+}
+
+function loadKeys(){
+  try{
+    S.keys=JSON.parse(localStorage.getItem('mb_k')||'{}');
+    S.prov=localStorage.getItem('mb_prov')||'claude';
+    S.amodel=localStorage.getItem('mb_amodel')||'claude-sonnet-5';
+    S.lang=localStorage.getItem('mb_lang')||'ua';
+    S.cur=localStorage.getItem('mb_cur')||'UAH';
+    S.rate=parseFloat(localStorage.getItem('mb_rate'))||41.5;
+    S.ui=parseFloat(localStorage.getItem('mb_ui'))||1;
+    S.wlHid=localStorage.getItem('mb_wl')==='1';
+    try{S.kpiOn={...defaultKpi(),...JSON.parse(localStorage.getItem('mb_kpi')||'{}')};}catch(e){S.kpiOn=defaultKpi();}
+    document.getElementById('k-lang').value=S.lang;
+    document.getElementById('k-cur').value=S.cur;
+    document.getElementById('k-rate').value=S.rate;
+    document.getElementById('k-prov').value=S.prov;
+    document.getElementById('k-amodel').value=S.amodel;
+    if(S.keys.ant) document.getElementById('k-ant').value=S.keys.ant;
+    if(S.keys.oai) document.getElementById('k-oai').value=S.keys.oai;
+    if(S.keys.yt)  document.getElementById('k-yt').value=S.keys.yt;
+    if(S.keys.rap) document.getElementById('k-rap').value=S.keys.rap;
+    if(S.keys.igHost)document.getElementById('k-ighost').value=S.keys.igHost;
+    if(S.keys.ttHost)document.getElementById('k-tthost').value=S.keys.ttHost;
+    S.savedComps=JSON.parse(localStorage.getItem('mb_comps')||'[]');
+  }catch(e){}
+  if(!S.kpiOn)S.kpiOn=defaultKpi();
+  onProvChange();
+  setUI(S.ui);
+  renderPlatChips();
+  renderMPop();
+  updApiDot();
+}
+
+function saveKeys(){
+  S.keys={
+    ant: document.getElementById('k-ant').value.trim(),
+    oai: document.getElementById('k-oai').value.trim(),
+    yt:  document.getElementById('k-yt').value.trim(),
+    rap: document.getElementById('k-rap').value.trim(),
+    igHost: document.getElementById('k-ighost').value.trim(),
+    ttHost: document.getElementById('k-tthost').value.trim(),
+  };
+  S.prov=document.getElementById('k-prov').value;
+  S.amodel=document.getElementById('k-amodel').value;
+  S.rate=parseFloat(document.getElementById('k-rate').value)||41.5;
+  try{
+    localStorage.setItem('mb_k',JSON.stringify(S.keys));
+    localStorage.setItem('mb_prov',S.prov);
+    localStorage.setItem('mb_amodel',S.amodel);
+    localStorage.setItem('mb_rate',String(S.rate));
+  }catch(e){}
+  updApiDot(); closeMo(); updStatus(); renderPlatChips(); renderSources();
+  notify('✅',hasAI()?`${aiName()} ${t('n_conn')}`:t('n_saved'));
+  if(S.rawItems) applyFilters();
+}
+
+function updApiDot(){
+  document.getElementById('apiDot').className='api-dot'+(hasAI()?' ok':'');
+}
+
+function updStatus(){
+  const st=document.getElementById('chatSt');
+  const ml=document.getElementById('modelLbl');
+  const sb=document.getElementById('aiSub');
+  if(!st||!sb)return;
+  if(hasAI()){
+    st.textContent=t('chat_on')+' '+aiModel();
+    st.style.color='var(--ok)';
+    ml.textContent=aiModel();
+    sb.textContent=tf('ai_sub_on',{ai:aiName()});
+  }else{
+    st.textContent=t('chat_off')+' '+aiKeyHint();
+    st.style.color='var(--bad)';
+    ml.textContent='';
+    sb.textContent=tf('ai_sub_off',{key:aiKeyHint()});
+  }
+}
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+function goPage(p,el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.querySelectorAll('.nav').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  if(p==='comp')  renderCompList();
+  if(p==='ai')    renderAIIns();
+  if(p==='creo') renderCreativesFromCache();
+}
+
+// ═══════════════════════════════════════
+// TAGS
+// ═══════════════════════════════════════
+function onKey(e){
+  if(e.key==='Enter'){
+    const v=e.target.value.trim(); if(v){addTag(v);e.target.value='';}
+    doAnalyze();
+  }
+}
+function addTag(raw){
+  const t=raw.startsWith('#')?raw:'#'+raw;
+  if(!S.tags.includes(t))S.tags.push(t);
+  renderTags();
+}
+function remTag(t){S.tags=S.tags.filter(x=>x!==t);renderTags();}
+function renderTags(){
+  document.getElementById('tags').innerHTML=S.tags.map(t=>
+    `<div class="tag">${t}<span class="x" onclick="remTag('${t}')">✕</span></div>`
+  ).join('');
+}
+function resetAll(){
+  S.tags=[];S.rawItems=null;S.viewData=null;S.nicheData=null;S.tblF='all';
+  renderTags();
+  document.getElementById('si').value='';
+  document.getElementById('qT').textContent='';
+  document.getElementById('qS').textContent=t('hint_start');
+  resetKPIs();
+  document.getElementById('tBody').innerHTML=`<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--t3)">${t('nodata')}</td></tr>`;
+  document.getElementById('plRow').innerHTML='';
+}
+
+// ═══════════════════════════════════════
+// PLATFORM TOGGLE
+// ═══════════════════════════════════════
+function renderPlatChips(){
+  const w=document.getElementById('platChips'); if(!w)return;
+  const live={instagram:!!S.keys.rap,tiktok:!!S.keys.rap,youtube:!!S.keys.yt,google:false};
+  w.innerHTML=Object.keys(S.plats).map(p=>`
+    <div class="chip${S.plats[p]?' on':''}${live[p]?'':' nosrc'}" style="--pc:${PC[p]}" onclick="togPlat('${p}')"
+      title="${live[p]?PL[p]:PL[p]+' — '+t('nosrc_chip')}">
+      <i class="${PI[p]}"></i>${PL[p]}<span class="dotx"></span>
+    </div>`).join('');
+}
+function togPlat(p){
+  const anyOther=Object.entries(S.plats).some(([k,v])=>v&&k!==p);
+  if(S.plats[p]&&!anyOther){notify('⚠️',t('n_plat'));return;}
+  S.plats[p]=!S.plats[p];
+  renderPlatChips();
+  if(S.rawItems)applyFilters();
+}
+function setUI(v){
+  S.ui=parseFloat(v)||1;
+  document.documentElement.style.setProperty('--ui',S.ui);
+  try{localStorage.setItem('mb_ui',String(S.ui));}catch(e){}
+  const sel=document.getElementById('k-ui'); if(sel)sel.value=String(S.ui);
+}
+
+// ═══════════════════════════════════════
+// PERIOD
+// ═══════════════════════════════════════
+function setPer(p,el){
+  S.period=p;
+  el.parentNode.querySelectorAll('.mt-i').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  if(S.rawItems||S.tags.length)doAnalyze();
+}
+
+// ═══════════════════════════════════════
+// MAIN ANALYZE
+// ═══════════════════════════════════════
+async function doAnalyze(){
+  if(S.busy)return;
+  const raw=document.getElementById('si').value.trim();
+  if(raw){addTag(raw);document.getElementById('si').value='';}
+  if(!S.tags.length){notify('⚠️',t('n_niche'));return;}
+  S.busy=true;
+  document.getElementById('aBtn').disabled=true;
+  showLd(t('ld_start'));
+
+  const query=S.tags.map(x=>x.replace('#','')).join(', ');
+  document.getElementById('qT').textContent=S.tags.join(' ');
+  const days=PDAYS[S.period];
+  let items=[]; const errs=[];
+
+  try{
+    // ── 1. AI: якісний контекст ніші + список конкурентів (без вигаданих метрик) ──
+    if(hasAI()){
+      setLd(10,aiName()+' '+t('ld_niche'));
+      try{
+        S.nicheData=await gptAnalyzeNiche(query);
+        S.compPage=0;
+        renderFoundComps(S.nicheData.competitors||[]);
+      }catch(e){errs.push('AI: '+e.message);}
+    }
+
+    // ── 2. РЕАЛЬНІ дані з підключених API ──
+    if(S.keys.yt&&S.plats.youtube){
+      setLd(40,t('ld_yt'));
+      try{items.push(...await fetchYT(query,days));}catch(e){errs.push('YouTube: '+e.message);}
+    }
+    if(S.keys.rap&&S.plats.instagram){
+      setLd(62,t('ld_ig'));
+      try{items.push(...await fetchIG(query));}catch(e){errs.push('Instagram: '+e.message);}
+    }
+    if(S.keys.rap&&S.plats.tiktok){
+      setLd(78,t('ld_tt'));
+      try{items.push(...await fetchTT(query));}catch(e){errs.push('TikTok: '+e.message);}
+    }
+
+    S.rawItems=items.length?items:null;
+
+    setLd(92,t('ld_render'));
+    applyFilters();
+    renderAIIns();
+    renderSources();
+    hideLd();
+
+    if(errs.length) notify('⚠️',errs.join(' · ').slice(0,140));
+    else if(items.length) notify('✅',`${items.length} ${t('n_real')}`);
+    else notify('🔑',t('n_no_src'));
+
+  }catch(err){
+    hideLd(); notify('❌',t('n_err')+' '+err.message); console.error(err);
+  }finally{
+    S.busy=false; document.getElementById('aBtn').disabled=false;
+  }
+}
+
+// ═══════════════════════════════════════
+// DATA SOURCES PANEL
+// ═══════════════════════════════════════
+function srcState(){
+  return [
+    {k:'yt', ico:'<i class="fa-brands fa-youtube"></i>', col:'#FF0000', live:!!S.keys.yt, n:'src_yt_n', d:'src_yt_d', act:'key'},
+    {k:'rap',ico:'<i class="fa-brands fa-instagram"></i>',col:'#e1306c', live:!!S.keys.rap,n:'src_rap_n',d:'src_rap_d',act:'key'},
+    {k:'ads',ico:'<i class="fa-solid fa-bullhorn"></i>', col:'#4285F4', live:false,        n:'src_ads_n',d:'src_ads_d',act:'be'},
+    {k:'own',ico:'<i class="fa-solid fa-chart-pie"></i>',col:'#00d4aa', live:false,        n:'src_own_n',d:'src_own_d',act:'be'},
+  ];
+}
+function anyLiveSrc(){return !!(S.keys.yt||S.keys.rap);}
+function renderWelcome(){
+  const w=document.getElementById('welcome'); if(!w)return;
+  const anyKey=!!(S.keys.ant||S.keys.oai||S.keys.yt||S.keys.rap);
+  if(anyKey||S.wlHid){w.innerHTML='';return;}
+  w.innerHTML=`<div class="wl">
+    <div class="wl-t">${t('wl_t')}</div>
+    <div class="wl-s">${t('wl_s')}</div>
+    <div class="wl-l">
+      <div class="wl-i">${t('wl_1')}</div>
+      <div class="wl-i">${t('wl_2')}</div>
+      <div class="wl-i">${t('wl_3')}</div>
+    </div>
+    <div class="wl-a">
+      <button class="btn btn-an" onclick="openMo()"><i class="fa-solid fa-key"></i>${t('wl_btn')}</button>
+      <button class="btn btn-s" onclick="hideWelcome()">${t('wl_skip')}</button>
+    </div>
+  </div>`;
+}
+function hideWelcome(){S.wlHid=true;try{localStorage.setItem('mb_wl','1');}catch(e){}renderWelcome();}
+
+function renderSources(){
+  renderWelcome();
+  const w=document.getElementById('srcRow'); if(!w)return;
+  w.innerHTML=srcState().map(x=>`
+    <div class="src-c${x.live?' live':''}">
+      <div class="src-i" style="background:${x.col}18;color:${x.col}">${x.ico}</div>
+      <div style="min-width:0;flex:1">
+        <div class="src-n">${t(x.n)}</div>
+        <div class="src-s">${x.live?t(x.d):`${t(x.d)}<br>${x.act==='key'?`<a href="javascript:openMo()">${t('src_connect')} →</a>`:`<span style="color:var(--warn)">${t('src_backend')}</span>`}`}</div>
+      </div>
+      <span class="src-b ${x.live?'b-live':'b-offl'}">${x.live?t('src_live'):t('src_off')}</span>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// AI NICHE INTELLIGENCE (qualitative only)
+// ═══════════════════════════════════════
+async function gptAnalyzeNiche(query,exclude){
+  const ex=(exclude&&exclude.length)?`\nDo NOT repeat these already-known competitors: ${exclude.join(', ')}. Return different ones.`:'';
+  return await gptJSON([{
+    role:'system',
+    content:'You are a marketing research expert with deep knowledge of real brands and creators. Return ONLY valid JSON.'
+  },{
+    role:'user',
+    content:`Research the "${query}" niche on social media.
+Return a JSON object with this EXACT structure:
+{
+  "niche_name": "...",
+  "niche_description": "2-3 sentence description of the niche",
+  "competitors": [
+    {
+      "name": "Real brand or creator name",
+      "handle": "@handle",
+      "url": "https://instagram.com/handle",
+      "platforms": ["instagram","tiktok","youtube"],
+      "followers_k": 850,
+      "niche_rank": 1,
+      "description": "3-4 sentences: who they are, what they sell, positioning, what makes them work",
+      "content_style": "How they make content: formats, tone, visual style, posting rhythm",
+      "why_matters": "Why a marketer in this niche should watch them",
+      "avg_er": 4.2,
+      "best_format": "Reels"
+    }
+  ],
+  "top_content_formats": ["Reels","Carousel","Shorts"],
+  "top_hooks": ["hook 1","hook 2","hook 3","hook 4","hook 5"],
+  "key_trends": ["trend 1","trend 2","trend 3"],
+  "audience_profile": "Who the audience is: age, motivation, pain points",
+  "best_posting_time": "18:00-21:00 Mon-Wed",
+  "market_saturation": "low|medium|high",
+  "recommendation": "Main strategic recommendation"
+}
+Return AS MANY REAL competitors as you confidently know — aim for 20, minimum 12. They must be brands/creators that actually exist with real handles.${ex}
+ALL free-text values MUST be written in ${aiLangName()}. Keep JSON keys and enum values in English.
+avg_er is your rough estimate, clearly an estimate — never invent view counts or spend figures.`
+  }]);
+}
+
+// ═══════════════════════════════════════
+// YOUTUBE — REAL DATA
+// ═══════════════════════════════════════
+function ytSecs(d){
+  const m=/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(d||'');
+  if(!m)return 9999;
+  return (+m[1]||0)*3600+(+m[2]||0)*60+(+m[3]||0);
+}
+async function fetchYT(query,days){
+  const after=new Date(Date.now()-days*864e5).toISOString();
+  const r1=await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&order=viewCount&maxResults=25&publishedAfter=${after}&key=${S.keys.yt}`);
+  if(!r1.ok){const e=await r1.json().catch(()=>({}));throw new Error(e.error?.message||'HTTP '+r1.status);}
+  const search=await r1.json();
+  if(!search.items?.length)return[];
+
+  setLd(50,t('ld_yt_st'));
+  const ids=search.items.map(i=>i.id.videoId).filter(Boolean).join(',');
+  const r2=await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet,contentDetails&id=${ids}&key=${S.keys.yt}`);
+  if(!r2.ok){const e=await r2.json().catch(()=>({}));throw new Error(e.error?.message||'HTTP '+r2.status);}
+  const stats=await r2.json();
+
+  return (stats.items||[]).map(v=>{
+    const st=v.statistics||{};
+    const views=parseInt(st.viewCount||0);
+    const likes=parseInt(st.likeCount||0);
+    const comments=parseInt(st.commentCount||0);
+    const er=views>0?parseFloat(((likes+comments)/views*100).toFixed(2)):0;
+    return{
+      title:(v.snippet?.title||'').slice(0,90),
+      author:v.snippet?.channelTitle||'',
+      platform:'youtube',
+      format:ytSecs(v.contentDetails?.duration)<=60?'Shorts':'Video',
+      views,likes,comments,er,
+      saves:null,cpr:null,ctr:null,cpm:null,
+      publishedAt:v.snippet?.publishedAt||null,
+      thumb:v.snippet?.thumbnails?.medium?.url||null,
+      url:'https://www.youtube.com/watch?v='+v.id,
+      srcName:'YouTube Data API v3',
+      isReal:true,
+    };
+  }).sort((a,b)=>b.views-a.views);
+}
+
+// ═══════════════════════════════════════
+// RAPIDAPI — INSTAGRAM / TIKTOK (real)
+// ═══════════════════════════════════════
+function rapHeaders(host){return{'X-RapidAPI-Key':S.keys.rap,'X-RapidAPI-Host':host};}
+function deepFind(obj,keys,depth=0){
+  if(!obj||depth>6)return null;
+  if(Array.isArray(obj)){for(const o of obj){const r=deepFind(o,keys,depth+1);if(r)return r;}return null;}
+  if(typeof obj!=='object')return null;
+  for(const k of keys) if(Array.isArray(obj[k])&&obj[k].length) return obj[k];
+  for(const k in obj){const r=deepFind(obj[k],keys,depth+1);if(r)return r;}
+  return null;
+}
+function num(v){const n=parseInt(v);return Number.isFinite(n)?n:0;}
+
+async function fetchIG(query){
+  const host=S.keys.igHost||'instagram-scraper-api2.p.rapidapi.com';
+  const tag=query.split(',')[0].trim().replace(/^#/,'').replace(/\s+/g,'');
+  const r=await fetch(`https://${host}/v1/hashtag?hashtag=${encodeURIComponent(tag)}`,{headers:rapHeaders(host)});
+  if(!r.ok)throw new Error('RapidAPI HTTP '+r.status+(r.status===403?' — перевір підписку на скрапер':''));
+  const j=await r.json();
+  const arr=deepFind(j,['items','edges','posts','data']);
+  if(!arr)throw new Error('Невідомий формат відповіді — зміни хост скрапера в налаштуваннях');
+  return arr.slice(0,25).map(raw=>{
+    const n=raw.node||raw;
+    const views=num(n.play_count||n.video_view_count||n.view_count||n.video_play_count||0);
+    const likes=num(n.like_count||n.edge_liked_by?.count||n.likes||0);
+    const comments=num(n.comment_count||n.edge_media_to_comment?.count||n.comments||0);
+    const base=views||likes*20;
+    const er=base>0?parseFloat(((likes+comments)/base*100).toFixed(2)):0;
+    const code=n.code||n.shortcode||n.id||'';
+    return{
+      title:(n.caption?.text||n.caption||n.edge_media_to_caption?.edges?.[0]?.node?.text||'Instagram post').toString().slice(0,90),
+      author:'@'+(n.user?.username||n.owner?.username||''),
+      platform:'instagram',
+      format:n.media_type===2||n.is_video?'Reels':'Post',
+      views:views||null,likes,comments,er,
+      saves:null,cpr:null,ctr:null,cpm:null,
+      publishedAt:n.taken_at?new Date(n.taken_at*1000).toISOString():null,
+      thumb:n.thumbnail_url||n.display_url||n.image_versions2?.candidates?.[0]?.url||null,
+      url:code?'https://www.instagram.com/p/'+code:null,
+      srcName:'RapidAPI · '+host,
+      isReal:true,
+    };
+  }).filter(x=>x.likes||x.views).sort((a,b)=>(b.views||b.likes)-(a.views||a.likes));
+}
+
+async function fetchTT(query){
+  const host=S.keys.ttHost||'tiktok-scraper7.p.rapidapi.com';
+  const tag=query.split(',')[0].trim().replace(/^#/,'').replace(/\s+/g,'');
+  const r=await fetch(`https://${host}/challenge/posts?challenge_name=${encodeURIComponent(tag)}&count=25`,{headers:rapHeaders(host)});
+  if(!r.ok)throw new Error('RapidAPI HTTP '+r.status+(r.status===403?' — перевір підписку на скрапер':''));
+  const j=await r.json();
+  const arr=deepFind(j,['videos','items','data','aweme_list']);
+  if(!arr)throw new Error('Невідомий формат відповіді — зміни хост скрапера в налаштуваннях');
+  return arr.slice(0,25).map(n=>{
+    const views=num(n.play_count||n.statistics?.play_count||n.playCount||0);
+    const likes=num(n.digg_count||n.statistics?.digg_count||n.diggCount||0);
+    const comments=num(n.comment_count||n.statistics?.comment_count||0);
+    const shares=num(n.share_count||n.statistics?.share_count||0);
+    const er=views>0?parseFloat(((likes+comments+shares)/views*100).toFixed(2)):0;
+    const uid=n.author?.unique_id||n.author?.uniqueId||'';
+    return{
+      title:(n.title||n.desc||'TikTok video').slice(0,90),
+      author:'@'+uid,
+      platform:'tiktok',format:'TikTok',
+      views,likes,comments,shares,er,
+      saves:num(n.collect_count||0)||null,cpr:null,ctr:null,cpm:null,
+      publishedAt:n.create_time?new Date(n.create_time*1000).toISOString():null,
+      thumb:n.cover||n.origin_cover||null,
+      url:uid&&n.video_id?`https://www.tiktok.com/@${uid}/video/${n.video_id}`:null,
+      srcName:'RapidAPI · '+host,
+      isReal:true,
+    };
+  }).sort((a,b)=>b.views-a.views);
+}
+
+// ═══════════════════════════════════════
+// APPLY FILTERS — reactive core (real data only)
+// ═══════════════════════════════════════
+function applyFilters(){
+  renderSources();
+  const active=Object.entries(S.plats).filter(([,v])=>v).map(([k])=>k);
+
+  if(!S.rawItems||!S.rawItems.length){
+    S.viewData=null;
+    resetKPIs();
+    renderPlatCards(null,active);
+    renderTable([]);
+    renderCharts(null);
+    renderHeat([]);
+    renderWords([]);
+    document.getElementById('qS').textContent=anyLiveSrc()?t('nodata'):t('empty_src_s');
+    return;
+  }
+
+  const items=S.rawItems
+    .filter(i=>active.includes(i.platform))
+    .sort((a,b)=>(b.views||0)-(a.views||0))
+    .map((d,i)=>({...d,rank:i+1}));
+
+  const kpi=calcKPI(items);
+  const ps=calcPlatStats(items);
+  const trend=buildTrend(items,active);
+  const fmt=buildFmt(items);
+  const scatter=items.filter(c=>c.cpr!=null).slice(0,12).map(c=>({x:parseFloat(c.cpr),y:c.er,label:c.author}));
+  const erBar=active.filter(p=>ps[p]&&ps[p].count).map(p=>({label:PL[p],color:PC[p],er:parseFloat(ps[p].er||0)}));
+
+  S.viewData={items,kpi,ps,trend,fmt,scatter,erBar};
+
+  const platNames=[...new Set(items.map(i=>PL[i.platform]))].join(', ');
+  const srcNames=[...new Set(items.map(i=>i.srcName))].join(' · ');
+  document.getElementById('qS').textContent=`📡 ${srcNames} · ${platNames} · ${items.length} ${t('items')} · ${PDAYS[S.period]} ${t('days')}`;
+  if(cScatter)cScatter.options.scales.x.title.text='CPR ('+curSym()+')';
+
+  renderKPIs(kpi,items);
+  renderPlatCards(ps,active);
+  S.tblPage=0;
+  renderTable(items);
+  renderCharts(trend,fmt,scatter,erBar);
+  renderHeat(items);
+  renderWords(items);
+}
+
+// ═══════════════════════════════════════
+// KPI
+// ═══════════════════════════════════════
+function avgOf(items,f){
+  const v=items.map(f).filter(x=>x!=null&&!isNaN(x));
+  return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;
+}
+function median(arr){
+  const a=arr.filter(x=>x!=null&&!isNaN(x)).sort((x,y)=>x-y);
+  if(!a.length)return null;
+  const m=Math.floor(a.length/2);
+  return a.length%2?a[m]:(a[m-1]+a[m])/2;
+}
+function daysSince(iso){
+  if(!iso)return null;
+  const d=(Date.now()-new Date(iso).getTime())/864e5;
+  return d>0?Math.max(d,0.5):null;
+}
+function calcKPI(items){
+  if(!items.length)return null;
+  const tv=items.reduce((s,c)=>s+(c.views||0),0);
+  const hasSaves=items.some(c=>c.saves!=null);
+  const views=items.map(c=>c.views).filter(v=>v!=null);
+  // concentration: частка переглядів у топ-10% матеріалів
+  const sorted=[...views].sort((a,b)=>b-a);
+  const topN=Math.max(1,Math.round(sorted.length*0.1));
+  const conc=tv>0?sorted.slice(0,topN).reduce((a,b)=>a+b,0)/tv*100:null;
+  // velocity: переглядів на день життя матеріалу
+  const vels=items.map(c=>{const d=daysSince(c.publishedAt);return (d&&c.views!=null)?c.views/d:null;}).filter(x=>x!=null);
+  // comment rate
+  const crs=items.map(c=>(c.views>0&&c.comments!=null)?c.comments/c.views*100:null).filter(x=>x!=null);
+  // cadence: скільки матеріалів на день у вибірці
+  const dates=items.map(c=>c.publishedAt).filter(Boolean);
+  let cadence=null;
+  if(dates.length>1){
+    const ts=dates.map(d=>new Date(d).getTime());
+    const span=(Math.max(...ts)-Math.min(...ts))/864e5;
+    cadence=span>0.5?items.length/span:null;
+  }
+  return{
+    totalViews:tv,
+    avgER:avgOf(items,c=>c.er),
+    avgCPR:avgOf(items,c=>c.cpr==null?null:parseFloat(c.cpr)),
+    avgCTR:avgOf(items,c=>c.ctr==null?null:parseFloat(c.ctr)),
+    avgCPM:avgOf(items,c=>c.cpm==null?null:parseFloat(c.cpm)),
+    medianViews:median(views),
+    velocity:vels.length?vels.reduce((a,b)=>a+b,0)/vels.length:null,
+    commentRate:crs.length?crs.reduce((a,b)=>a+b,0)/crs.length:null,
+    concentration:conc,
+    cadence,
+    totalSaves:hasSaves?items.reduce((s,c)=>s+(c.saves||0),0):null,
+    totalLikes:items.reduce((s,c)=>s+(c.likes||0),0),
+    n:items.length,
+  };
+}
+function calcPlatStats(items){
+  const res={};
+  for(const p of['instagram','tiktok','youtube','google']){
+    const sub=items.filter(i=>i.platform===p);
+    res[p]=sub.length?{
+      views:sub.reduce((s,c)=>s+(c.views||0),0),
+      likes:sub.reduce((s,c)=>s+(c.likes||0),0),
+      er:avgOf(sub,c=>c.er),
+      cpr:avgOf(sub,c=>c.cpr==null?null:parseFloat(c.cpr)),
+      ctr:avgOf(sub,c=>c.ctr==null?null:parseFloat(c.ctr)),
+      cpm:avgOf(sub,c=>c.cpm==null?null:parseFloat(c.cpm)),
+      count:sub.length,
+    }:{views:0,likes:0,er:null,cpr:null,ctr:null,cpm:null,count:0};
+  }
+  return res;
+}
+const DASH='—';
+function pct(v,d=2){return v==null?DASH:v.toFixed(d)+'%';}
+function cash(v){return v==null?DASH:money(v);}
+
+function renderKPIs(k,items){
+  if(!k){resetKPIs();return;}
+  const erN=k.avgER;
+  setK('views',fmtN(k.totalViews),'up',`${k.n} ${t('items')}`);
+  setK('er',pct(erN),erN==null?'':(erN>3?'up':'dn'),erN==null?t('no_metrics'):(erN>3?t('er_hi'):t('er_lo')));
+  setK('vel',k.velocity==null?DASH:fmtN(Math.round(k.velocity)),'',t('vel_sub'));
+  setK('med',k.medianViews==null?DASH:fmtN(k.medianViews),'',
+    k.medianViews!=null&&k.totalViews/k.n>k.medianViews*2?(S.lang==='ua'?'⚠️ середнє тягне вірусний викид':'⚠️ average skewed by a viral outlier'):t('med_sub'));
+  setK('likes',fmtN(k.totalLikes),'',t('likes_sub'));
+  setK('com',pct(k.commentRate,3),k.commentRate==null?'':(k.commentRate>0.3?'up':'dn'),t('com_sub'));
+  setK('conc',k.concentration==null?DASH:Math.round(k.concentration)+'%',
+    k.concentration==null?'':(k.concentration>60?'dn':'up'),t('conc_sub'));
+  setK('cad',k.cadence==null?DASH:k.cadence.toFixed(1),'',t('cad_sub'));
+  setK('cpr',cash(k.avgCPR),'',k.avgCPR==null?t('need_ads'):t('cpr_sub'));
+  setK('ctr',pct(k.avgCTR),'',k.avgCTR==null?t('need_ads'):t('ctr_sub'));
+  setK('cpm',cash(k.avgCPM),'',k.avgCPM==null?t('need_ads'):t('cpm_sub'));
+  setK('saves',k.totalSaves==null?DASH:fmtN(k.totalSaves),'',k.totalSaves==null?t('need_own'):t('saves_sub'));
+}
+
+function setK(id,val,dir,sub){
+  const v=document.getElementById('kv-'+id),c=document.getElementById('kc-'+id);
+  if(!v||!c)return;
+  v.style.opacity='.3';
+  setTimeout(()=>{v.textContent=val;v.style.opacity=val===DASH?'.35':'1';},120);
+  c.className='kpi-c '+(dir==='up'?'up':dir==='dn'?'dn':'');
+  c.innerHTML=dir?`<i class="fa-solid fa-arrow-${dir==='up'?'up':'down'}-right"></i> ${sub}`:sub;
+}
+
+function resetKPIs(){
+  ['views','er','vel','med','likes','com','conc','cad','cpr','ctr','cpm','saves'].forEach(id=>{
+    const v=document.getElementById('kv-'+id);if(v){v.textContent=DASH;v.style.opacity='.35';}
+    const c=document.getElementById('kc-'+id);if(c){c.className='kpi-c';
+      c.textContent=['cpr','ctr','cpm'].includes(id)?t('need_ads'):id==='saves'?t('need_own'):(anyLiveSrc()?t('nodata'):t('no_metrics'));}
+  });
+}
+
+// ═══════════════════════════════════════
+// PLATFORM CARDS
+// ═══════════════════════════════════════
+function renderPlatCards(ps,active){
+  const w=document.getElementById('plRow'); if(!w)return;
+  if(!ps){
+    w.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="ei">🔌</div><div class="et">${t('empty_src_t')}</div><div class="es">${t('empty_src_s')}</div></div>`;
+    return;
+  }
+  const withData=active.filter(p=>ps[p]&&ps[p].count);
+  if(!withData.length){w.innerHTML='';return;}
+  const maxV=Math.max(...withData.map(p=>ps[p].views||0),1);
+  w.innerHTML=withData.map(p=>{
+    const d=ps[p];
+    const pcv=Math.round((d.views||0)/maxV*100);
+    return`<div class="pl-card">
+      <div class="pc-h">
+        <div class="pc-ico" style="background:${PC[p]}15;color:${PC[p]}"><i class="${PI[p]}"></i></div>
+        <div><div class="pc-n">${PL[p]}</div><div class="pc-c">${d.count} ${t('items')}</div></div>
+      </div>
+      <div class="pm"><div class="pm-l">${t('pm_views')}</div><div class="pm-v">${d.views?fmtN(d.views):DASH}</div>
+        <div class="pm-b"><div class="pm-f" style="width:${pcv}%;background:${PC[p]}"></div></div>
+      </div>
+      <div class="pm"><div class="pm-l">❤️ ER%</div><div class="pm-v">${pct(d.er,1)}</div></div>
+      <div class="pm"><div class="pm-l">💰 CPR</div><div class="pm-v" style="opacity:${d.cpr==null?.35:1}">${cash(d.cpr)}</div></div>
+      <div class="pm"><div class="pm-l">📈 CTR%</div><div class="pm-v" style="opacity:${d.ctr==null?.35:1}">${pct(d.ctr,1)}</div></div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// TABLE + ITEM DETAIL
+// ═══════════════════════════════════════
+function fTbl(f,el){
+  S.tblF=f; S.tblPage=0;
+  el.parentNode.querySelectorAll('.mt-i').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  if(!S.viewData)return;
+  let items=S.viewData.items;
+  if(f!=='all'){
+    items=items.filter(i=>i.platform===f);
+    renderKPIs(calcKPI(items),items);
+  }else{
+    renderKPIs(S.viewData.kpi,S.viewData.items);
+  }
+  renderTable(items);
+}
+
+const TBL_PER=15;
+function tblPg(d){S.tblPage+=d;renderTable(S._tblItems||[]);document.querySelector('.tbl-card').scrollIntoView({behavior:'smooth',block:'start'});}
+function renderTable(items){
+  const b=document.getElementById('tBody'); if(!b)return;
+  S._tblItems=items||[];
+  const pgw=document.getElementById('tblPager');
+  if(!items||!items.length){
+    if(pgw)pgw.innerHTML='';
+    b.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:34px;color:var(--t3)">
+      ${anyLiveSrc()?t('tbl_empty'):`<div style="font-size:2.4375rem;margin-bottom:8px">🔌</div><div style="font-weight:700;color:var(--t2);margin-bottom:5px">${t('empty_src_t')}</div><div style="max-width:420px;margin:0 auto;line-height:1.6">${t('empty_src_s')}</div>`}
+    </td></tr>`;
+    return;
+  }
+  const pages=Math.max(1,Math.ceil(items.length/TBL_PER));
+  if(S.tblPage>=pages)S.tblPage=pages-1;
+  if(S.tblPage<0)S.tblPage=0;
+  const off=S.tblPage*TBL_PER;
+  if(pgw)pgw.innerHTML=pages>1?`
+    <button class="pg-b" onclick="tblPg(-1)" ${S.tblPage===0?'disabled':''}>${t('pg_prev')}</button>
+    <span class="pg-i">${S.tblPage+1} ${t('pg_of')} ${pages} · ${items.length} ${t('items')}</span>
+    <button class="pg-b" onclick="tblPg(1)" ${S.tblPage>=pages-1?'disabled':''}>${t('pg_next')}</button>`:'';
+  b.innerHTML=items.slice(off,off+TBL_PER).map((it,i0)=>{
+    const i=off+i0;
+    const ber=it.er>4?'b-ok':it.er>2?'b-wn':'b-bd';
+    const eng=(it.likes||0)+(it.comments||0);
+    return`<tr onclick="openItem(${i})">
+      <td class="td-r">${i+1}</td>
+      <td><div class="td-t" title="${esc(it.title)}">${esc(it.title)}</div>
+        <div class="td-s">${esc(it.author||'')} ${it.format?'· '+it.format:''}<span class="badge b-ok" style="margin-left:5px">${t('src_live')}</span></div></td>
+      <td><span class="ptag" style="background:${PC[it.platform]}18;color:${PC[it.platform]}">
+        <i class="${PI[it.platform]}"></i> ${PL[it.platform]}</span></td>
+      <td style="font-weight:700">${it.views!=null?fmtN(it.views):DASH}</td>
+      <td><span class="badge ${ber}">${pct(it.er)}</span></td>
+      <td style="font-weight:700;opacity:.35">${cash(it.cpr)}</td>
+      <td style="font-weight:700;opacity:.35">${pct(it.ctr)}</td>
+      <td style="font-weight:700;opacity:.35">${cash(it.cpm)}</td>
+      <td style="font-weight:700">${it.saves!=null?fmtN(it.saves):DASH}</td>
+      <td style="font-weight:700">${fmtN(eng)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(x){return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function openItem(idx){
+  const list=S.tblF==='all'?S.viewData?.items:S.viewData?.items.filter(i=>i.platform===S.tblF);
+  const it=list?.[idx]; if(!it)return;
+  const k=S.viewData.kpi;
+  const cmp=(v,avg,d=2)=>{
+    if(v==null||avg==null)return '';
+    const diff=((v-avg)/avg*100);
+    const up=diff>=0;
+    return `<div class="dm-mc" style="color:${up?'var(--ok)':'var(--bad)'}">${up?'▲':'▼'} ${Math.abs(diff).toFixed(0)}% ${up?t('above'):t('below')}</div>`;
+  };
+  const eng=(it.likes||0)+(it.comments||0)+(it.shares||0);
+  document.getElementById('dmw').innerHTML=`
+    <div class="dm-h">
+      <div style="min-width:0">
+        <div class="dm-t">${esc(it.title)}</div>
+        <div class="dm-s">${esc(it.author||'')} · <span style="color:${PC[it.platform]}">${PL[it.platform]}</span>${it.format?' · '+it.format:''}
+          ${it.publishedAt?' · '+new Date(it.publishedAt).toLocaleDateString(langCode()):''}</div>
+      </div>
+      <button class="dm-x" onclick="closeDm()">✕</button>
+    </div>
+    ${it.thumb?`<img class="dm-thumb" src="${it.thumb}" alt="">`:''}
+    <div class="dm-g">
+      <div class="dm-m"><div class="dm-ml">${t('th_views')}</div><div class="dm-mv">${it.views!=null?fmtN(it.views):DASH}</div>${cmp(it.views,k.totalViews/k.n)}</div>
+      <div class="dm-m"><div class="dm-ml">ER</div><div class="dm-mv">${pct(it.er)}</div>${cmp(it.er,k.avgER)}</div>
+      <div class="dm-m"><div class="dm-ml">${t('item_eng')}</div><div class="dm-mv">${fmtN(eng)}</div></div>
+      <div class="dm-m"><div class="dm-ml">👍 Likes</div><div class="dm-mv">${it.likes!=null?fmtN(it.likes):DASH}</div></div>
+      <div class="dm-m"><div class="dm-ml">💬 Comments</div><div class="dm-mv">${it.comments!=null?fmtN(it.comments):DASH}</div></div>
+      ${it.shares!=null?`<div class="dm-m"><div class="dm-ml">🔁 Shares</div><div class="dm-mv">${fmtN(it.shares)}</div></div>`:''}
+      ${it.saves!=null?`<div class="dm-m"><div class="dm-ml">🔖 Saves</div><div class="dm-mv">${fmtN(it.saves)}</div></div>`:''}
+    </div>
+    <div class="dm-m" style="background:rgba(255,169,77,.08);border-color:rgba(255,169,77,.3)">
+      <div class="dm-ml" style="color:var(--warn)">CPR · CTR · CPM</div>
+      <div class="dm-p" style="font-size:1.0312rem">${t('src_ads_d')}</div>
+    </div>
+    <div class="dm-sec">${t('item_src')}</div>
+    <div class="dm-p">📡 ${esc(it.srcName||'')} <span class="badge b-ok" style="margin-left:5px">${t('item_real')}</span></div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      ${it.url?`<a class="btn btn-s" href="${it.url}" target="_blank" style="text-decoration:none"><i class="fa-solid fa-arrow-up-right-from-square"></i>${t('item_open')}</a>`:''}
+      ${hasAI()?`<button class="btn btn-an" onclick="aiExplainItem(${idx})"><i class="fa-solid fa-robot"></i>${t('item_ai_run')}</button>`:''}
+    </div>
+    <div id="dmAi"></div>`;
+  document.getElementById('dm').classList.add('open');
+}
+function closeDm(){document.getElementById('dm').classList.remove('open');}
+
+async function aiExplainItem(idx){
+  const list=S.tblF==='all'?S.viewData.items:S.viewData.items.filter(i=>i.platform===S.tblF);
+  const it=list[idx]; const k=S.viewData.kpi;
+  const box=document.getElementById('dmAi');
+  box.innerHTML=`<div class="dm-sec">${t('item_ai')}</div><div class="dm-p"><span class="spin" style="width:14px;height:14px;display:inline-block;vertical-align:-2px"></span> ${t('item_ai_wait')}</div>`;
+  try{
+    const sys=`You are a performance-marketing analyst. Answer in ${aiLangName()}. Use <br> and <b> for formatting, no markdown. Be concrete and short (max 200 words).`;
+    const msg=`Analyze this real social media post and explain WHY it performs the way it does, and what a marketer should copy from it.
+Post: "${it.title}"
+Author: ${it.author} on ${PL[it.platform]} (${it.format})
+Views: ${it.views??'n/a'} | Likes: ${it.likes??'n/a'} | Comments: ${it.comments??'n/a'} | ER: ${it.er}%
+Sample average: views ${Math.round(k.totalViews/k.n)}, ER ${k.avgER?k.avgER.toFixed(2):'n/a'}%
+Give: 1) why it works (hook, format, timing), 2) 2 concrete things to replicate, 3) one risk.`;
+    let txt;
+    if(S.prov==='claude') txt=await anthropicCall({system:sys,messages:[{role:'user',content:msg}],max_tokens:700,temperature:.7});
+    else{
+      const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.keys.oai}`},
+        body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:sys},{role:'user',content:msg}],max_tokens:600})});
+      const j=await r.json(); txt=j.choices?.[0]?.message?.content||'';
+    }
+    box.innerHTML=`<div class="dm-sec">${t('item_ai')}</div><div class="dm-p" style="background:var(--acg);border:1px solid var(--bra);border-radius:9px;padding:11px 13px">${txt.replace(/\n/g,'<br>')}</div>`;
+  }catch(e){
+    box.innerHTML=`<div class="dm-sec">${t('item_ai')}</div><div class="dm-p" style="color:var(--bad)">${t('chat_err')}: ${esc(e.message)}</div>`;
+  }
+}
+
+
+
+// ═══════════════════════════════════════
+// METRICS VISIBILITY PICKER
+// ═══════════════════════════════════════
+const MKEYS=[
+  {k:'views',i18n:'kpi_views',col:'#6c63ff'},
+  {k:'er',   i18n:'kpi_er',   col:'#00d4aa'},
+  {k:'vel',  i18n:'kpi_vel',  col:'#74c0fc'},
+  {k:'med',  i18n:'kpi_med',  col:'#a78bfa'},
+  {k:'likes',i18n:'kpi_likes',col:'#f06595'},
+  {k:'com',  i18n:'kpi_com',  col:'#ffa94d'},
+  {k:'conc', i18n:'kpi_conc', col:'#cc5de8'},
+  {k:'cad',  i18n:'kpi_cad',  col:'#51cf66'},
+  {k:'cpr',  i18n:'kpi_cpr',  col:'#ffd43b', lock:'ads'},
+  {k:'ctr',  i18n:'kpi_ctr',  col:'#ff6b6b', lock:'ads'},
+  {k:'cpm',  i18n:'kpi_cpm',  col:'#8b90a8', lock:'ads'},
+  {k:'saves',i18n:'kpi_saves',col:'#20c997', lock:'own'},
+];
+function defaultKpi(){const o={};MKEYS.forEach(m=>o[m.k]=true);return o;}
+
+function toggleKpi(k){
+  const on=Object.values(S.kpiOn).filter(Boolean).length;
+  if(S.kpiOn[k]&&on<=1){notify('⚠️',t('m_min'));return;}
+  S.kpiOn[k]=!S.kpiOn[k];
+  saveKpiVis(); applyKpiVis(); renderMPop();
+}
+function setAllKpi(v){
+  MKEYS.forEach(m=>S.kpiOn[m.k]=v);
+  if(!v)S.kpiOn[MKEYS[0].k]=true;
+  saveKpiVis(); applyKpiVis(); renderMPop();
+}
+function resetKpi(){ S.kpiOn=defaultKpi(); saveKpiVis(); applyKpiVis(); renderMPop(); }
+function saveKpiVis(){ try{localStorage.setItem('mb_kpi',JSON.stringify(S.kpiOn));}catch(e){} }
+
+function applyKpiVis(){
+  MKEYS.forEach(m=>{
+    const el=document.getElementById('kpi-'+m.k);
+    if(el)el.style.display=S.kpiOn[m.k]?'':'none';
+  });
+  const l=document.getElementById('mBtnL');
+  if(l)l.textContent=`${Object.values(S.kpiOn).filter(Boolean).length}/${MKEYS.length}`;
+}
+
+function renderMPop(){
+  const w=document.getElementById('mPop'); if(!w)return;
+  const row=m=>`<div class="mrow${S.kpiOn[m.k]?' on':''}" onclick="event.stopPropagation();toggleKpi('${m.k}')" title="${t('tip_'+m.k)||''}">
+      <div class="mbox">${S.kpiOn[m.k]?'✓':''}</div>
+      <div class="mdot" style="background:${m.col}"></div>
+      <div class="mnm">${t(m.i18n)}</div>
+      ${m.lock?`<span class="mlock">🔒</span>`:''}
+    </div>`;
+  w.innerHTML=`
+    <div class="pop-h">
+      <button class="pg-b" onclick="event.stopPropagation();setAllKpi(true)">${t('m_all')}</button>
+      <button class="pg-b" onclick="event.stopPropagation();setAllKpi(false)">${t('m_none')}</button>
+      <button class="pg-b" onclick="event.stopPropagation();resetKpi()">${t('m_reset')}</button>
+    </div>
+    <div class="pop-g">
+      <div class="pop-sec">${t('m_measured')}</div>
+      ${MKEYS.filter(m=>!m.lock).map(row).join('')}
+      <div class="pop-sec">${t('m_locked')}</div>
+      ${MKEYS.filter(m=>m.lock).map(row).join('')}
+    </div>`;
+  applyKpiVis();
+}
+function toggleMPop(e){
+  e.stopPropagation();
+  const p=document.getElementById('mPop');
+  p.classList.toggle('open');
+  if(p.classList.contains('open'))renderMPop();
+}
+document.addEventListener('click',()=>{
+  const p=document.getElementById('mPop');
+  if(p)p.classList.remove('open');
+});
+
+// ═══════════════════════════════════════
+// TOOL: HEATMAP — коли постять лідери
+// ═══════════════════════════════════════
+const HM_BUCKETS=['0-3','3-6','6-9','9-12','12-15','15-18','18-21','21-24'];
+function renderHeat(items){
+  const w=document.getElementById('heat'); if(!w)return;
+  const withTime=(items||[]).filter(i=>i.publishedAt);
+  if(!withTime.length){w.innerHTML=`<div class="es" style="padding:22px 0;text-align:center">${t('no_time')}</div>`;return;}
+  const dayNames=[...Array(7)].map((_,i)=>new Date(2024,0,7+i).toLocaleDateString(langCode(),{weekday:'short'}));
+  const grid=Array.from({length:7},()=>Array(8).fill(0));
+  withTime.forEach(i=>{
+    const d=new Date(i.publishedAt);
+    grid[d.getDay()][Math.floor(d.getHours()/3)]+=(i.views||0);
+  });
+  const max=Math.max(...grid.flat(),1);
+  let html=`<div class="hm"><div></div>${HM_BUCKETS.map(b=>`<div class="hm-h">${b}</div>`).join('')}`;
+  for(let d=0;d<7;d++){
+    html+=`<div class="hm-d">${dayNames[d]}</div>`;
+    for(let h=0;h<8;h++){
+      const v=grid[d][h];
+      const a=v/max;
+      html+=`<div class="hm-c" style="background:${v?`rgba(108,99,255,${(0.14+a*0.8).toFixed(2)})`:'var(--inp)'}"
+        title="${dayNames[d]} ${HM_BUCKETS[h]} · ${fmtN(v)}">${v?fmtN(v):''}</div>`;
+    }
+  }
+  html+='</div>';
+  // найкраще вікно
+  let best=[0,0,-1];
+  for(let d=0;d<7;d++)for(let h=0;h<8;h++)if(grid[d][h]>best[2])best=[d,h,grid[d][h]];
+  if(best[2]>0)html+=`<div style="margin-top:11px;font-size:.72rem;color:var(--ok);font-weight:700">
+    🏆 ${dayNames[best[0]]} ${HM_BUCKETS[best[1]]} — ${fmtN(best[2])}</div>`;
+  w.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// TOOL: TOP WORDS у заголовках
+// ═══════════════════════════════════════
+const STOP=new Set(('the a an and or of to in on for with is are was were be by at from as it this that i you we they '+
+ 'як що для про це той цей та і в на з до за від по не но але або так вже ще щоб коли який яка яке які де тут там '+
+ 'как что для про это тот этот и в на с до за от по не но или так уже еще чтобы когда который где тут там '+
+ 'my your our their his her its you your video shorts reels tiktok instagram youtube short live vlog '+
+ 'без для про від над під при через після перед між днів день дні рік роки місяць тиждень щоб якщо тільки дуже '+
+ 'все всі весь одна один одне два три топ new best how why what when who').split(/\s+/));
+function renderWords(items){
+  const w=document.getElementById('topWords'); if(!w)return;
+  const list=(items||[]).slice(0,25);
+  if(!list.length){w.innerHTML=`<div class="es" style="padding:22px 0;text-align:center">${t('nodata')}</div>`;return;}
+  const map={};
+  list.forEach(i=>{
+    const seen=new Set();
+    String(i.title||'').toLowerCase().replace(/[^\p{L}\p{N}\s#]/gu,' ').split(/\s+/)
+      .filter(x=>x.length>2&&!STOP.has(x)&&!/^\d+$/.test(x))
+      .forEach(x=>{ if(seen.has(x))return; seen.add(x);
+        if(!map[x])map[x]={n:0,v:0};
+        map[x].n++; map[x].v+=(i.views||0);
+      });
+  });
+  const rows=Object.entries(map).filter(([,d])=>d.n>1).map(([wd,d])=>({wd,n:d.n,avg:d.v/d.n}))
+    .sort((a,b)=>b.avg-a.avg).slice(0,10);
+  if(!rows.length){w.innerHTML=`<div class="es" style="padding:22px 0;text-align:center">${t('nodata')}</div>`;return;}
+  const max=rows[0].avg||1;
+  w.innerHTML=`<div style="display:flex;gap:9px;font-size:.6rem;color:var(--t3);font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding-bottom:6px;border-bottom:1px solid var(--br)">
+      <span style="flex:1">${t('tw_word')}</span><span>${t('tw_n')}</span><span style="width:60px"></span><span style="min-width:56px;text-align:right">${t('tw_views')}</span>
+    </div>`+rows.map(r=>`<div class="tw-r">
+      <div class="tw-w">${esc(r.wd)}</div>
+      <div class="tw-c">×${r.n}</div>
+      <div class="tw-b"><div class="tw-bf" style="width:${Math.round(r.avg/max*100)}%"></div></div>
+      <div class="tw-v">${fmtN(Math.round(r.avg))}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// TOOL: CSV EXPORT
+// ═══════════════════════════════════════
+function exportCSV(){
+  const d=S.viewData;
+  if(!d||!d.items.length){notify('⚠️',t('exp_no'));return;}
+  const cols=['rank','platform','author','title','format','views','likes','comments','shares','er','saves','publishedAt','url','srcName'];
+  const esc2=v=>`"${String(v==null?'':v).replace(/"/g,'""')}"`;
+  const rows=[cols.join(','),...d.items.map(i=>cols.map(c=>esc2(i[c])).join(','))];
+  const k=d.kpi;
+  rows.push('');
+  rows.push('KPI,value');
+  const KMAP={views:['total_views',k.totalViews],er:['avg_er_pct',k.avgER],med:['median_views',k.medianViews],
+    vel:['velocity_views_per_day',k.velocity],com:['comment_rate_pct',k.commentRate],
+    conc:['top10_concentration_pct',k.concentration],cad:['cadence_items_per_day',k.cadence],
+    likes:['total_likes',k.totalLikes],cpr:['avg_cpr',k.avgCPR],ctr:['avg_ctr_pct',k.avgCTR],
+    cpm:['avg_cpm',k.avgCPM],saves:['total_saves',k.totalSaves]};
+  MKEYS.filter(m=>S.kpiOn[m.k]&&KMAP[m.k]).forEach(m=>rows.push(KMAP[m.k].map(esc2).join(',')));
+  rows.push(['items',k.n].map(esc2).join(','));
+  const blob=new Blob(['﻿'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`marketing-boss_${(S.tags[0]||'export').replace('#','')}_${S.period}.csv`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  notify('✅',t('exp_ok'));
+}
+
+// ═══════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════
+let cTrend,cFmt,cScatter,cER;
+function initCharts(){
+  Chart.defaults.color='#8b90a8';Chart.defaults.borderColor='#252836';Chart.defaults.font.family='Inter';
+  const o={responsive:true,maintainAspectRatio:false};
+  cTrend=new Chart(document.getElementById('cTrend').getContext('2d'),{type:'line',data:{labels:[],datasets:[]},options:{...o,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:12}}},scales:{x:{grid:{color:'#252836'}},y:{grid:{color:'#252836'},ticks:{callback:v=>fmtN(v)}}}}});
+  cFmt=new Chart(document.getElementById('cFmt').getContext('2d'),{type:'bar',data:{labels:[],datasets:[]},options:{...o,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#252836'}},y:{grid:{color:'#252836'}}}}});
+  cScatter=new Chart(document.getElementById('cScatter').getContext('2d'),{type:'scatter',data:{datasets:[]},options:{...o,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.label||''} | CPR: ${money(c.parsed.x)} | ER: ${c.parsed.y.toFixed(1)}%`}}},scales:{x:{title:{display:true,text:'CPR ('+curSym()+')'},grid:{color:'#252836'}},y:{title:{display:true,text:'ER (%)'},grid:{color:'#252836'}}}}});
+  cER=new Chart(document.getElementById('cER').getContext('2d'),{type:'bar',data:{labels:[],datasets:[]},options:{...o,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#252836'}},y:{grid:{color:'#252836'},ticks:{callback:v=>v+'%'}}}}});
+}
+
+// Реальний тренд: групуємо фактичні дати публікації
+function buildTrend(items,active){
+  const days=PDAYS[S.period];
+  const labels=[],keys=[];
+  const now=new Date();
+  for(let d=days-1;d>=0;d--){
+    const dt=new Date(now); dt.setDate(dt.getDate()-d);
+    keys.push(dt.toISOString().slice(0,10));
+    labels.push(days<=7?dt.toLocaleDateString(langCode(),{weekday:'short',day:'numeric'}):dt.toLocaleDateString(langCode(),{day:'numeric',month:'short'}));
+  }
+  const plats=active.filter(p=>items.some(i=>i.platform===p));
+  const datasets=plats.map(p=>{
+    const map={}; keys.forEach(k=>map[k]=0);
+    items.filter(i=>i.platform===p&&i.publishedAt).forEach(i=>{
+      const k=new Date(i.publishedAt).toISOString().slice(0,10);
+      if(k in map)map[k]+=(i.views||0);
+    });
+    return{label:PL[p],data:keys.map(k=>map[k]),borderColor:PC[p],backgroundColor:PC[p]+'22',fill:true,tension:.35,pointRadius:days>30?0:3};
+  });
+  return{labels,datasets};
+}
+
+function buildFmt(items){
+  const cnt={};
+  items.forEach(i=>{const f=i.format||'Video';cnt[f]=(cnt[f]||0)+1;});
+  const sorted=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+  return{labels:sorted.map(x=>x[0]),data:sorted.map(x=>x[1])};
+}
+
+function renderCharts(trend,fmt,scatter,erBar){
+  if(!cTrend)return;
+  if(!trend){
+    [cTrend,cFmt,cScatter,cER].forEach(c=>{if(c){c.data={labels:[],datasets:[]};c.update('none');}});
+    return;
+  }
+  cTrend.data=trend;cTrend.update('active');
+  cFmt.data={labels:fmt.labels,datasets:[{data:fmt.data,backgroundColor:['#6c63ff','#00d4aa','#ffa94d','#ff6b6b','#74c0fc','#51cf66','#cc5de8','#f06595'].slice(0,fmt.labels.length),borderRadius:4}]};cFmt.update('active');
+  cScatter.data={datasets:[{data:scatter,backgroundColor:'#6c63ff88',borderColor:'#6c63ff',pointRadius:7,pointHoverRadius:10}]};cScatter.update('active');
+  cER.data={labels:erBar.map(x=>x.label),datasets:[{data:erBar.map(x=>x.er),backgroundColor:erBar.map(x=>x.color+'aa'),borderRadius:5}]};cER.update('active');
+}
+
+// ═══════════════════════════════════════
+// AUTO FIND COMPETITORS (GPT)
+// ═══════════════════════════════════════
+const PER_PAGE=20;
+
+async function autoFindComps(){
+  if(!hasAI()){notify('⚠️',t('n_need')+' '+aiKeyHint());openMo();return;}
+  const query=S.tags.map(x=>x.replace('#','')).join(', ')||document.getElementById('si').value.trim()||prompt(t('pr_niche_c'));
+  if(!query)return;
+  if(!S.tags.length)addTag(query);
+  showLd(aiName()+' '+t('ld_comp'));
+  try{
+    const data=await gptAnalyzeNiche(query);
+    S.nicheData=data; S.compPage=0;
+    hideLd();
+    renderFoundComps(data.competitors||[]);
+    goPage('comp',document.querySelectorAll('.nav')[1]);
+    document.querySelectorAll('.nav').forEach((n,x)=>n.classList.toggle('on',x===1));
+    notify('✅',`${t('found_n')} ${data.competitors?.length||0}`);
+  }catch(e){hideLd();notify('❌',t('n_err')+' '+e.message);}
+}
+
+async function moreComps(){
+  if(!hasAI())return;
+  const query=S.tags.map(x=>x.replace('#','')).join(', ');
+  if(!query)return;
+  showLd(aiName()+' '+t('ld_comp'));
+  try{
+    const known=S.foundComps.map(c=>c.name);
+    const data=await gptAnalyzeNiche(query,known);
+    const fresh=(data.competitors||[]).filter(c=>!known.includes(c.name));
+    S.foundComps=[...S.foundComps,...fresh];
+    hideLd();
+    if(!fresh.length){notify('⚡',t('nodata'));return;}
+    S.compPage=Math.floor((S.foundComps.length-1)/PER_PAGE);
+    drawComps();
+    notify('✅',`+${fresh.length}`);
+  }catch(e){hideLd();notify('❌',t('n_err')+' '+e.message);}
+}
+
+function renderFoundComps(comps){
+  if(!comps?.length)return;
+  S.foundComps=comps;
+  S.compPage=0;
+  drawComps();
+}
+
+function drawComps(){
+  const comps=S.foundComps||[];
+  const finder=document.getElementById('compFinder'); if(!finder)return;
+  if(!comps.length){finder.style.display='none';return;}
+  finder.style.display='block';
+  const pages=Math.max(1,Math.ceil(comps.length/PER_PAGE));
+  if(S.compPage>=pages)S.compPage=pages-1;
+  const slice=comps.slice(S.compPage*PER_PAGE,(S.compPage+1)*PER_PAGE);
+  document.getElementById('compGrid').innerHTML=slice.map(c=>{
+    const gi=comps.indexOf(c);
+    return`
+    <div class="comp-item" onclick="openComp(${gi})">
+      <div class="comp-name">${esc(c.name)}</div>
+      <div class="comp-handle">${esc(c.handle||'')} ${c.followers_k?'· '+fmtN(c.followers_k*1000)+' '+t('subs'):''}</div>
+      <div style="font-size:0.9375rem;color:var(--t3);margin-bottom:6px;line-height:1.5">${esc((c.description||c.content_style||'').slice(0,110))}${(c.description||'').length>110?'…':''}</div>
+      <div class="comp-plats">
+        ${(c.platforms||[]).map(p=>`<span class="comp-p" style="background:${PC[p]||'#fff'}18;color:${PC[p]||'#fff'}">${PL[p]||p}</span>`).join('')}
+      </div>
+      <div style="font-size:0.9375rem;color:var(--t3);margin-top:5px">
+        <span class="badge est">ER ~${c.avg_er||'—'}%</span> · #${c.niche_rank||'—'}
+      </div>
+      <div style="font-size:0.8438rem;color:var(--ac);margin-top:5px">${t('comp_desc')} →</div>
+    </div>`;}).join('');
+  document.getElementById('compPager').innerHTML=`
+    <button class="pg-b" onclick="compPg(-1)" ${S.compPage===0?'disabled':''}>${t('pg_prev')}</button>
+    <span class="pg-i">${S.compPage+1} ${t('pg_of')} ${pages} · ${comps.length}</span>
+    <button class="pg-b" onclick="compPg(1)" ${S.compPage>=pages-1?'disabled':''}>${t('pg_next')}</button>
+    ${hasAI()?`<button class="pg-b" style="border-color:var(--ac);color:var(--ac)" onclick="moreComps()">＋ ${t('pg_more')}</button>`:''}`;
+}
+function compPg(d){S.compPage+=d;drawComps();window.scrollTo({top:0,behavior:'smooth'});}
+
+function openComp(gi){
+  const c=(S.foundComps||[])[gi]; if(!c)return;
+  const url=c.url||(c.handle?'https://instagram.com/'+c.handle.replace('@',''):null);
+  document.getElementById('dmw').innerHTML=`
+    <div class="dm-h">
+      <div style="min-width:0">
+        <div class="dm-t">${esc(c.name)}</div>
+        <div class="dm-s">${esc(c.handle||'')} ${c.followers_k?'· '+fmtN(c.followers_k*1000)+' '+t('subs'):''}</div>
+      </div>
+      <button class="dm-x" onclick="closeDm()">✕</button>
+    </div>
+    <div class="comp-plats" style="margin-bottom:6px">
+      ${(c.platforms||[]).map(p=>`<span class="comp-p" style="background:${PC[p]||'#fff'}18;color:${PC[p]||'#fff'}">${PL[p]||p}</span>`).join('')}
+    </div>
+    <div class="dm-g">
+      <div class="dm-m"><div class="dm-ml">${t('comp_rank')}</div><div class="dm-mv">#${c.niche_rank||'—'}</div></div>
+      <div class="dm-m"><div class="dm-ml">${t('comp_er_est')}</div><div class="dm-mv" style="color:var(--warn)">${c.avg_er?c.avg_er+'%':'—'}</div></div>
+      <div class="dm-m"><div class="dm-ml">${t('comp_fmt')}</div><div class="dm-mv" style="font-size:1.2188rem">${esc(c.best_format||'—')}</div></div>
+      <div class="dm-m"><div class="dm-ml">${t('comp_subs_l')}</div><div class="dm-mv">${c.followers_k?fmtN(c.followers_k*1000):'—'}</div></div>
+    </div>
+    ${c.description?`<div class="dm-sec">${t('comp_desc')}</div><div class="dm-p">${esc(c.description)}</div>`:''}
+    ${c.content_style?`<div class="dm-sec">${t('comp_style')}</div><div class="dm-p">${esc(c.content_style)}</div>`:''}
+    ${c.why_matters?`<div class="dm-sec">${t('comp_why')}</div><div class="dm-p">${esc(c.why_matters)}</div>`:''}
+    <div class="dm-m" style="margin-top:14px;background:rgba(255,169,77,.08);border-color:rgba(255,169,77,.3)">
+      <div class="dm-p" style="font-size:1.0312rem;color:var(--warn)">⚠️ ${t('comp_est_note')}</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-an" onclick="closeDm();analyzeComp('${esc(c.handle||c.name)}','${esc(c.name)}')"><i class="fa-solid fa-bolt"></i>${t('comp_analyze')}</button>
+      <button class="btn btn-s" onclick='addFoundComp(${JSON.stringify(c).replace(/'/g,"&#39;")})'><i class="fa-solid fa-plus"></i>${t('comp_add')}</button>
+      ${url?`<a class="btn btn-s" href="${url}" target="_blank" style="text-decoration:none"><i class="fa-solid fa-arrow-up-right-from-square"></i>${t('comp_open')}</a>`:''}
+    </div>`;
+  document.getElementById('dm').classList.add('open');
+}
+
+function addFoundComp(c){
+  const comps=S.savedComps;
+  if(!comps.find(x=>x.handle===c.handle)){
+    comps.push({id:Date.now(),name:c.name,handle:c.handle,platforms:c.platforms||['instagram'],description:c.description||'',content_style:c.content_style||'',tags:[],fromAI:true});
+    S.savedComps=comps;
+    try{localStorage.setItem('mb_comps',JSON.stringify(comps));}catch(e){}
+    notify('✅',`${c.name} — ${t('added')}`);
+    renderCompList();
+  }else{notify('⚠️',`${c.name} ${t('already')}`);}
+}
+
+// ═══════════════════════════════════════
+// COMPETITORS LIST
+// ═══════════════════════════════════════
+function renderCompList(){
+  const wrap=document.getElementById('compList');if(!wrap)return;
+  const comps=S.savedComps;
+  if(!comps.length){
+    wrap.innerHTML=`<div class="empty"><div class="ei">🎯</div><div class="et">${t('comp_e_t')}</div><div class="es">${t('comp_e_s')}</div></div>`;
+    return;
+  }
+  wrap.innerHTML=`<div class="tbl-card"><div class="tbl-h"><div class="sec-t" style="font-size:1.125rem">${t('comp_tracked')} (${comps.length})</div></div>
+  <div class="twrap"><table><thead><tr><th>#</th><th>${t('th_comp')}</th><th>${t('th_plats')}</th><th>${t('th_status')}</th><th></th><th></th></tr></thead>
+  <tbody>${comps.map((c,i)=>`<tr>
+    <td class="td-r">${i+1}</td>
+    <td onclick="openSaved(${i})" style="cursor:pointer"><div class="td-t">${esc(c.name)}</div><div class="td-s">${esc(c.handle||'')}${c.fromAI?' · '+t('ai_found'):''}</div>
+      ${c.description?`<div style="font-size:0.9375rem;color:var(--t3);margin-top:3px;max-width:420px;line-height:1.5">${esc(c.description.slice(0,100))}${c.description.length>100?'…':''}</div>`:''}</td>
+    <td>${(c.platforms||['instagram']).map(p=>`<span class="ptag" style="background:${PC[p]||'#fff'}18;color:${PC[p]||'#fff'};margin-right:3px"><i class="${PI[p]||''}"></i> ${PL[p]||p}</span>`).join('')}</td>
+    <td><span class="badge b-ok">${t('st_active')}</span></td>
+    <td><button class="btn btn-s" style="padding:4px 10px;font-size:1.0312rem" onclick="analyzeComp('${esc(c.handle)}','${esc(c.name)}')" style="background:linear-gradient(135deg,var(--ac),#8b7bff);color:#fff;font-weight:800;border-color:transparent"><i class="fa-solid fa-bolt"></i> ${t('btn_analysis')}</button></td>
+    <td><button class="btn btn-s" style="padding:4px 10px;font-size:1.0312rem;color:var(--bad)" onclick="delComp(${c.id})">✕</button></td>
+  </tr>`).join('')}</tbody></table></div></div>`;
+}
+
+function addComp(){
+  const name=prompt(t('pr_name'));if(!name)return;
+  const handle=prompt(t('pr_handle'));if(!handle)return;
+  S.savedComps.push({id:Date.now(),name,handle,platforms:['instagram','tiktok'],tags:[]});
+  try{localStorage.setItem('mb_comps',JSON.stringify(S.savedComps));}catch(e){}
+  renderCompList();notify('✅',`${name} — ${t('added')}`);
+}
+
+function openSaved(i){
+  const c=S.savedComps[i]; if(!c)return;
+  const prev=S.foundComps;
+  S.foundComps=[c];
+  openComp(0);
+  S.foundComps=prev;
+}
+
+function delComp(id){
+  S.savedComps=S.savedComps.filter(c=>c.id!==id);
+  try{localStorage.setItem('mb_comps',JSON.stringify(S.savedComps));}catch(e){}
+  renderCompList();
+}
+
+function analyzeComp(handle,name){
+  S.tags=[];addTag(handle);
+  goPage('dash',document.querySelectorAll('.nav')[0]);
+  document.querySelectorAll('.nav').forEach((n,i)=>n.classList.toggle('on',i===0));
+  doAnalyze();
+}
+
+// ═══════════════════════════════════════
+// CREATIVES — GPT POWERED
+// ═══════════════════════════════════════
+let creativesCache=null;
+const CREO_PER=15;
+const CATS=[
+  {k:'video', i18n:'cat_video',  col:'#6c63ff', field:'video_ideas'},
+  {k:'static',i18n:'cat_static', col:'#00d4aa', field:'static_ideas'},
+  {k:'hooks', i18n:'cat_hooks',  col:'#ffa94d', field:'hooks'},
+  {k:'ab',    i18n:'cat_ab',     col:'#f06595', field:'ab_tests'},
+];
+
+async function genCreatives(more){
+  if(!hasAI()){notify('⚠️',t('n_need')+' '+aiKeyHint()+' '+t('n_need_creo'));openMo();return;}
+  const topic=S.tags.map(x=>x.replace('#','')).join(', ')
+    ||(document.getElementById('si').value.trim())
+    ||creativesCache?.topic
+    ||S.nicheData?.niche_name
+    ||prompt(t('pr_niche'));
+  if(!topic)return;
+  if(!S.tags.length)addTag(topic);
+
+  const btn=document.getElementById('genBtn'); if(btn)btn.disabled=true;
+  if(!more){
+    document.getElementById('creoWrap').innerHTML=`<div class="empty"><div class="spin" style="margin:0 auto 12px"></div><div class="et">${aiName()} ${t('creo_gen')}</div><div class="es">${t('creo_gen_s')} «${esc(topic)}»</div></div>`;
+  }else{
+    notify('⏳',aiName()+' '+t('creo_gen_more'));
+  }
+
+  try{
+    const nd=S.nicheData;
+    const ctx=nd?`Niche context: competitors ${nd.competitors?.slice(0,10).map(c=>c.name).join(', ')}; formats ${nd.top_content_formats?.join(', ')}; audience: ${nd.audience_profile}; trends: ${nd.key_trends?.join(', ')}.`:'';
+    const known=more&&creativesCache?`\nAlready generated, do NOT repeat these titles: ${[...(creativesCache.video_ideas||[]),...(creativesCache.static_ideas||[])].map(x=>x.title).slice(-30).join(' | ')}`:'';
+
+    const resp=await gptJSON([{role:'system',content:'You are a senior creative strategist. Return ONLY valid JSON.'},{
+      role:'user',
+      content:`Create creative content ideas for the "${topic}" niche on social media.
+${ctx}${known}
+
+Return ONLY this JSON structure:
+{
+  "video_ideas": [
+    {"title":"...","description":"2-3 sentences on what happens in the video","hook":"first line said or shown","cta":"...","format":"Reels","platform":"instagram","expected_er":"5-8%","tags":["tag1","tag2"]}
+  ],
+  "static_ideas": [
+    {"title":"...","description":"2-3 sentences on the visual and the message","tip":"production tip","format":"Carousel","platform":"instagram","tags":["tag1","tag2"]}
+  ],
+  "hooks": ["hook text 1","hook text 2"],
+  "ab_tests": [{"variant_a":"...","variant_b":"...","what_to_test":"..."}],
+  "strategy_tip": "Main strategic tip for this niche (3-4 sentences)"
+}
+COUNTS: exactly 15 video_ideas, 15 static_ideas, 20 hooks, 8 ab_tests. Every idea must be distinct — different angle, format or audience segment.
+ALL user-facing text MUST be written in ${aiLangName()}. Be specific to "${topic}" — real terminology, real examples, no generic filler.`
+    }]);
+
+    if(more&&creativesCache){
+      creativesCache={
+        topic,
+        strategy_tip:creativesCache.strategy_tip||resp.strategy_tip,
+        video_ideas:[...(creativesCache.video_ideas||[]),...(resp.video_ideas||[])],
+        static_ideas:[...(creativesCache.static_ideas||[]),...(resp.static_ideas||[])],
+        hooks:[...new Set([...(creativesCache.hooks||[]),...(resp.hooks||[])])],
+        ab_tests:[...(creativesCache.ab_tests||[]),...(resp.ab_tests||[])],
+      };
+    }else{
+      creativesCache={...resp,topic};
+      S.creoCat='all'; S.creoPage=0;
+    }
+    drawCreo();
+    notify('✅',aiName()+' '+t('n_creo_ok'));
+  }catch(e){
+    if(!more)document.getElementById('creoWrap').innerHTML=`<div class="empty"><div class="ei">❌</div><div class="et">${t('chat_err')}</div><div class="es">${esc(e.message)}</div></div>`;
+    notify('❌',t('n_err')+' '+e.message);
+  }finally{
+    if(btn)btn.disabled=false;
+  }
+}
+
+function renderCreativesFromCache(){ if(creativesCache)drawCreo(); }
+function setCreoCat(k){ S.creoCat=k; S.creoPage=0; drawCreo(); document.getElementById('page-creo').scrollIntoView({behavior:'smooth',block:'start'}); }
+function creoPg(d){ S.creoPage+=d; drawCreo(); document.getElementById('page-creo').scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function creoList(k){
+  const d=creativesCache||{};
+  const c=CATS.find(x=>x.k===k);
+  return c?(d[c.field]||[]):[];
+}
+
+function drawCreo(){
+  const w=document.getElementById('creoWrap'); if(!w)return;
+  const d=creativesCache;
+  if(!d){
+    w.innerHTML=`<div class="empty"><div class="ei">✨</div><div class="et">${t('creo_e_t')}</div><div class="es">${t('creo_e_s')}</div></div>`;
+    return;
+  }
+  const cat=S.creoCat||'all';
+
+  // ── шапка з категоріями ──
+  let html=`<div class="cat-row">
+    ${CATS.map(c=>`<div class="cat-c${cat===c.k?' on':''}" style="--cc:${c.col}" onclick="setCreoCat('${c.k}')">
+      <div class="cat-t">${t(c.i18n)}</div>
+      <div class="cat-n">${creoList(c.k).length}</div>
+      <div class="cat-s">${cat===c.k?t('creo_back').replace('←','').trim():t('creo_open')}</div>
+    </div>`).join('')}
+  </div>`;
+
+  if(d.strategy_tip&&cat==='all'){
+    html+=`<div class="ai-card" style="margin-bottom:14px;border-color:var(--bra)">
+      <div class="ai-ct">${t('creo_strat')} «${esc(d.topic||'')}» <span class="ai-b gpt">${aiName()}</span></div>
+      <div style="font-size:1.125rem;color:var(--t2);line-height:1.65">${esc(d.strategy_tip)}</div>
+    </div>`;
+  }
+
+  if(cat==='all'){
+    // прев'ю по 4 з кожної категорії
+    html+=`<div class="ai-g">`;
+    CATS.slice(0,2).forEach(c=>{
+      const list=creoList(c.k);
+      html+=`<div class="ai-card">
+        <div class="ai-ct">${t(c.i18n)} <span class="ai-b gpt">${list.length}</span></div>
+        ${list.slice(0,4).map((x,n)=>ideaCard(x,c.k,n)).join('')||`<div class="es">${t('creo_empty_cat')}</div>`}
+        ${list.length>4?`<div class="pg-b" style="text-align:center;margin-top:8px" onclick="setCreoCat('${c.k}')">${t('creo_open')} (${list.length})</div>`:''}
+      </div>`;
+    });
+    html+=`</div>`;
+    CATS.slice(2).forEach(c=>{
+      const list=creoList(c.k);
+      html+=`<div class="ai-card" style="margin-bottom:14px">
+        <div class="ai-ct">${t(c.i18n)} <span class="ai-b gpt">${list.length}</span></div>
+        ${list.slice(0,6).map((x,n)=>ideaCard(x,c.k,n)).join('')||`<div class="es">${t('creo_empty_cat')}</div>`}
+        ${list.length>6?`<div class="pg-b" style="text-align:center;margin-top:8px" onclick="setCreoCat('${c.k}')">${t('creo_open')} (${list.length})</div>`:''}
+      </div>`;
+    });
+  }else{
+    const c=CATS.find(x=>x.k===cat);
+    const list=creoList(cat);
+    const pages=Math.max(1,Math.ceil(list.length/CREO_PER));
+    if(S.creoPage>=pages)S.creoPage=pages-1;
+    if(S.creoPage<0)S.creoPage=0;
+    const slice=list.slice(S.creoPage*CREO_PER,(S.creoPage+1)*CREO_PER);
+    html+=`<div class="creo-head">
+      <button class="pg-b" onclick="setCreoCat('all')">${t('creo_back')}</button>
+      <div class="creo-h-t">${t(c.i18n)}</div>
+      <span class="pg-i">${list.length} ${t('creo_cnt')}</span>
+    </div>`;
+    html+=slice.length?slice.map((x,n)=>ideaCard(x,cat,S.creoPage*CREO_PER+n)).join('')
+                      :`<div class="empty"><div class="ei">✨</div><div class="et">${t('creo_empty_cat')}</div></div>`;
+    html+=`<div class="pager">
+      <button class="pg-b" onclick="creoPg(-1)" ${S.creoPage===0?'disabled':''}>${t('pg_prev')}</button>
+      <span class="pg-i">${S.creoPage+1} ${t('pg_of')} ${pages}</span>
+      <button class="pg-b" onclick="creoPg(1)" ${S.creoPage>=pages-1?'disabled':''}>${t('pg_next')}</button>
+      <button class="pg-b" style="border-color:var(--ac);color:var(--ac)" onclick="genCreatives(true)">＋ ${t('creo_more')}</button>
+    </div>`;
+  }
+  w.innerHTML=html;
+}
+
+function ideaCard(x,cat,n){
+  if(cat==='hooks'){
+    const txt=String(x);
+    return`<div class="idea-full" onclick="copyTxt(this)" data-copy="${esc(txt)}">
+      <div class="if-t">${esc(txt)}</div>
+      <div class="idea-m"><span class="itag">${t('hook')} #${n+1}</span><span class="itag" style="color:var(--ac)">${t('copy')}</span></div>
+    </div>`;
+  }
+  if(cat==='ab'){
+    return`<div class="idea-full" onclick="copyTxt(this)" data-copy="${esc('A: '+(x.variant_a||'')+' | B: '+(x.variant_b||''))}">
+      <div class="if-t">🧪 ${esc(x.what_to_test||'')}</div>
+      <div class="if-d"><b>A:</b> ${esc(x.variant_a||'')}<br><b>B:</b> ${esc(x.variant_b||'')}</div>
+      <div class="idea-m"><span class="itag">${t('what_test')} #${n+1}</span><span class="itag" style="color:var(--ac)">${t('copy')}</span></div>
+    </div>`;
+  }
+  const copy=[x.title,x.hook?t('hook')+': '+x.hook:'',x.description||'',x.cta?'CTA: '+x.cta:'',x.tip||''].filter(Boolean).join('\n');
+  return`<div class="idea-full" onclick="copyTxt(this)" data-copy="${esc(copy)}">
+    <div class="if-t">${n+1}. ${esc(x.title||'')}</div>
+    ${x.description?`<div class="if-d">${esc(x.description)}</div>`:''}
+    ${x.hook?`<div class="if-hook">🎣 ${esc(x.hook)}</div>`:''}
+    ${x.tip?`<div class="if-d" style="color:var(--ok)">💡 ${esc(x.tip)}</div>`:''}
+    ${x.cta?`<div class="if-d" style="color:var(--warn)">👉 ${esc(x.cta)}</div>`:''}
+    <div class="idea-m">
+      ${x.format?`<span class="itag">📹 ${esc(x.format)}</span>`:''}
+      ${x.platform?`<span class="itag" style="color:${PC[x.platform]||'inherit'}">${PL[x.platform]||esc(x.platform)}</span>`:''}
+      ${x.expected_er?`<span class="itag est">ER ${esc(x.expected_er)}</span>`:''}
+      ${(x.tags||[]).slice(0,3).map(tg=>`<span class="itag">${esc(tg)}</span>`).join('')}
+      <span class="itag" style="color:var(--ac)">${t('copy')}</span>
+    </div>
+  </div>`;
+}
+
+function copyTxt(el){
+  const txt=el.dataset.copy||'';
+  navigator.clipboard.writeText(txt).catch(()=>{});
+  notify('📋',t('copied'));
+  el.style.borderColor='var(--ok)';
+  setTimeout(()=>{el.style.borderColor='';},700);
+}
+function copyI(el){copyTxt(el);}
+
+// ═══════════════════════════════════════
+// AI INSIGHTS
+// ═══════════════════════════════════════
+function renderAIIns(){
+  const wrap=document.getElementById('aiIns');if(!wrap)return;
+  const d=S.viewData;const k=d?.kpi;const nd=S.nicheData;
+
+  if(!k&&!nd){
+    wrap.innerHTML=`<div class="ai-card" style="grid-column:1/-1"><div class="empty"><div class="ei">📊</div><div class="et">${t('ins_e_t')}</div><div class="es">${t('ins_e_s')}</div></div></div>`;
+    return;
+  }
+  const topic=nd?.niche_name||S.tags[0]?.replace('#','')||t('niche_word');
+  let html='';
+
+  // ── реальні метрики ──
+  if(k){
+    const top=d.items[0];
+    const topPlat=Object.entries(d.ps).filter(([p,v])=>v.count&&v.er!=null).sort((a,b)=>b[1].er-a[1].er)[0];
+    const rows=[
+      {bg:'rgba(108,99,255,.13)',ico:'🚀',html:`${t('ins_top')} <strong>${fmtN(top?.views||0)}</strong> ${t('ins_views_on')} ${PL[top?.platform]} — «${esc((top?.title||'').slice(0,60))}»`},
+      {bg:'rgba(0,212,170,.13)',ico:'💡',html:`${t('ins_er')} <strong>${pct(k.avgER)}</strong> ${k.avgER!=null?'— '+(k.avgER>4?t('ins_er_hi'):t('ins_er_lo')):''}. ${topPlat?`${t('ins_best_er')} <strong>${PL[topPlat[0]]}</strong>: ${pct(topPlat[1].er,1)}`:''}`},
+      {bg:'rgba(116,192,252,.13)',ico:'📊',html:`${k.n} ${t('items')} · ${fmtN(k.totalLikes)} likes · ${d.fmt?.labels?.[0]||'—'} ${t('rec_fmt_2')} (${d.fmt?.data?.[0]||0})`},
+      {bg:'rgba(255,169,77,.13)',ico:'💰',html:`<strong>CPR / CTR / CPM:</strong> ${DASH} — ${t('src_ads_d')}`},
+    ];
+    html+=`<div class="ai-card">
+      <div class="ai-ct">${t('ins_t')} «${esc(topic)}» <span class="ai-b b-ok">${t('src_live')}</span></div>
+      ${rows.map(r=>`<div class="ins-i"><div class="ins-ico" style="background:${r.bg}">${r.ico}</div><div class="ins-t">${r.html}</div></div>`).join('')}
+    </div>`;
+  }else{
+    html+=`<div class="ai-card">
+      <div class="ai-ct">${t('ins_t')} «${esc(topic)}"</div>
+      <div class="empty" style="padding:22px 0"><div class="ei">🔌</div><div class="et">${t('empty_src_t')}</div><div class="es">${t('empty_src_s')}</div></div>
+    </div>`;
+  }
+
+  // ── AI-контекст (якісний, без вигаданих чисел) ──
+  if(nd){
+    const blk=(lbl,val)=>val?`<div class="ins-i"><div class="ins-ico" style="background:rgba(108,99,255,.13)">•</div><div class="ins-t"><strong>${lbl}:</strong> ${esc(Array.isArray(val)?val.join(', '):val)}</div></div>`:'';
+    html+=`<div class="ai-card">
+      <div class="ai-ct">${t('ai_ctx_t')} <span class="ai-b est">AI</span></div>
+      <div style="font-size:0.9375rem;color:var(--warn);margin-bottom:9px">⚠️ ${t('ai_ctx_n')}</div>
+      ${nd.niche_description?`<div style="font-size:1.0781rem;color:var(--t2);line-height:1.6;margin-bottom:10px">${esc(nd.niche_description)}</div>`:''}
+      ${blk(t('l_sat'),nd.market_saturation==='low'?t('sat_low'):nd.market_saturation==='medium'?t('sat_med'):nd.market_saturation==='high'?t('sat_hi'):null)}
+      ${blk(t('l_aud'),nd.audience_profile)}
+      ${blk(t('l_trends'),nd.key_trends)}
+      ${blk(t('l_time'),nd.best_posting_time)}
+      ${blk(t('l_hooks'),nd.top_hooks?.slice(0,3))}
+      ${nd.recommendation?`<div style="background:var(--acg);border:1px solid var(--bra);border-radius:8px;padding:10px 12px;font-size:1.0312rem;color:var(--t1);margin-top:10px;line-height:1.6">🤖 <strong>${t('l_rec')}:</strong> ${esc(nd.recommendation)}</div>`:''}
+    </div>`;
+  }
+  wrap.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+// AI CHAT
+// ═══════════════════════════════════════
+function addBotMsg(html){
+  const w=document.getElementById('chatMsgs');
+  const d=document.createElement('div');d.className='msg b';
+  d.innerHTML=`<div class="mav b-av">🤖</div><div class="mb">${html}</div>`;
+  w.appendChild(d);w.scrollTop=w.scrollHeight;return d;
+}
+function addUserMsg(t){
+  const w=document.getElementById('chatMsgs');
+  const d=document.createElement('div');d.className='msg u';
+  d.innerHTML=`<div class="mav u-av">👤</div><div class="mb">${t}</div>`;
+  w.appendChild(d);w.scrollTop=w.scrollHeight;
+}
+function clearChat(){
+  document.getElementById('chatMsgs').innerHTML='';
+  S.chatHist=[];
+  addBotMsg(t('chat_cleared'));
+}
+
+async function sendMsg(){
+  const inp=document.getElementById('chatInp');
+  const text=inp.value.trim();if(!text||S.chatBusy)return;
+  inp.value='';S.chatBusy=true;
+  document.getElementById('sendBtn').disabled=true;
+  addUserMsg(text);
+  S.chatHist.push({role:'user',content:text});
+
+  const thinkEl=addBotMsg(`<div class="dots"><span></span><span></span><span></span></div>`);
+  const bubble=thinkEl.querySelector('.mb');
+
+  try{
+    let reply;
+    if(hasAI()){
+      reply=await callGPT(text);
+    }else{
+      await sleep(500+Math.random()*600);
+      reply=tf('chat_nokey',{key:aiKeyHint(),ai:aiName()});
+    }
+    bubble.innerHTML=reply;
+    S.chatHist.push({role:'assistant',content:reply.replace(/<[^>]+>/g,'')});
+  }catch(err){
+    bubble.innerHTML=`❌ <strong>${t('chat_err')} ${aiName()}:</strong> ${err.message}<br>${t('chat_err_s')}`;
+  }finally{
+    S.chatBusy=false;
+    document.getElementById('sendBtn').disabled=false;
+    document.getElementById('chatMsgs').scrollTop=99999;
+  }
+}
+
+async function callGPT(userMsg){
+  const d=S.viewData;const k=d?.kpi;const nd=S.nicheData;
+  const topic=nd?.niche_name||S.tags.map(x=>x.replace('#','')).join(', ')||t('mkt_word');
+  const CUR=S.cur==='UAH'?'UAH (₴)':'USD ($)';
+
+  const sysPrompt=`You are Marketing Boss AI, a seasoned performance-marketing and SMM analyst.
+IMPORTANT: write your entire answer in ${aiLangName()}. Use the data below when available. Give concrete advice with numbers.
+All monetary figures below are already converted to ${CUR} — quote money in ${CUR} and never convert it yourself.
+Format the answer with <br> for line breaks and <b> for emphasis. Do not use markdown.
+
+${k?`CURRENT ANALYSIS DATA (niche: ${topic}):
+- Views over ${PDAYS[S.period]} days (REAL API data): ${fmtN(k.totalViews)}
+- Avg ER: ${pct(k.avgER)} (measured from real posts)
+- Avg CPR / CTR / CPM: not available (no ads API connected — never invent these numbers)
+- Total likes: ${fmtN(k.totalLikes)}
+- Median views: ${k.medianViews!=null?fmtN(k.medianViews):'n/a'} (vs average ${fmtN(Math.round(k.totalViews/k.n))} — a big gap means one viral outlier)
+- View velocity: ${k.velocity!=null?fmtN(Math.round(k.velocity))+' views/day per item':'n/a'}
+- Comment rate: ${pct(k.commentRate,3)}
+- Top-10% concentration: ${k.concentration!=null?Math.round(k.concentration)+'%':'n/a'} of all views
+- Posting cadence in niche: ${k.cadence!=null?k.cadence.toFixed(1)+' items/day':'n/a'}
+- Items in sample: ${k.n}
+
+TOP 5 ITEMS:
+${d.items.slice(0,5).map((i,n)=>`${n+1}. "${i.title}" [${PL[i.platform]}] — ${fmtN(i.views)} views, ${fmtN(i.likes||0)} likes, ER ${i.er}%`).join('\n')}
+
+METRICS BY PLATFORM:
+${Object.entries(d.ps).filter(([p,v])=>v.count).map(([p,st])=>`${PL[p]}: ${fmtN(st.views)} views, ER ${pct(st.er)}, ${st.count} items`).join('\n')}
+`:'No measured data yet — no real data source is connected. Tell the user which API key to add (YouTube Data API v3 is free; RapidAPI for Instagram/TikTok). NEVER invent metrics.'}
+
+${nd?`NICHE CONTEXT (your own qualitative knowledge, NOT measured data — say so if you quote it):
+- Saturation: ${nd.market_saturation}
+- Audience: ${nd.audience_profile}
+- Trends: ${nd.key_trends?.join(', ')}
+- Best time: ${nd.best_posting_time}
+- Competitors: ${nd.competitors?.map(c=>c.name).join(', ')}
+`:''}`;
+
+  const hist=S.chatHist.slice(-8).filter(m=>m.role==='user'||m.role==='assistant');
+
+  if(S.prov==='claude'){
+    // у Anthropic первое сообщение должно быть от user
+    const conv=[...hist,{role:'user',content:userMsg}];
+    while(conv.length&&conv[0].role!=='user')conv.shift();
+    const txt=await anthropicCall({system:sysPrompt,messages:conv,max_tokens:900,temperature:.8});
+    return txt.replace(/\n/g,'<br>');
+  }
+
+  const msgs=[{role:'system',content:sysPrompt},...hist,{role:'user',content:userMsg}];
+  const res=await fetch('https://api.openai.com/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.keys.oai}`},
+    body:JSON.stringify({model:'gpt-4o-mini',messages:msgs,max_tokens:600,temperature:.8}),
+  });
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+  const j=await res.json();
+  return(j.choices[0].message.content||'').replace(/\n/g,'<br>');
+}
+
+// ═══════════════════════════════════════
+// GPT JSON HELPER
+// ═══════════════════════════════════════
+// Универсальный JSON-вызов: Claude (Anthropic) или OpenAI
+async function gptJSON(messages){
+  if(!hasAI())throw new Error(`${aiKeyHint()}: ${t('err_nokey')}`);
+  const sys=messages.filter(m=>m.role==='system').map(m=>m.content).join('\n\n');
+  const rest=messages.filter(m=>m.role!=='system');
+
+  if(S.prov==='claude'){
+    const txt=await anthropicCall({
+      system: sys+'\n\nReturn ONLY a valid JSON object. No markdown fences, no explanations.',
+      messages:[...rest,{role:'assistant',content:'{'}],
+      max_tokens:8000, temperature:.5,
+    });
+    const raw=('{'+txt).replace(/```json|```/g,'').trim();
+    const cut=raw.slice(0, raw.lastIndexOf('}')+1);
+    try{return JSON.parse(cut);}
+    catch(e){throw new Error('Claude '+t('err_json')+' '+cut.slice(0,120));}
+  }
+
+  const res=await fetch('https://api.openai.com/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.keys.oai}`},
+    body:JSON.stringify({model:'gpt-4o-mini',messages,max_tokens:8000,temperature:.5,response_format:{type:'json_object'}}),
+  });
+  if(!res.ok){
+    const e=await res.json().catch(()=>({}));
+    throw new Error(e.error?.message||`OpenAI HTTP ${res.status}`);
+  }
+  const j=await res.json();
+  const content=j.choices[0].message.content||'{}';
+  try{return JSON.parse(content);}catch(e){throw new Error('GPT '+t('err_json')+' '+content.slice(0,100));}
+}
+
+// Прямой вызов Anthropic API из браузера
+async function anthropicCall({system,messages,max_tokens=1000,temperature=.7}){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'content-type':'application/json',
+      'x-api-key':S.keys.ant,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true',
+    },
+    body:JSON.stringify({model:aiModel(),max_tokens,temperature,system,messages}),
+  });
+  if(!res.ok){
+    const e=await res.json().catch(()=>({}));
+    throw new Error(e.error?.message||`Anthropic HTTP ${res.status}`);
+  }
+  const j=await res.json();
+  return (j.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+}
+
+// ═══════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════
+function openMo(){document.getElementById('mo').classList.add('open');}
+function closeMo(){document.getElementById('mo').classList.remove('open');}
+
+// ═══════════════════════════════════════
+// LOADING
+// ═══════════════════════════════════════
+function showLd(l){document.getElementById('ldl').textContent=l;document.getElementById('ldb').style.width='4%';document.getElementById('ldo').classList.add('show');}
+function setLd(p,l){document.getElementById('ldb').style.width=p+'%';if(l)document.getElementById('ldl').textContent=l;}
+function hideLd(){setLd(100,t('ld_done'));setTimeout(()=>document.getElementById('ldo').classList.remove('show'),320);}
+
+// ═══════════════════════════════════════
+// NOTIFY
+// ═══════════════════════════════════════
+let nT;
+function notify(ico,txt){
+  clearTimeout(nT);
+  document.getElementById('ni').textContent=ico;
+  document.getElementById('ntxt').textContent=txt;
+  document.getElementById('nt').classList.add('show');
+  nT=setTimeout(()=>document.getElementById('nt').classList.remove('show'),3500);
+}
+
+// ═══════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════
+function fmtN(n){if(n>=1e9)return(n/1e9).toFixed(1)+'B';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return String(Math.floor(n||0));}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function rnd(max,min=0){return(Math.random()*(max-min)+min).toFixed(0);}
+
+// ═══════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════
+setTimeout(()=>{
+  // Pre-fill key from storage (already loaded in loadKeys)
+  // Show tip if no key
+  if(!hasAI()){
+    setTimeout(()=>notify('🔑',tf('n_tip',{key:aiKeyHint()})),1000);
+  }
+},200);
+</script>
+</body>
+</html>
