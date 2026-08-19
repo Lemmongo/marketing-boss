@@ -13,10 +13,23 @@
   --br:#252836;--bra:#3d4263;--t1:#f0f2ff;--t2:#8b90a8;--t3:#555a72;
   --ac:#6c63ff;--acg:rgba(108,99,255,.2);--ok:#51cf66;--warn:#ffd43b;--bad:#ff6b6b;
   --sw:250px;--r:14px;--rs:8px;--sh:0 4px 24px rgba(0,0,0,.4);--tr:.18s ease;
+  --grid:#252836;--glass:rgba(17,19,24,.93);--ovl:rgba(8,9,13,.82);--opt:#16181d;
+  --shadow2:0 12px 40px rgba(0,0,0,.55);
+}
+html[data-theme="light"]{
+  /* тепла кремова палітра — комплемент фіолетового (жовтий бік кола) */
+  --bg:#f7f2e4;--bg2:#fffdf6;--card:#fffdf7;--card2:#f2ebd8;--inp:#f6f0e0;
+  --br:#e7ddc4;--bra:#c9b995;--t1:#2b2517;--t2:#6b6350;--t3:#9a9179;
+  --ac:#5b4fe0;--acg:rgba(91,79,224,.12);--ok:#0d8f60;--warn:#b0740a;--bad:#cf4130;
+  --sh:0 4px 20px rgba(94,76,32,.12);
+  --grid:#ece2ca;--glass:rgba(255,253,246,.94);--ovl:rgba(43,37,23,.46);--opt:#fffdf6;
+  --shadow2:0 12px 40px rgba(94,76,32,.22);
 }
 html{font-size:calc(16px * var(--ui,1))}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
+.ch-card,.kpi,.pl-card,.tbl-card,.ai-card,.src-c,.cat-c,.ctl-b,.pl-row>*,.ch-row>*{min-width:0}
+#heat,#topWords{min-width:0;max-width:100%}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--bra);border-radius:99px}
 .app{display:flex;min-height:100vh}
 
@@ -53,8 +66,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .api-dot.ok{background:var(--ok)}
 
 /* main */
-.main{margin-left:var(--sw);flex:1;min-height:100vh;display:flex;flex-direction:column}
-.topbar{padding:14px 26px;border-bottom:1px solid var(--br);background:rgba(17,19,24,.93);backdrop-filter:blur(12px);box-shadow:0 2px 14px rgba(0,0,0,.28);
+.main{margin-left:var(--sw);flex:1;min-width:0;max-width:100%;min-height:100vh;display:flex;flex-direction:column}
+.topbar{padding:14px 26px;border-bottom:1px solid var(--br);background:var(--glass);backdrop-filter:blur(12px);box-shadow:0 2px 14px rgba(0,0,0,.28);
   display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
 .srch{flex:1;max-width:520px;position:relative}
 .srch-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:1.2188rem}
@@ -79,7 +92,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-hei
 .btn-gpt:hover{opacity:.88;transform:translateY(-1px)}
 
 /* content */
-.content{padding:26px 28px;flex:1;max-width:1680px;width:100%}
+.content{padding:26px 28px;flex:1;max-width:1680px;width:100%;min-width:0}
 .page{display:none}.page.on{display:block}
 .sec{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap}
 .sec-t{font-size:1.35rem;font-weight:800;letter-spacing:-.01em}.sec-s{font-size:1.0312rem;color:var(--t3);margin-top:2px}
@@ -88,6 +101,36 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-hei
   border:1px solid var(--br);color:var(--t3);transition:all var(--tr)}
 .mt-i:hover,.mt-i.on{border-color:var(--ac);color:var(--ac);background:var(--acg)}
 
+/* ai-only state */
+.aio{background:linear-gradient(135deg,var(--acg),rgba(0,212,170,.06));border:1px solid var(--bra);
+  border-radius:var(--r);padding:18px 20px;margin-bottom:18px}
+.aio-t{font-size:1.1rem;font-weight:800;margin-bottom:6px}
+.aio-s{font-size:.9rem;color:var(--t2);line-height:1.55;margin-bottom:14px;max-width:820px}
+.aio-a{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.aio-c{font-size:.78rem;color:var(--t3);margin-left:auto}
+/* account block */
+.acct{display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:var(--rs);
+  background:var(--inp);border:1px solid var(--br);cursor:pointer;transition:all var(--tr)}
+.acct:hover{border-color:var(--ac);background:var(--acg)}
+.acct-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--ac),#a78bfa);color:#fff;font-size:.85rem;font-weight:800}
+.acct-n{font-size:.84rem;font-weight:700;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acct-s{font-size:.68rem;color:var(--t3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* diagnostics */
+.dg{margin-top:10px;display:flex;flex-direction:column;gap:7px}
+.dg-r{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border-radius:9px;background:var(--card);border:1px solid var(--br)}
+.dg-r.ok{border-color:rgba(0,212,170,.45)}
+.dg-r.bad{border-color:rgba(255,107,107,.5)}
+.dg-i{width:20px;flex-shrink:0;text-align:center;font-size:.85rem}
+.dg-n{font-size:.82rem;font-weight:700;color:var(--t1)}
+.dg-s{font-size:.72rem;color:var(--t2);line-height:1.45;margin-top:3px;word-break:break-word}
+.dg-c{font-size:.66rem;color:var(--t3);font-family:ui-monospace,monospace;margin-top:3px;word-break:break-all}
+.dg-b{margin-left:auto;font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:5px;flex-shrink:0}
+.errbar{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.45);border-radius:var(--r);
+  padding:13px 16px;margin-bottom:16px}
+.errbar-t{font-size:.9rem;font-weight:800;color:var(--bad);margin-bottom:5px}
+.errbar-s{font-size:.8rem;color:var(--t2);line-height:1.5;word-break:break-word}
+.errbar-x{float:right;cursor:pointer;color:var(--t3);font-size:.85rem}
 /* welcome */
 .wl{background:linear-gradient(135deg,var(--acg),rgba(0,212,170,.08));border:1px solid var(--bra);
   border-radius:var(--r);padding:20px 22px;margin-bottom:18px}
@@ -100,7 +143,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-hei
 /* metrics picker */
 .pop-w{position:relative}
 .pop{position:absolute;right:0;top:calc(100% + 8px);width:290px;background:var(--bg2);border:1px solid var(--bra);
-  border-radius:12px;padding:12px;box-shadow:0 12px 40px rgba(0,0,0,.55);z-index:120;display:none}
+  border-radius:12px;padding:12px;box-shadow:var(--shadow2);z-index:120;display:none}
 .pop.open{display:block}
 .pop-h{display:flex;gap:7px;margin-bottom:10px}
 .pop-h .pg-b{flex:1;text-align:center;padding:7px 6px;white-space:nowrap}
@@ -176,7 +219,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-hei
 /* table */
 .tbl-card{background:var(--card);border:1px solid var(--br);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
 .tbl-h{padding:14px 18px;border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.twrap{overflow-x:auto}
+.twrap{overflow-x:auto;max-width:100%}
 table{width:100%;border-collapse:collapse}
 thead th{padding:9px 12px;text-align:left;font-size:0.8438rem;font-weight:700;color:var(--t3);
   text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--br);white-space:nowrap}
@@ -282,7 +325,7 @@ tbody tr:hover{background:var(--card2)}
   color:var(--t1);font-size:1.125rem;font-family:inherit;outline:none;transition:all var(--tr)}
 .m-inp:focus{border-color:var(--ac)}
 select.m-inp{cursor:pointer}
-select.m-inp option{background:#16181d;color:var(--t1)}
+select.m-inp option{background:var(--opt);color:var(--t1)}
 .m-note{font-size:0.9375rem;color:var(--t3);margin-top:3px}
 .m-warn{background:rgba(255,212,59,.08);border:1px solid rgba(255,212,59,.3);border-radius:8px;
   padding:10px 12px;font-size:1.0312rem;color:var(--warn);margin-bottom:14px}
@@ -306,7 +349,8 @@ select.m-inp option{background:#16181d;color:var(--t1)}
 
 /* responsive */
 @media(max-width:1250px){.ch-row{grid-template-columns:1fr}}
-@media(max-width:700px){.sb{display:none}.main{margin-left:0}.kpi-g{grid-template-columns:repeat(2,1fr)}.ai-g{grid-template-columns:1fr}}
+
+
 /* sources panel */
 .src-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:11px;margin-bottom:18px}
 .src-c{background:var(--card);border:1px solid var(--br);border-radius:10px;padding:11px 13px;display:flex;gap:10px;align-items:center}
@@ -338,7 +382,7 @@ select.m-inp option{background:#16181d;color:var(--t1)}
 .if-hook{font-size:1.0312rem;background:var(--acg);border:1px solid var(--bra);border-radius:6px;padding:6px 9px;margin-bottom:7px;color:var(--ac);line-height:1.5}
 .if-n{position:absolute;font-size:0.9375rem;color:var(--t3)}
 /* detail modal */
-.dm{position:fixed;inset:0;background:rgba(8,9,13,.82);backdrop-filter:blur(6px);z-index:220;display:none;align-items:center;justify-content:center;padding:18px}
+.dm{position:fixed;inset:0;background:var(--ovl);backdrop-filter:blur(6px);z-index:220;display:none;align-items:center;justify-content:center;padding:18px}
 .dm.open{display:flex}
 .dmw{background:var(--card);border:1px solid var(--br);border-radius:14px;width:100%;max-width:720px;max-height:88vh;overflow-y:auto;padding:20px 22px}
 .dm-h{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
@@ -366,6 +410,107 @@ tbody tr{cursor:pointer}
 .est{background:rgba(255,169,77,.14);color:var(--warn)}
 .sw{flex-shrink:0}.sw .mt-i{padding:5px 9px;font-size:1.0312rem;font-weight:700}
 .grad{background:linear-gradient(135deg,var(--ac),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+/* ══════════ MOBILE ══════════ */
+.bnav{display:none}
+.mhead{display:none}
+@media(max-width:900px){
+  html{font-size:calc(13.2px * var(--ui,1))}
+  .sb{display:none}
+  .main{margin-left:0;padding-bottom:76px}
+  .content{padding:14px 13px}
+  /* mobile header */
+  .mhead{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg2);
+    border-bottom:1px solid var(--br);position:sticky;top:0;z-index:60}
+  .mh-n{font-size:1.05rem;font-weight:800;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mh-b{width:40px;height:40px;border-radius:10px;background:var(--inp);border:1px solid var(--br);
+    color:var(--t2);font-size:1rem;cursor:pointer;flex-shrink:0}
+  .mset{position:absolute;right:12px;top:calc(100% + 6px);background:var(--bg2);border:1px solid var(--bra);
+    border-radius:12px;padding:6px 14px;box-shadow:var(--shadow2);z-index:80;display:none;min-width:230px}
+  .mset.open{display:block}
+  .mset-r{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;
+    border-bottom:1px solid var(--br);font-size:.85rem;font-weight:600;color:var(--t2)}
+  /* topbar → 2 rows, hide desktop-only controls */
+  .topbar{position:static;padding:10px 13px;flex-wrap:wrap;gap:8px;backdrop-filter:none;box-shadow:none}
+  .srch{max-width:none;flex:1 1 100%;order:1}
+  .srch-inp{padding:12px 14px 12px 38px;font-size:1.05rem}
+  .tags{order:2;flex:1 1 100%}
+  .tbar-r{order:3;flex:1 1 100%;margin-left:0}
+  .tbar-r .sw,.tbar-r .btn-s{display:none}
+  #aBtn{width:100%;justify-content:center;padding:13px;font-size:1.05rem}
+  /* bottom nav */
+  .bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:200;background:var(--glass);
+    backdrop-filter:blur(14px);border-top:1px solid var(--br);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .bn-i{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:10px;
+    color:var(--t3);font-size:.6rem;font-weight:700;cursor:pointer;position:relative;transition:color var(--tr)}
+  .bn-i i{font-size:1.05rem}
+  .bn-i.on{color:var(--ac)}
+  .bn-i span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .bn-dot{position:absolute;top:5px;right:24%;width:7px;height:7px;border-radius:50%;background:var(--bad)}
+  .bn-dot.ok{background:var(--ok)}
+  /* control bar */
+  .sec{margin-bottom:11px}
+  .sec-t{font-size:1.28rem}
+  .ctl{padding:13px 14px;gap:14px}
+  .ctl-b{width:100%}
+  .ctl-b[style*="margin-left:auto"]{margin-left:0!important;width:auto;flex:1}
+  .ctl-b:nth-last-child(-n+2){width:auto;flex:1}
+  .chip{padding:9px 14px;font-size:.85rem}
+  .mt-i{padding:9px 14px;font-size:.85rem}
+  .pop{position:fixed;left:10px;right:10px;bottom:82px;top:auto;width:auto;max-height:64vh;overflow-y:auto}
+  .mrow{padding:12px 10px}
+  /* grids */
+  .kpi-g{grid-template-columns:repeat(2,1fr);gap:9px}
+  .kpi{padding:14px 14px}
+  .kpi-v{font-size:1.5rem}
+  .kpi-ico{display:none}
+  .src-row{grid-template-columns:repeat(2,1fr);gap:7px}
+  .src-c{padding:10px 11px;gap:8px;cursor:pointer;flex-wrap:wrap}
+  .src-c .src-s{display:none}
+  .src-c .src-n{font-size:.86rem;line-height:1.3}
+  .src-i{width:28px;height:28px}
+  .src-b{font-size:.55rem;padding:2px 5px}
+  .pl-row{grid-template-columns:1fr}
+  .ch-row{grid-template-columns:1fr!important;gap:10px}
+  .ch-w{height:210px}
+  .ai-g{grid-template-columns:1fr}
+  .comp-grid{grid-template-columns:1fr}
+  .cat-row{grid-template-columns:repeat(2,1fr);gap:8px}
+  .cat-c{padding:12px 13px}
+  .cat-n{font-size:1.55rem}
+  .cat-open .cat-row{display:none}
+  /* table: hide locked columns */
+  table td:nth-child(2){min-width:190px;max-width:none}
+  th:nth-child(6),td:nth-child(6),th:nth-child(7),td:nth-child(7),
+  th:nth-child(8),td:nth-child(8),th:nth-child(9),td:nth-child(9){display:none}
+  th,td{padding:11px 9px}
+  .tbl-h{padding:13px 14px}
+  .twrap{-webkit-overflow-scrolling:touch}
+  /* heatmap scrolls */
+  #heat{overflow-x:auto}
+  .hm{min-width:400px}
+  /* modals full-screen */
+  .mo{padding:0;align-items:flex-end}
+  .modal{width:100%;max-width:100%;max-height:92vh;border-radius:18px 18px 0 0;padding:20px 16px}
+  .m-t{top:-20px}
+  .m-acts{bottom:-20px}
+  .dm{padding:0;align-items:flex-end}
+  .dmw{max-width:100%;max-height:92vh;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+  .dm-g{grid-template-columns:repeat(2,1fr)}
+  /* chat */
+  .chat-msgs{height:52vh}
+  .chat-inp{font-size:1rem;padding:13px 15px}
+  /* misc touch targets */
+  .pg-b{padding:10px 14px}
+  .btn{padding:11px 15px}
+  .nt{left:12px;right:12px;bottom:84px}
+  .wl{padding:16px 15px}
+}
+@media(max-width:420px){
+  html{font-size:calc(12.6px * var(--ui,1))}
+  .kpi-g{grid-template-columns:1fr 1fr;gap:7px}
+  .bn-i{font-size:.55rem}
+  .dm-g{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -375,25 +520,52 @@ tbody tr{cursor:pointer}
 <aside class="sb">
   <div class="sb-logo">
     <div class="logo-ico">📊</div>
-    <div><div class="logo-n">Marketing Boss</div><div class="logo-s">AI Analytics</div></div>
+    <div><div class="logo-n">Marketing Boss</div><div class="logo-s" id="verLbl">AI Analytics</div></div>
   </div>
   <div class="sb-sec">
     <div class="sb-lbl" data-i18n="nav_lbl">Навігація</div>
-    <div class="nav on" onclick="goPage('dash',this)"><span class="ni"><i class="fa-solid fa-gauge-high"></i></span><span data-i18n="nav_dash">Дашборд</span><span class="nb" id="liveNb">Live</span></div>
-    <div class="nav" onclick="goPage('comp',this)"><span class="ni"><i class="fa-solid fa-crosshairs"></i></span><span data-i18n="nav_comp">Конкуренти</span></div>
-    <div class="nav" onclick="goPage('creo',this)"><span class="ni"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span data-i18n="nav_creo">Крео-ідеї</span><span class="nb gpt">AI</span></div>
-    <div class="nav" onclick="goPage('ai',this)"><span class="ni"><i class="fa-solid fa-robot"></i></span><span data-i18n="nav_ai">AI-Аналітик</span><span class="nb gpt">AI</span></div>
+    <div class="nav on" data-p="dash" onclick="goPage('dash')"><span class="ni"><i class="fa-solid fa-gauge-high"></i></span><span data-i18n="nav_dash">Дашборд</span><span class="nb" id="liveNb">Live</span></div>
+    <div class="nav" data-p="comp" onclick="goPage('comp')"><span class="ni"><i class="fa-solid fa-crosshairs"></i></span><span data-i18n="nav_comp">Конкуренти</span></div>
+    <div class="nav" data-p="creo" onclick="goPage('creo')"><span class="ni"><i class="fa-solid fa-wand-magic-sparkles"></i></span><span data-i18n="nav_creo">Крео-ідеї</span><span class="nb gpt">AI</span></div>
+    <div class="nav" data-p="ai" onclick="goPage('ai')"><span class="ni"><i class="fa-solid fa-robot"></i></span><span data-i18n="nav_ai">AI-Аналітик</span><span class="nb gpt">AI</span></div>
   </div>
   <div class="sb-ft">
     <button class="sb-btn" onclick="openMo()"><i class="fa-solid fa-key"></i><span data-i18n="sb_keys">API ключі</span><div class="api-dot" id="apiDot"></div></button>
-    <button class="sb-btn btn-gpt" id="findCompBtn" onclick="autoFindComps()" style="color:#fff;border-color:transparent">
-      <i class="fa-solid fa-magnifying-glass-chart"></i><span data-i18n="sb_find">Знайти конкурентів AI</span>
-    </button>
+    <div class="acct" onclick="openAcct()">
+      <div class="acct-av" id="acctAv">Г</div>
+      <div style="min-width:0;flex:1">
+        <div class="acct-n" id="acctN" data-i18n="acc_guest">Гість</div>
+        <div class="acct-s" id="acctS" data-i18n="acc_free">Free · локальний режим</div>
+      </div>
+      <i class="fa-solid fa-chevron-right" style="font-size:.7rem;color:var(--t3);flex-shrink:0"></i>
+    </div>
   </div>
 </aside>
 
+<!-- MOBILE BOTTOM NAV -->
+<nav class="bnav">
+  <div class="bn-i on" data-p="dash" onclick="goPage('dash')"><i class="fa-solid fa-gauge-high"></i><span data-i18n="bn_dash">Дашборд</span></div>
+  <div class="bn-i" data-p="comp" onclick="goPage('comp')"><i class="fa-solid fa-crosshairs"></i><span data-i18n="bn_comp">Конкур.</span></div>
+  <div class="bn-i" data-p="creo" onclick="goPage('creo')"><i class="fa-solid fa-wand-magic-sparkles"></i><span data-i18n="bn_creo">Крео</span></div>
+  <div class="bn-i" data-p="ai" onclick="goPage('ai')"><i class="fa-solid fa-robot"></i><span data-i18n="bn_ai">Аналітик</span></div>
+  <div class="bn-i" onclick="openAcct()"><i class="fa-solid fa-user"></i><span data-i18n="bn_acc">Кабінет</span><span class="bn-dot" id="bnDot"></span></div>
+</nav>
+
 <!-- MAIN -->
 <main class="main">
+  <div class="mhead">
+    <div class="logo-ico">📊</div>
+    <div class="mh-n">Marketing Boss</div>
+    <button class="mh-b" onclick="toggleMSet(event)"><i class="fa-solid fa-sliders"></i></button>
+    <div class="mset" id="mset">
+      <div class="mset-r"><span data-i18n="mo_lang">Мова</span>
+        <div class="mt sw"><div class="mt-i" data-lgm="ua" onclick="setLang('ua')">УКР</div><div class="mt-i" data-lgm="en" onclick="setLang('en')">EN</div></div></div>
+      <div class="mset-r"><span data-i18n="mo_theme">Тема</span>
+        <div class="mt sw"><div class="mt-i" data-thm="dark" onclick="setTheme('dark')">🌙</div><div class="mt-i" data-thm="light" onclick="setTheme('light')">☀️</div></div></div>
+      <div class="mset-r"><button class="btn btn-s" style="width:100%;justify-content:center" onclick="toggleMSet(event);openMo()"><i class="fa-solid fa-key"></i><span data-i18n="sb_keys">API ключі</span></button></div>
+      <div class="mset-r" style="border:none"><button class="btn btn-s" style="width:100%;justify-content:center" onclick="resetAll();toggleMSet(event)"><i class="fa-solid fa-rotate-right"></i><span data-i18n="btn_reset">Скинути</span></button></div>
+    </div>
+  </div>
   <div class="topbar">
     <div class="srch">
       <i class="fa-solid fa-hashtag srch-ico"></i>
@@ -402,7 +574,7 @@ tbody tr{cursor:pointer}
     <div class="tags" id="tags"></div>
     <div class="tbar-r">
       <div class="mt sw"><div class="mt-i on" id="lg-ua" onclick="setLang('ua')">УКР</div><div class="mt-i" id="lg-en" onclick="setLang('en')">EN</div></div>
-      <div class="mt sw"><div class="mt-i on" id="cu-UAH" onclick="setCur('UAH')">₴</div><div class="mt-i" id="cu-USD" onclick="setCur('USD')">$</div></div>
+      <div class="mt sw"><div class="mt-i on" id="th-dark" onclick="setTheme('dark')" data-i18n-title="th_dark" title="Темна тема"><i class="fa-solid fa-moon"></i></div><div class="mt-i" id="th-light" onclick="setTheme('light')" data-i18n-title="th_light" title="Світла тема"><i class="fa-solid fa-sun"></i></div></div>
       <button class="btn btn-s" onclick="resetAll()" data-i18n-title="btn_reset" title="Скинути"><i class="fa-solid fa-rotate-right"></i></button>
       <button class="btn btn-an" id="aBtn" onclick="doAnalyze()"><i class="fa-solid fa-bolt"></i><span data-i18n="btn_analyze">Аналізувати</span></button>
     </div>
@@ -444,6 +616,8 @@ tbody tr{cursor:pointer}
           <button class="btn btn-s" onclick="exportCSV()"><i class="fa-solid fa-file-csv"></i>CSV</button>
         </div>
       </div>
+      <div id="errbar"></div>
+      <div id="aiOnly"></div>
       <div id="welcome"></div>
       <div class="src-row" id="srcRow"></div>
       <div class="kpi-g">
@@ -568,6 +742,13 @@ tbody tr{cursor:pointer}
       </select>
     </div>
     <div class="m-f">
+      <div class="m-l" data-i18n="mo_theme">🎨 Тема</div>
+      <select class="m-inp" id="k-theme" onchange="setTheme(this.value)">
+        <option value="dark">Темна</option>
+        <option value="light">Світла</option>
+      </select>
+    </div>
+    <div class="m-f">
       <div class="m-l" data-i18n="mo_ui">🔠 Розмір тексту</div>
       <select class="m-inp" id="k-ui" onchange="setUI(this.value)">
         <option value="0.88">Компактний</option>
@@ -581,9 +762,13 @@ tbody tr{cursor:pointer}
       <select class="m-inp" id="k-cur" onchange="setCur(this.value)">
         <option value="UAH">₴ Гривня (UAH)</option>
         <option value="USD">$ Долар (USD)</option>
+        <option value="EUR">€ Євро (EUR)</option>
       </select>
-      <input class="m-inp" id="k-rate" type="number" step="0.01" style="margin-top:6px" placeholder="41.5">
-      <div class="m-note" data-i18n="mo_rate_n">Курс USD → UAH. Усі внутрішні розрахунки в USD, показ — у вибраній валюті.</div>
+      <div style="display:flex;gap:6px;margin-top:6px">
+        <input class="m-inp" id="k-rate" type="number" step="0.01" placeholder="41.5" title="USD → UAH">
+        <input class="m-inp" id="k-rate-eur" type="number" step="0.001" placeholder="0.92" title="USD → EUR">
+      </div>
+      <div class="m-note" data-i18n="mo_rate_n">Курси USD → ₴ і USD → €. Розрахунки в USD, показ — у вибраній валюті.</div>
     </div>
     <div class="m-f">
       <div class="m-l" data-i18n="mo_eng">🧠 Рушій AI</div>
@@ -622,7 +807,17 @@ tbody tr{cursor:pointer}
       <input class="m-inp" id="k-rap" type="password" placeholder="...">
       <input class="m-inp" id="k-ighost" style="margin-top:6px" placeholder="instagram-scraper-api2.p.rapidapi.com">
       <input class="m-inp" id="k-tthost" style="margin-top:6px" placeholder="tiktok-scraper7.p.rapidapi.com">
+      <input class="m-inp" id="k-lihost" style="margin-top:6px" placeholder="linkedin-api8.p.rapidapi.com">
       <div class="m-note" data-i18n="mo_rap_n">Реальні дані Instagram і TikTok (~$10/міс)</div>
+    </div>
+    <div class="m-f">
+      <div class="m-l" data-i18n="dg_t">🔧 Діагностика зʼєднань</div>
+      <div class="m-note" data-i18n="dg_hint">Натисни, щоб перевірити кожен ключ окремо і побачити точну помилку від сервера.</div>
+      <button class="btn btn-s" id="dgBtn" style="width:100%;justify-content:center;margin-top:7px" onclick="runDiag()">
+        <i class="fa-solid fa-stethoscope"></i><span data-i18n="dg_run">Перевірити зʼєднання</span></button>
+      <button class="btn btn-s" style="width:100%;justify-content:center;margin-top:6px" onclick="showLog()">
+        <i class="fa-solid fa-list"></i><span data-i18n="lg_open">Журнал запитів</span></button>
+      <div class="dg" id="dgOut"></div>
     </div>
     <div class="m-acts">
       <button class="btn btn-s" style="flex:1" onclick="closeMo()" data-i18n="btn_cancel">Скасувати</button>
@@ -650,9 +845,10 @@ tbody tr{cursor:pointer}
 // ═══════════════════════════════════════
 // CONSTANTS
 // ═══════════════════════════════════════
-const PC={'instagram':'#e1306c','tiktok':'#69C9D0','youtube':'#FF0000','google':'#4285F4'};
-const PI={'instagram':'fa-brands fa-instagram','tiktok':'fa-brands fa-tiktok','youtube':'fa-brands fa-youtube','google':'fa-brands fa-google'};
-const PL={'instagram':'Instagram','tiktok':'TikTok','youtube':'YouTube','google':'Google Ads'};
+const APP_VERSION='15.0';
+const PC={'instagram':'#e1306c','tiktok':'#69C9D0','youtube':'#FF0000','google':'#4285F4','linkedin':'#0A66C2'};
+const PI={'instagram':'fa-brands fa-instagram','tiktok':'fa-brands fa-tiktok','youtube':'fa-brands fa-youtube','google':'fa-brands fa-google','linkedin':'fa-brands fa-linkedin-in'};
+const PL={'instagram':'Instagram','tiktok':'TikTok','youtube':'YouTube','google':'Google Ads','linkedin':'LinkedIn'};
 const PDAYS={'7d':7,'30d':30,'90d':90,'180d':180};
 
 // ═══════════════════════════════════════
@@ -660,7 +856,7 @@ const PDAYS={'7d':7,'30d':30,'90d':90,'180d':180};
 // ═══════════════════════════════════════
 const S={
   tags:[],period:'7d',
-  plats:{instagram:true,tiktok:true,youtube:true,google:true},
+  plats:{instagram:true,tiktok:true,youtube:true,linkedin:true,google:true},
   rawItems:null, viewData:null,
   nicheData:null,   // AI niche intelligence
   chatHist:[],
@@ -670,9 +866,9 @@ const S={
   busy:false, chatBusy:false,
   tblF:'all',
   savedComps:[],
-  lang:'ua', cur:'UAH', rate:41.5,
+  lang:'ua', cur:'UAH', rate:41.5, rateEur:0.92,
   compPage:0, foundComps:[],
-  creoCat:'all', creoPage:0, ui:1, tblPage:0, kpiOn:null, wlHid:false,
+  creoCat:'all', creoPage:0, ui:1, tblPage:0, kpiOn:null, wlHid:false, theme:'dark', diag:null, antModels:null, lastErr:null,
 };
 
 // ═══════════════════════════════════════
@@ -709,7 +905,7 @@ ua:{
  added:'додано до списку',already:'вже у списку',found_n:'Знайдено конкурентів:',
  creo_t:'Крео-ідеї',creo_s:'Генеруються Claude / GPT на основі аналізу конкурентів',btn_gen:'Згенерувати',
  creo_e_t:'Немає ідей',creo_e_s:'Запусти аналіз по ніші — потім AI згенерує крео-ідеї спеціально під твою тему',
- creo_gen:'генерує ідеї...',creo_gen_s:'Секунду, створюю крео-ідеї спеціально під нішу',
+ creo_gen:'Drivovo генерує ідеї...',creo_gen_s:'Секунду, створюю крео-ідеї спеціально під нішу',
  creo_strat:'💡 Стратегія AI для',creo_video:'🎬 Відео-ідеї',creo_static:'🖼 Статичний контент',
  creo_hooks:'🎣 Хуки — скопіюй і встав',creo_ab:'🔬 A/B тести',hook:'Хук',copy:'📋 Копіювати',copied:'Скопійовано!',
  ai_t:'AI-Аналітик',btn_clear:'Очистити',chat_ph:'Запитай що завгодно про конкурентів, метрики, стратегію...',
@@ -738,9 +934,9 @@ ua:{
  mo_oai_n:'GPT-4o-mini — альтернативний рушій',mo_free:'Безкоштовно',
  mo_yt_n:'Реальні перегляди, лайки, ER відео по будь-якому хештегу',
  mo_rap_n:'Реальні дані Instagram і TikTok (~$10/міс)',btn_cancel:'Скасувати',btn_save:'Зберегти',
- ld_start:'Запускаємо аналіз...',ld_niche:'аналізує нішу...',ld_build:'Будуємо дані конкурентів...',
+ ld_start:'Запускаємо аналіз...',ld_niche:'Drivovo враховує твій запит...',ld_build:'Будуємо дані конкурентів...',
  ld_yt:'YouTube API: шукаємо відео...',ld_yt_s:'YouTube: пошук...',ld_yt_st:'YouTube: статистика...',
- ld_render:'Рендеримо дашборд...',ld_done:'Готово!',ld_find:'шукає конкурентів...',
+ ld_render:'Рендеримо дашборд...',ld_done:'Готово!',ld_find:'Drivovo шукає конкурентів...',
  n_plat:'Потрібна хоча б одна платформа',n_niche:'Введи нішу або хештег!',n_err:'Помилка:',
  n_saved:'Ключі збережено',n_conn:'підключено!',n_need:'Потрібен ключ',n_need_creo:'для AI-ідей',
  n_found:'знайшов конкурентів у ніші:',n_demo:'Демо-дані — додай ключ',n_demo2:'для реального аналізу',
@@ -762,7 +958,7 @@ ua:{
  empty_src_s:'Щоб побачити реальні метрики — додай ключ YouTube Data API або RapidAPI у налаштуваннях. Вигаданих чисел тут не буде.',
  no_metrics:'Немає метрик — джерело не підключено',
  n_real:'реальних матеріалів завантажено',n_no_src:'Не підключено жодного джерела реальних даних',
- ld_ig:'RapidAPI: Instagram...',ld_tt:'RapidAPI: TikTok...',ld_comp:'шукає конкурентів...',
+ ld_ig:'RapidAPI: Instagram...',ld_tt:'RapidAPI: TikTok...',ld_comp:'Drivovo шукає конкурентів...',
  item_t:'Детальна аналітика',item_open:'Відкрити оригінал',item_vs:'Порівняння з середнім по вибірці',
  item_ai:'🤖 Розбір від AI',item_ai_run:'Розібрати через AI',item_ai_wait:'AI аналізує матеріал...',
  item_real:'РЕАЛЬНІ ДАНІ',item_src:'Джерело',item_pub:'Опубліковано',item_eng:'Взаємодії',
@@ -777,7 +973,7 @@ ua:{
  cat_all:'Все разом',cat_video:'🎬 Відео-ідеї',cat_static:'🖼 Статика',cat_hooks:'🎣 Хуки',cat_ab:'🔬 A/B тести',
  creo_more:'Згенерувати ще',creo_back:'← Всі категорії',creo_open:'Відкрити категорію →',
  creo_cnt:'ідей',creo_empty_cat:'У цій категорії поки порожньо',
- creo_gen_more:'генерує ще ідеї...',variant:'Варіант',what_test:'Що тестуємо',
+ creo_gen_more:'Drivovo генерує ще ідеї...',variant:'Варіант',what_test:'Що тестуємо',
  ctl_period:'Період',ctl_export:'Експорт',p180:'180 днів',
  kpi_vel:'Швидкість',kpi_med:'Медіана',kpi_com:'Коментарі',kpi_conc:'Концентрація',
  kpi_likes:'Лайки',kpi_cad:'Частота',
@@ -788,7 +984,40 @@ ua:{
  tw_t:'🔤 Слова-переможці в заголовках',tw_s:'Що є у заголовках топ-контенту та скільки переглядів це дає',
  tw_word:'Слово',tw_n:'Разів',tw_views:'Сер. перегляди',
  no_time:'Немає дат публікації для цієї вибірки',
- mo_ui:'🔠 Розмір тексту',ui_s:'Компактний',ui_m:'Стандартний',ui_l:'Великий',ui_xl:'Дуже великий',
+ dg_t:'🔧 Діагностика зʼєднань',dg_run:'Перевірити зʼєднання',dg_wait:'Перевіряю...',
+ dg_none:'Ключ не введено',dg_ok:'Працює',dg_fail:'Помилка',dg_skip:'Пропущено',
+ dg_net:'Запит не дійшов до сервера. Причини: немає інтернету, блокує розширення браузера (adblock, VPN, антивірус), або сайт відкрито через file:// замість https://',
+ dg_401:'Ключ недійсний або відкликаний. Створи новий у консолі провайдера',
+ dg_403:'Ключ не має прав на цей ресурс. Для YouTube — перевір обмеження по домену в Google Cloud',
+ dg_404:'Модель не знайдена для цього ключа. Обери іншу зі списку нижче',
+ dg_429:'Забагато запитів або скінчився ліміт. Перевір баланс і rate limits',
+ dg_400:'Некоректний запит. Деталі в тексті помилки',
+ dg_529:'Сервіс перевантажений. Спробуй за хвилину',
+ dg_credit:'На балансі немає кредитів. Поповни на console.anthropic.com у розділі Billing',
+ dg_models:'Доступні моделі з твого ключа',dg_models_n:'Модель у налаштуваннях замінено на робочу',
+ dg_hint:'Натисни, щоб перевірити кожен ключ окремо і побачити точну помилку від сервера.',
+ dg_det:'Показати деталі помилки',dg_last:'Остання помилка',dg_copy:'Скопіювати звіт',
+ lg_t:'📋 Журнал запитів',lg_s:'Останні звернення до API з кодами відповіді. Скопіюй і надішли — по ньому видно точну причину.',
+ lg_copy:'Скопіювати журнал',lg_clear:'Очистити',lg_open:'Журнал запитів',
+ src_li_n:'LinkedIn',src_li_d:'Пости за темою через RapidAPI. Власна сторінка — тільки з бекендом і OAuth.',
+ ld_li:'RapidAPI: LinkedIn...',
+ acc_guest:'Гість',acc_free:'Free · локальний режим',acc_t:'👤 Кабінет',
+ acc_soon:'Акаунти в розробці',
+ acc_txt:'Зараз усе працює локально: ключі, налаштування, збережені конкуренти лежать у твоєму браузері. Кабінет додасть синхронізацію між пристроями, історію аналізів, ліміти й підписку.',
+ acc_now:'Що вже є локально',acc_next:'Що буде в кабінеті',
+ acc_l1:'Ключі API у localStorage',acc_l2:'Збережені конкуренти',acc_l3:'Мова, тема, валюта, набір метрик',
+ acc_n1:'Вхід через email або Google',acc_n2:'Історія аналізів і збережені звіти',
+ acc_n3:'Наші API-ключі — свої не потрібні',acc_n4:'Підписка й ліміти',acc_n5:'Команда та спільні бренди',
+ acc_exp:'Експортувати мої дані',acc_wipe:'Очистити все локально',acc_wiped:'Локальні дані очищено',
+ acc_conf:'Видалити всі локальні дані? Ключі й збережені конкуренти зникнуть.',
+ ai_only_t:'AI-режим: конкуренти й ідеї готові',
+ ai_only_s:'Ключ AI підключено, тому пошук конкурентів, крео-ідеї та чат-аналітик уже працюють. Виміряних метрик поки немає — для них потрібен ключ YouTube або RapidAPI.',
+ ai_only_b1:'Дивитись конкурентів',ai_only_b2:'Згенерувати крео',ai_only_b3:'Додати ключ метрик',
+ ai_found_n:'знайдено конкурентів',
+
+
+ err_net:'Браузер не зміг надіслати запит',
+ mo_theme:'🎨 Тема',th_dark:'Темна тема',th_light:'Світла тема',mo_ui:'🔠 Розмір тексту',ui_s:'Компактний',ui_m:'Стандартний',ui_l:'Великий',ui_xl:'Дуже великий',
  exp_ok:'CSV завантажено',exp_no:'Немає даних для експорту',
  nosrc_chip:'джерело не підключено',
  need_ads:'🔒 Потрібен Ads API',need_own:'🔒 Потрібен Instagram Graph',
@@ -809,6 +1038,7 @@ ua:{
  wl_2:'<b>YouTube Data API</b> — реальні перегляди й ER, безкоштовно',
  wl_3:'<b>RapidAPI</b> — Instagram і TikTok, опційно (~$10/міс)',
  wl_btn:'Додати ключі',wl_skip:'Пізніше',
+ bn_dash:'Дашборд',bn_comp:'Конкур.',bn_creo:'Крео',bn_ai:'Аналітик',bn_key:'Ключі',bn_acc:'Кабінет',
  niche_word:'ніші',mkt_word:'маркетингу',
 },
 en:{
@@ -841,7 +1071,7 @@ en:{
  added:'added to the list',already:'is already in the list',found_n:'Competitors found:',
  creo_t:'Creative Ideas',creo_s:'Generated by Claude / GPT from competitor analysis',btn_gen:'Generate',
  creo_e_t:'No ideas yet',creo_e_s:'Run a niche analysis — then AI will generate creative ideas for your topic',
- creo_gen:'is generating ideas...',creo_gen_s:'One moment, building creative ideas for the niche',
+ creo_gen:'Drivovo is generating ideas...',creo_gen_s:'One moment, building creative ideas for the niche',
  creo_strat:'💡 AI strategy for',creo_video:'🎬 Video ideas',creo_static:'🖼 Static content',
  creo_hooks:'🎣 Hooks — copy & paste',creo_ab:'🔬 A/B tests',hook:'Hook',copy:'📋 Copy',copied:'Copied!',
  ai_t:'AI Analyst',btn_clear:'Clear',chat_ph:'Ask anything about competitors, metrics, strategy...',
@@ -870,9 +1100,9 @@ en:{
  mo_oai_n:'GPT-4o-mini — alternative engine',mo_free:'Free',
  mo_yt_n:'Real views, likes and ER for any hashtag',
  mo_rap_n:'Real Instagram and TikTok data (~$10/mo)',btn_cancel:'Cancel',btn_save:'Save',
- ld_start:'Starting analysis...',ld_niche:'is analyzing the niche...',ld_build:'Building competitor data...',
+ ld_start:'Starting analysis...',ld_niche:'Drivovo is processing your request...',ld_build:'Building competitor data...',
  ld_yt:'YouTube API: searching videos...',ld_yt_s:'YouTube: search...',ld_yt_st:'YouTube: statistics...',
- ld_render:'Rendering dashboard...',ld_done:'Done!',ld_find:'is searching for competitors...',
+ ld_render:'Rendering dashboard...',ld_done:'Done!',ld_find:'Drivovo is searching for competitors...',
  n_plat:'At least one platform is required',n_niche:'Enter a niche or hashtag!',n_err:'Error:',
  n_saved:'Keys saved',n_conn:'connected!',n_need:'Key required:',n_need_creo:'for AI ideas',
  n_found:'found competitors in the niche:',n_demo:'Demo data — add a',n_demo2:'key for real analysis',
@@ -894,7 +1124,7 @@ en:{
  empty_src_s:'To see real metrics, add a YouTube Data API or RapidAPI key in settings. No invented numbers will appear here.',
  no_metrics:'No metrics — source not connected',
  n_real:'real items loaded',n_no_src:'No real data source connected',
- ld_ig:'RapidAPI: Instagram...',ld_tt:'RapidAPI: TikTok...',ld_comp:'is finding competitors...',
+ ld_ig:'RapidAPI: Instagram...',ld_tt:'RapidAPI: TikTok...',ld_comp:'Drivovo is finding competitors...',
  item_t:'Detailed analytics',item_open:'Open original',item_vs:'Compared to the sample average',
  item_ai:'🤖 AI breakdown',item_ai_run:'Analyze with AI',item_ai_wait:'AI is analyzing this item...',
  item_real:'REAL DATA',item_src:'Source',item_pub:'Published',item_eng:'Engagements',
@@ -909,7 +1139,7 @@ en:{
  cat_all:'Everything',cat_video:'🎬 Video ideas',cat_static:'🖼 Static',cat_hooks:'🎣 Hooks',cat_ab:'🔬 A/B tests',
  creo_more:'Generate more',creo_back:'← All categories',creo_open:'Open category →',
  creo_cnt:'ideas',creo_empty_cat:'This category is empty so far',
- creo_gen_more:'is generating more ideas...',variant:'Variant',what_test:'What to test',
+ creo_gen_more:'Drivovo is generating more ideas...',variant:'Variant',what_test:'What to test',
  ctl_period:'Period',ctl_export:'Export',p180:'180 days',
  kpi_vel:'Velocity',kpi_med:'Median',kpi_com:'Comments',kpi_conc:'Concentration',
  kpi_likes:'Likes',kpi_cad:'Cadence',
@@ -920,7 +1150,40 @@ en:{
  tw_t:'🔤 Winning words in titles',tw_s:'What appears in top content titles and how many views it earns',
  tw_word:'Word',tw_n:'Count',tw_views:'Avg views',
  no_time:'No publish timestamps in this sample',
- mo_ui:'🔠 Text size',ui_s:'Compact',ui_m:'Standard',ui_l:'Large',ui_xl:'Extra large',
+ dg_t:'🔧 Connection diagnostics',dg_run:'Test connections',dg_wait:'Testing...',
+ dg_none:'No key entered',dg_ok:'Working',dg_fail:'Error',dg_skip:'Skipped',
+ dg_net:'The request never reached the server. Causes: no internet, a browser extension blocking it (adblock, VPN, antivirus), or the page opened via file:// instead of https://',
+ dg_401:'The key is invalid or revoked. Create a new one in the provider console',
+ dg_403:'The key lacks access to this resource. For YouTube, check the domain restriction in Google Cloud',
+ dg_404:'Model not found for this key. Pick another from the list below',
+ dg_429:'Too many requests or quota exhausted. Check your balance and rate limits',
+ dg_400:'Malformed request. See the error text',
+ dg_529:'Service overloaded. Try again in a minute',
+ dg_credit:'No credits on the balance. Top up at console.anthropic.com under Billing',
+ dg_models:'Models available with your key',dg_models_n:'Model in settings switched to a working one',
+ dg_hint:'Tap to test each key separately and see the exact server error.',
+ dg_det:'Show error details',dg_last:'Last error',dg_copy:'Copy report',
+ lg_t:'📋 Request log',lg_s:'Recent API calls with response codes. Copy and send it — it shows the exact cause.',
+ lg_copy:'Copy log',lg_clear:'Clear',lg_open:'Request log',
+ src_li_n:'LinkedIn',src_li_d:'Posts by topic via RapidAPI. Your own page needs a backend with OAuth.',
+ ld_li:'RapidAPI: LinkedIn...',
+ acc_guest:'Guest',acc_free:'Free · local mode',acc_t:'👤 Account',
+ acc_soon:'Accounts in progress',
+ acc_txt:'Everything runs locally right now: keys, settings and saved competitors live in your browser. The account will add cross-device sync, analysis history, limits and billing.',
+ acc_now:'Already stored locally',acc_next:'Coming with the account',
+ acc_l1:'API keys in localStorage',acc_l2:'Saved competitors',acc_l3:'Language, theme, currency, metric set',
+ acc_n1:'Sign in with email or Google',acc_n2:'Analysis history and saved reports',
+ acc_n3:'Our API keys — you bring none',acc_n4:'Subscription and limits',acc_n5:'Team and shared brands',
+ acc_exp:'Export my data',acc_wipe:'Wipe local data',acc_wiped:'Local data cleared',
+ acc_conf:'Delete all local data? Keys and saved competitors will be gone.',
+ ai_only_t:'AI mode: competitors and ideas are ready',
+ ai_only_s:'Your AI key is connected, so competitor search, creative ideas and the analyst chat already work. Measured metrics need a YouTube or RapidAPI key.',
+ ai_only_b1:'View competitors',ai_only_b2:'Generate creatives',ai_only_b3:'Add a metrics key',
+ ai_found_n:'competitors found',
+
+
+ err_net:'The browser could not send the request',
+ mo_theme:'🎨 Theme',th_dark:'Dark theme',th_light:'Light theme',mo_ui:'🔠 Text size',ui_s:'Compact',ui_m:'Standard',ui_l:'Large',ui_xl:'Extra large',
  exp_ok:'CSV downloaded',exp_no:'Nothing to export',
  nosrc_chip:'source not connected',
  need_ads:'🔒 Ads API required',need_own:'🔒 Instagram Graph required',
@@ -941,6 +1204,7 @@ en:{
  wl_2:'<b>YouTube Data API</b> — real views and ER, free',
  wl_3:'<b>RapidAPI</b> — Instagram and TikTok, optional (~$10/mo)',
  wl_btn:'Add keys',wl_skip:'Later',
+ bn_dash:'Dash',bn_comp:'Rivals',bn_creo:'Ideas',bn_ai:'Analyst',bn_key:'Keys',bn_acc:'Account',
  niche_word:'the niche',mkt_word:'marketing',
 }};
 
@@ -949,20 +1213,54 @@ function tf(k,vars){let x=t(k);for(const n in vars)x=x.split('{'+n+'}').join(var
 function langCode(){return S.lang==='ua'?'uk':'en';}
 function aiLangName(){return S.lang==='ua'?'Ukrainian':'English';}
 
+// ── THEME ──
+function setTheme(th){
+  S.theme=th;
+  document.documentElement.setAttribute('data-theme',th);
+  try{localStorage.setItem('mb_theme',th);}catch(e){}
+  const d=document.getElementById('th-dark'),l=document.getElementById('th-light'),sel=document.getElementById('k-theme');
+  if(d)d.classList.toggle('on',th==='dark');
+  if(l)l.classList.toggle('on',th==='light');
+  if(sel)sel.value=th;
+  document.querySelectorAll('[data-thm]').forEach(e=>e.classList.toggle('on',e.dataset.thm===th));
+  applyChartTheme();
+}
+function applyChartTheme(){
+  if(typeof Chart==='undefined'||!cTrend)return;
+  const G=cssVar('--grid'), T=cssVar('--t2');
+  Chart.defaults.color=T; Chart.defaults.borderColor=G;
+  [cTrend,cFmt,cScatter,cER].forEach(c=>{
+    if(!c)return;
+    const sc=c.options.scales||{};
+    ['x','y'].forEach(ax=>{
+      if(!sc[ax])return;
+      if(sc[ax].grid)sc[ax].grid.color=G;
+      sc[ax].ticks=Object.assign(sc[ax].ticks||{},{color:T});
+      if(sc[ax].title)sc[ax].title.color=T;
+    });
+    if(c.options.plugins&&c.options.plugins.legend)
+      c.options.plugins.legend.labels=Object.assign(c.options.plugins.legend.labels||{},{color:T});
+    c.update('none');
+  });
+}
+
 // ── CURRENCY ──
-function curSym(){return S.cur==='UAH'?'₴':'$';}
+const CUR_SYM={UAH:'₴',USD:'$',EUR:'€'};
+function curSym(){return CUR_SYM[S.cur]||'$';}
+function curRate(){return S.cur==='UAH'?(S.rate||41.5):S.cur==='EUR'?(S.rateEur||0.92):1;}
 function money(v){
-  const n=parseFloat(v)||0;
-  if(S.cur==='UAH'){const u=n*(S.rate||41.5);return '₴'+(u>=100?Math.round(u).toLocaleString(langCode()):u.toFixed(2));}
-  return '$'+(n>=100?Math.round(n).toLocaleString('en'):n.toFixed(2));
+  const n=(parseFloat(v)||0)*curRate();
+  const sym=curSym();
+  const post=S.cur==='UAH';   // українською символ ставимо після числа
+  const num=n>=100?Math.round(n).toLocaleString(langCode()):n.toFixed(2);
+  return post?num+' '+sym:sym+num;
 }
 function setCur(c){
   S.cur=c;
   try{localStorage.setItem('mb_cur',c);}catch(e){}
-  const a=document.getElementById('cu-UAH'),b=document.getElementById('cu-USD'),sel=document.getElementById('k-cur');
-  if(a)a.classList.toggle('on',c==='UAH');
-  if(b)b.classList.toggle('on',c==='USD');
+  const sel=document.getElementById('k-cur');
   if(sel)sel.value=c;
+  syncMobileChips();
   if(cScatter){cScatter.options.scales.x.title.text='CPR ('+curSym()+')';cScatter.update('none');}
   if(S.rawItems)applyFilters();
   renderAIIns();
@@ -976,6 +1274,7 @@ function setLang(l){
   if(sel)sel.value=l;
   document.documentElement.lang=langCode();
   applyLang();
+  syncMobileChips();
 }
 function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(e=>{e.textContent=t(e.dataset.i18n);});
@@ -1011,6 +1310,22 @@ function greet(){
   addBotMsg(t('hello')+(hasAI()?`✅ ${aiName()} ${t('hello_on')}`:t('hello_off')));
 }
 
+
+// ── MOBILE ──
+function toggleMSet(e){
+  if(e)e.stopPropagation();
+  document.getElementById('mset')?.classList.toggle('open');
+}
+document.addEventListener('click',ev=>{
+  const m=document.getElementById('mset');
+  if(m&&!ev.target.closest('.mhead'))m.classList.remove('open');
+});
+function syncMobileChips(){
+  document.querySelectorAll('[data-lgm]').forEach(e=>e.classList.toggle('on',e.dataset.lgm===S.lang));
+  const d=document.getElementById('bnDot');
+  if(d)d.className='bn-dot'+(hasAI()?' ok':'');
+}
+
 // ── AI PROVIDER HELPERS ──
 function hasAI(){ return S.prov==='claude' ? !!S.keys.ant : !!S.keys.oai; }
 function aiModel(){ return S.prov==='claude' ? (S.amodel||'claude-sonnet-5') : 'gpt-4o-mini'; }
@@ -1031,12 +1346,15 @@ function loadKeys(){
     S.lang=localStorage.getItem('mb_lang')||'ua';
     S.cur=localStorage.getItem('mb_cur')||'UAH';
     S.rate=parseFloat(localStorage.getItem('mb_rate'))||41.5;
+    S.rateEur=parseFloat(localStorage.getItem('mb_rate_eur'))||0.92;
     S.ui=parseFloat(localStorage.getItem('mb_ui'))||1;
     S.wlHid=localStorage.getItem('mb_wl')==='1';
+    S.theme=localStorage.getItem('mb_theme')||'dark';
     try{S.kpiOn={...defaultKpi(),...JSON.parse(localStorage.getItem('mb_kpi')||'{}')};}catch(e){S.kpiOn=defaultKpi();}
     document.getElementById('k-lang').value=S.lang;
     document.getElementById('k-cur').value=S.cur;
     document.getElementById('k-rate').value=S.rate;
+    document.getElementById('k-rate-eur').value=S.rateEur;
     document.getElementById('k-prov').value=S.prov;
     document.getElementById('k-amodel').value=S.amodel;
     if(S.keys.ant) document.getElementById('k-ant').value=S.keys.ant;
@@ -1045,9 +1363,13 @@ function loadKeys(){
     if(S.keys.rap) document.getElementById('k-rap').value=S.keys.rap;
     if(S.keys.igHost)document.getElementById('k-ighost').value=S.keys.igHost;
     if(S.keys.ttHost)document.getElementById('k-tthost').value=S.keys.ttHost;
+    if(S.keys.liHost)document.getElementById('k-lihost').value=S.keys.liHost;
     S.savedComps=JSON.parse(localStorage.getItem('mb_comps')||'[]');
   }catch(e){}
   if(!S.kpiOn)S.kpiOn=defaultKpi();
+  const vl=document.getElementById('verLbl');
+  if(vl)vl.textContent='AI Analytics · v'+APP_VERSION;
+  setTheme(S.theme);
   onProvChange();
   setUI(S.ui);
   renderPlatChips();
@@ -1056,22 +1378,26 @@ function loadKeys(){
 }
 
 function saveKeys(){
+  const clean=id=>document.getElementById(id).value.replace(/[\s\u00a0\u200b-\u200d\ufeff]/g,'');
   S.keys={
-    ant: document.getElementById('k-ant').value.trim(),
-    oai: document.getElementById('k-oai').value.trim(),
-    yt:  document.getElementById('k-yt').value.trim(),
-    rap: document.getElementById('k-rap').value.trim(),
-    igHost: document.getElementById('k-ighost').value.trim(),
-    ttHost: document.getElementById('k-tthost').value.trim(),
+    ant: clean('k-ant'),
+    oai: clean('k-oai'),
+    yt:  clean('k-yt'),
+    rap: clean('k-rap'),
+    igHost: clean('k-ighost'),
+    ttHost: clean('k-tthost'),
+    liHost: clean('k-lihost'),
   };
   S.prov=document.getElementById('k-prov').value;
   S.amodel=document.getElementById('k-amodel').value;
   S.rate=parseFloat(document.getElementById('k-rate').value)||41.5;
+  S.rateEur=parseFloat(document.getElementById('k-rate-eur').value)||0.92;
   try{
     localStorage.setItem('mb_k',JSON.stringify(S.keys));
     localStorage.setItem('mb_prov',S.prov);
     localStorage.setItem('mb_amodel',S.amodel);
     localStorage.setItem('mb_rate',String(S.rate));
+    localStorage.setItem('mb_rate_eur',String(S.rateEur));
   }catch(e){}
   updApiDot(); closeMo(); updStatus(); renderPlatChips(); renderSources();
   notify('✅',hasAI()?`${aiName()} ${t('n_conn')}`:t('n_saved'));
@@ -1079,7 +1405,9 @@ function saveKeys(){
 }
 
 function updApiDot(){
-  document.getElementById('apiDot').className='api-dot'+(hasAI()?' ok':'');
+  const d=document.getElementById('apiDot');
+  if(d)d.className='api-dot'+(hasAI()?' ok':'');
+  syncMobileChips();
 }
 
 function updStatus(){
@@ -1106,8 +1434,9 @@ function updStatus(){
 function goPage(p,el){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
   document.getElementById('page-'+p).classList.add('on');
-  document.querySelectorAll('.nav').forEach(x=>x.classList.remove('on'));
-  el.classList.add('on');
+  document.querySelectorAll('.nav,.bn-i').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('mPop')?.classList.remove('open');
   if(p==='comp')  renderCompList();
   if(p==='ai')    renderAIIns();
   if(p==='creo') renderCreativesFromCache();
@@ -1149,7 +1478,7 @@ function resetAll(){
 // ═══════════════════════════════════════
 function renderPlatChips(){
   const w=document.getElementById('platChips'); if(!w)return;
-  const live={instagram:!!S.keys.rap,tiktok:!!S.keys.rap,youtube:!!S.keys.yt,google:false};
+  const live={instagram:!!S.keys.rap,tiktok:!!S.keys.rap,youtube:!!S.keys.yt,linkedin:!!S.keys.rap,google:false};
   w.innerHTML=Object.keys(S.plats).map(p=>`
     <div class="chip${S.plats[p]?' on':''}${live[p]?'':' nosrc'}" style="--pc:${PC[p]}" onclick="togPlat('${p}')"
       title="${live[p]?PL[p]:PL[p]+' — '+t('nosrc_chip')}">
@@ -1200,7 +1529,7 @@ async function doAnalyze(){
   try{
     // ── 1. AI: якісний контекст ніші + список конкурентів (без вигаданих метрик) ──
     if(hasAI()){
-      setLd(10,aiName()+' '+t('ld_niche'));
+      setLd(10,t('ld_niche'));
       try{
         S.nicheData=await gptAnalyzeNiche(query);
         S.compPage=0;
@@ -1218,8 +1547,12 @@ async function doAnalyze(){
       try{items.push(...await fetchIG(query));}catch(e){errs.push('Instagram: '+e.message);}
     }
     if(S.keys.rap&&S.plats.tiktok){
-      setLd(78,t('ld_tt'));
+      setLd(74,t('ld_tt'));
       try{items.push(...await fetchTT(query));}catch(e){errs.push('TikTok: '+e.message);}
+    }
+    if(S.keys.rap&&S.plats.linkedin){
+      setLd(84,t('ld_li'));
+      try{items.push(...await fetchLI(query));}catch(e){errs.push('LinkedIn: '+e.message);}
     }
 
     S.rawItems=items.length?items:null;
@@ -1228,18 +1561,312 @@ async function doAnalyze(){
     applyFilters();
     renderAIIns();
     renderSources();
+    renderAiOnly();
     hideLd();
 
-    if(errs.length) notify('⚠️',errs.join(' · ').slice(0,140));
-    else if(items.length) notify('✅',`${items.length} ${t('n_real')}`);
-    else notify('🔑',t('n_no_src'));
+    if(errs.length){
+      notify('⚠️',errs.join(' · ').slice(0,140));
+      showErr({message:errs.join(' · '),hint:t('dg_hint')});
+    }else{
+      clearErr();
+      if(items.length) notify('✅',`${items.length} ${t('n_real')}`);
+      else notify('🔑',t('n_no_src'));
+    }
 
   }catch(err){
-    hideLd(); notify('❌',t('n_err')+' '+err.message); console.error(err);
+    hideLd(); notify('❌',t('n_err')+' '+err.message); showErr(err); console.error(err);
   }finally{
     S.busy=false; document.getElementById('aBtn').disabled=false;
   }
 }
+
+
+// ═══════════════════════════════════════
+// ЖУРНАЛ ЗАПИТІВ — щоб бачити точну причину збою
+// ═══════════════════════════════════════
+const REQ_LOG=[];
+function redact(u){
+  return String(u)
+    .replace(/([?&]key=)[^&]+/gi,'$1<REDACTED>')
+    .replace(/(sk-[A-Za-z0-9_-]{6})[A-Za-z0-9_-]+/g,'$1…');
+}
+function logReq(e){
+  REQ_LOG.push({t:new Date().toTimeString().slice(0,8),...e});
+  if(REQ_LOG.length>80)REQ_LOG.shift();
+}
+function logText(){
+  const head=[
+    `Marketing Boss v${APP_VERSION}`,
+    `engine=${S.prov} model=${S.amodel}`,
+    `keys: ant=${S.keys.ant?'yes':'no'} oai=${S.keys.oai?'yes':'no'} yt=${S.keys.yt?'yes':'no'} rap=${S.keys.rap?'yes':'no'}`,
+    `keyLen: ant=${(S.keys.ant||'').length}`,
+    `origin=${location.protocol}//${location.host||'file'}`,
+    `ua=${navigator.userAgent.slice(0,110)}`,
+    '','REQUESTS:'];
+  const rows=REQ_LOG.map(r=>
+    `${r.t} ${r.method||'GET'} ${r.label||''} ${r.model?'['+r.model+' mt='+r.max_tokens+']':''} -> ${r.status===0?'NETWORK/CORS':r.status}${r.ms?' '+r.ms+'ms':''}${r.err?'\n    '+r.err:''}`);
+  return head.concat(rows.length?rows:['(порожньо — зроби запит)']).join('\n');
+}
+function copyLog(){
+  navigator.clipboard.writeText(logText()).catch(()=>{});
+  notify('📋',t('copied'));
+}
+function showLog(){
+  document.getElementById('dmw').innerHTML=`
+    <div class="dm-h">
+      <div style="min-width:0"><div class="dm-t">${t('lg_t')}</div>
+      <div class="dm-s">${t('lg_s')}</div></div>
+      <button class="dm-x" onclick="closeDm()">✕</button>
+    </div>
+    <pre style="font-size:.66rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;background:var(--inp);
+      border:1px solid var(--br);border-radius:9px;padding:12px;max-height:52vh;overflow:auto;color:var(--t2);margin:0">${esc(logText())}</pre>
+    <div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap">
+      <button class="btn btn-an" onclick="copyLog()"><i class="fa-solid fa-copy"></i>${t('lg_copy')}</button>
+      <button class="btn btn-s" onclick="REQ_LOG.length=0;showLog()"><i class="fa-solid fa-eraser"></i>${t('lg_clear')}</button>
+    </div>`;
+  document.getElementById('dm').classList.add('open');
+}
+
+// Витягує JSON з відповіді моделі: знімає ```-обгортки, знаходить обʼєкт,
+// і ремонтує обрізаний хвіст, якщо модель не влізла в max_tokens.
+function extractJSON(raw){
+  let s=String(raw||'').trim();
+  s=s.replace(/^```(?:json)?\s*/i,'').replace(/```\s*$/,'').trim();
+  const start=s.indexOf('{');
+  if(start<0) throw new Error('no JSON object in response');
+  let depth=0,inStr=false,esc=false,end=-1;
+  for(let i=start;i<s.length;i++){
+    const c=s[i];
+    if(inStr){ if(esc)esc=false; else if(c==='\\')esc=true; else if(c==='"')inStr=false; continue; }
+    if(c==='"'){inStr=true;continue;}
+    if(c==='{'||c==='[')depth++;
+    else if(c==='}'||c===']'){depth--; if(depth===0){end=i;break;}}
+  }
+  if(end>=0) return JSON.parse(s.slice(start,end+1));
+  // обрізано на півслові — відкидаємо незакритий хвіст і закриваємо дужки
+  let body=s.slice(start);
+  const lastComplete=Math.max(body.lastIndexOf('},'),body.lastIndexOf('],'),body.lastIndexOf('",'));
+  if(lastComplete>0) body=body.slice(0,lastComplete+1);
+  const stack=[];
+  inStr=false;esc=false;
+  for(const c of body){
+    if(inStr){ if(esc)esc=false; else if(c==='\\')esc=true; else if(c==='"')inStr=false; continue; }
+    if(c==='"')inStr=true;
+    else if(c==='{'||c==='[')stack.push(c==='{'?'}':']');
+    else if(c==='}'||c===']')stack.pop();
+  }
+  if(inStr)body+='"';
+  body=body.replace(/,\s*$/,'');
+  while(stack.length)body+=stack.pop();
+  return JSON.parse(body);
+}
+
+// ═══════════════════════════════════════
+// ERROR CLASSIFICATION + DIAGNOSTICS
+// ═══════════════════════════════════════
+// Розрізняє мережеву/CORS помилку від помилки API і дає людську підказку
+function classify(status, bodyText){
+  const b = (bodyText || '').toLowerCase();
+  if (status === 0)   return { hint: t('dg_net'), code: 'NETWORK' };
+  if (b.includes('credit balance') || b.includes('insufficient') || b.includes('quota')) return { hint: t('dg_credit'), code: status };
+  if (status === 401) return { hint: t('dg_401'), code: 401 };
+  if (status === 403) return { hint: t('dg_403'), code: 403 };
+  if (status === 404) return { hint: t('dg_404'), code: 404 };
+  if (status === 429) return { hint: t('dg_429'), code: 429 };
+  if (status === 400) return { hint: t('dg_400'), code: 400 };
+  if (status >= 500)  return { hint: t('dg_529'), code: status };
+  return { hint: '', code: status };
+}
+
+// Єдина точка вихідних запитів: ловить CORS/мережу окремо від HTTP-помилок
+async function apiFetch(url, opts, label, meta){
+  const t0 = Date.now();
+  const base = Object.assign({ method:(opts&&opts.method)||'GET', label, url:redact(url) }, meta||{});
+  let res;
+  try{
+    res = await fetch(url, opts);
+  }catch(netErr){
+    const c = classify(0, '');
+    logReq(Object.assign({},base,{status:0,ms:Date.now()-t0,err:netErr.message}));
+    const e = new Error(`${t('err_net')} — ${c.hint}`);
+    e.status = 0; e.raw = netErr.message; e.label = label; e.hint = c.hint;
+    throw e;
+  }
+  if(!res.ok){
+    const raw = await res.text().catch(()=>'');
+    let msg = '';
+    try{ const j = JSON.parse(raw); msg = j.error?.message || j.message || j.error?.type || ''; }catch(_){ msg = raw.slice(0,300); }
+    const c = classify(res.status, raw);
+    logReq(Object.assign({},base,{status:res.status,ms:Date.now()-t0,err:(msg||raw).slice(0,220)}));
+    const e = new Error(`HTTP ${res.status}${msg ? ' — ' + msg : ''}`);
+    e.status = res.status; e.raw = msg || raw.slice(0,300); e.label = label; e.hint = c.hint;
+    throw e;
+  }
+  logReq(Object.assign({},base,{status:res.status,ms:Date.now()-t0}));
+  return res;
+}
+
+function antHeaders(){
+  return {
+    'content-type':'application/json',
+    'x-api-key': (S.keys.ant||'').trim(),
+    'anthropic-version':'2023-06-01',
+    'anthropic-dangerous-direct-browser-access':'true',
+  };
+}
+
+// Кандидати на випадок, якщо список моделей недоступний з браузера (CORS)
+const MODEL_FALLBACK=['claude-sonnet-5','claude-sonnet-4-6','claude-opus-5','claude-haiku-4-5','claude-sonnet-4-5'];
+
+// Живий список моделей з ключа. Може бути заблокований CORS — тоді повертає null,
+// і це НЕ вважається помилкою ключа.
+async function antModels(){
+  try{
+    const res = await apiFetch('https://api.anthropic.com/v1/models?limit=40',
+      { method:'GET', headers: antHeaders() }, 'Anthropic');
+    const j = await res.json();
+    const ids=(j.data||[]).map(m=>m.id);
+    return ids.length?ids:null;
+  }catch(e){
+    if(e.status===0) return null;   // CORS або мережа — просто немає списку
+    if(e.status===401||e.status===403) throw e;
+    return null;
+  }
+}
+
+// Перебирає кандидатів, доки якийсь не відповість
+async function antFindWorkingModel(){
+  for(const m of MODEL_FALLBACK){
+    if(m===S.amodel) continue;
+    try{
+      const prev=S.amodel; S.amodel=m;
+      await anthropicCall({messages:[{role:'user',content:'ping'}],max_tokens:8,temperature:0,_retry:true});
+      return m;
+    }catch(e){ if(e.status===401||e.status===403||e.status===0) throw e; }
+  }
+  return null;
+}
+
+const DG_ROWS = [
+  { k:'ant',  name:'Anthropic (Claude)', need:()=>!!S.keys.ant,
+    run: async () => {
+      // 1) головна перевірка — реальна генерація обраною моделлю (з автофолбеком усередині)
+      await anthropicCall({ system:'Reply with OK.', messages:[{role:'user',content:'ping'}], max_tokens:8, temperature:0 });
+      // 2) список моделей — бонус, може бути закритий CORS; на результат не впливає
+      let models=null;
+      try{ models = await antModels(); }catch(_){}
+      if(models){ S.antModels=models; fillModelSelect(models); }
+      return { extra: models
+        ? `${t('dg_models')}: ${models.slice(0,4).join(', ')}${models.length>4?' …':''}`
+        : `${t('dg_ok')} — ${S.amodel}` };
+    } },
+  { k:'oai',  name:'OpenAI', need:()=>!!S.keys.oai,
+    run: async () => {
+      const res = await apiFetch('https://api.openai.com/v1/models',
+        { headers:{ Authorization:`Bearer ${(S.keys.oai||'').trim()}` } }, 'OpenAI');
+      const j = await res.json();
+      return { extra: `${(j.data||[]).length} моделей доступно` };
+    } },
+  { k:'yt',   name:'YouTube Data API v3', need:()=>!!S.keys.yt,
+    run: async () => {
+      await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=test&type=video&maxResults=1&key=${(S.keys.yt||'').trim()}`,
+        {}, 'YouTube');
+      return { extra: 'Пошук відповідає' };
+    } },
+  { k:'li',   name:'RapidAPI (LinkedIn)', need:()=>!!S.keys.rap,
+    run: async () => {
+      const host = S.keys.liHost || 'linkedin-api8.p.rapidapi.com';
+      await apiFetch(`https://${host}/search-posts?keyword=test&sortBy=date`, { headers: rapHeaders(host) }, 'RapidAPI/LinkedIn');
+      return { extra: host };
+    } },
+  { k:'rap',  name:'RapidAPI (Instagram)', need:()=>!!S.keys.rap,
+    run: async () => {
+      const host = S.keys.igHost || 'instagram-scraper-api2.p.rapidapi.com';
+      await apiFetch(`https://${host}/v1/hashtag?hashtag=test`, { headers: rapHeaders(host) }, 'RapidAPI');
+      return { extra: host };
+    } },
+];
+
+function pickModel(models){
+  if(!models||!models.length)return null;
+  const pref = [/sonnet-5/, /sonnet-4/, /opus-5/, /haiku-4-5/, /haiku/, /sonnet/, /opus/];
+  for(const rx of pref){ const m = models.find(x=>rx.test(x)); if(m) return m; }
+  return models[0] || null;
+}
+function fillModelSelect(models){
+  const sel = document.getElementById('k-amodel');
+  if(!sel || !models || !models.length) return;
+  const cur = S.amodel;
+  sel.innerHTML = models.map(m=>`<option value="${m}">${m}</option>`).join('');
+  sel.value = models.includes(cur) ? cur : (pickModel(models) || models[0]);
+}
+
+async function runDiag(){
+  const out = document.getElementById('dgOut');
+  const btn = document.getElementById('dgBtn');
+  if(!out) return;
+  btn.disabled = true;
+  out.innerHTML = `<div class="dg-r"><div class="dg-i"><span class="spin" style="width:13px;height:13px;display:inline-block"></span></div><div><div class="dg-n">${t('dg_wait')}</div></div></div>`;
+  const results = [];
+  for(const row of DG_ROWS){
+    if(!row.need()){ results.push({ name: row.name, state:'skip', msg: t('dg_none') }); continue; }
+    try{
+      const r = await row.run();
+      results.push({ name: row.name, state:'ok', msg: r && r.extra ? r.extra : t('dg_ok') });
+    }catch(e){
+      results.push({ name: row.name, state:'bad', msg: e.hint || '', code: e.message, raw: e.raw });
+    }
+    out.innerHTML = renderDiag(results, true);
+  }
+  S.diag = results;
+  out.innerHTML = renderDiag(results, false)
+    + `<button class="btn btn-s" style="width:100%;justify-content:center;margin-top:4px" onclick="copyDiag()">
+        <i class="fa-solid fa-copy"></i>${t('dg_copy')}</button>`;
+  btn.disabled = false;
+  const bad = results.filter(r=>r.state==='bad').length;
+  notify(bad ? '⚠️' : '✅', bad ? `${t('dg_fail')}: ${bad}` : t('dg_ok'));
+}
+
+function renderDiag(results, pending){
+  const ico = { ok:'✅', bad:'❌', skip:'○' };
+  let html = results.map(r=>`
+    <div class="dg-r ${r.state}">
+      <div class="dg-i">${ico[r.state]}</div>
+      <div style="min-width:0;flex:1">
+        <div class="dg-n">${esc(r.name)}</div>
+        ${r.msg?`<div class="dg-s">${esc(r.msg)}</div>`:''}
+        ${r.code?`<div class="dg-c">${esc(r.code)}</div>`:''}
+      </div>
+      <span class="dg-b" style="background:${r.state==='ok'?'rgba(0,212,170,.15)':r.state==='bad'?'rgba(255,107,107,.15)':'rgba(139,144,168,.13)'};color:${r.state==='ok'?'var(--ok)':r.state==='bad'?'var(--bad)':'var(--t3)'}">
+        ${r.state==='ok'?'OK':r.state==='bad'?'FAIL':t('dg_skip')}</span>
+    </div>`).join('');
+  if(pending) html += `<div class="dg-r"><div class="dg-i"><span class="spin" style="width:13px;height:13px;display:inline-block"></span></div><div class="dg-n">${t('dg_wait')}</div></div>`;
+  return html;
+}
+
+function copyDiag(){
+  const lines=(S.diag||[]).map(r=>`${r.state.toUpperCase()} | ${r.name} | ${r.code||''} | ${r.msg||''}`);
+  const env=[`engine=${S.prov}`,`model=${S.amodel}`,`origin=${location.protocol}//${location.host||'file'}`,
+    `ua=${navigator.userAgent.slice(0,90)}`,`models=${(S.antModels||[]).join(',')||'—'}`];
+  navigator.clipboard.writeText(['DIAGNOSTICS',...lines,'','ENV',...env].join('\n')).catch(()=>{});
+  notify('📋',t('copied'));
+}
+
+// ── банер останньої помилки на дашборді ──
+function showErr(e){
+  S.lastErr = e;
+  const w = document.getElementById('errbar'); if(!w) return;
+  const msg = e && e.message ? e.message : String(e);
+  const hint = e && e.hint ? e.hint : '';
+  w.innerHTML = `<div class="errbar">
+    <span class="errbar-x" onclick="clearErr()">✕</span>
+    <div class="errbar-t">⚠️ ${t('dg_last')}</div>
+    <div class="errbar-s">${esc(msg)}${hint?`<br><br>${esc(hint)}`:''}</div>
+    <div style="margin-top:10px"><button class="btn btn-s" onclick="openMo();setTimeout(runDiag,250)">
+      <i class="fa-solid fa-stethoscope"></i>${t('dg_run')}</button></div>
+  </div>`;
+}
+function clearErr(){ S.lastErr=null; const w=document.getElementById('errbar'); if(w)w.innerHTML=''; }
 
 // ═══════════════════════════════════════
 // DATA SOURCES PANEL
@@ -1248,11 +1875,30 @@ function srcState(){
   return [
     {k:'yt', ico:'<i class="fa-brands fa-youtube"></i>', col:'#FF0000', live:!!S.keys.yt, n:'src_yt_n', d:'src_yt_d', act:'key'},
     {k:'rap',ico:'<i class="fa-brands fa-instagram"></i>',col:'#e1306c', live:!!S.keys.rap,n:'src_rap_n',d:'src_rap_d',act:'key'},
+    {k:'li', ico:'<i class="fa-brands fa-linkedin-in"></i>',col:'#0A66C2',live:!!S.keys.rap,n:'src_li_n', d:'src_li_d', act:'key'},
     {k:'ads',ico:'<i class="fa-solid fa-bullhorn"></i>', col:'#4285F4', live:false,        n:'src_ads_n',d:'src_ads_d',act:'be'},
     {k:'own',ico:'<i class="fa-solid fa-chart-pie"></i>',col:'#00d4aa', live:false,        n:'src_own_n',d:'src_own_d',act:'be'},
   ];
 }
 function anyLiveSrc(){return !!(S.keys.yt||S.keys.rap);}
+function renderAiOnly(){
+  const w=document.getElementById('aiOnly'); if(!w)return;
+  const noMetrics=!S.rawItems||!S.rawItems.length;
+  const haveAi=hasAI()&&S.nicheData;
+  if(!noMetrics||!haveAi){w.innerHTML='';return;}
+  const n=(S.foundComps||[]).length;
+  w.innerHTML=`<div class="aio">
+    <div class="aio-t">🤖 ${t('ai_only_t')}</div>
+    <div class="aio-s">${t('ai_only_s')}</div>
+    <div class="aio-a">
+      <button class="btn btn-an" onclick="goPage('comp')"><i class="fa-solid fa-crosshairs"></i>${t('ai_only_b1')}</button>
+      <button class="btn btn-s" onclick="goPage('creo')"><i class="fa-solid fa-wand-magic-sparkles"></i>${t('ai_only_b2')}</button>
+      <button class="btn btn-s" onclick="openMo()"><i class="fa-solid fa-key"></i>${t('ai_only_b3')}</button>
+      ${n?`<span class="aio-c">${n} ${t('ai_found_n')}</span>`:''}
+    </div>
+  </div>`;
+}
+
 function renderWelcome(){
   const w=document.getElementById('welcome'); if(!w)return;
   const anyKey=!!(S.keys.ant||S.keys.oai||S.keys.yt||S.keys.rap);
@@ -1275,6 +1921,7 @@ function hideWelcome(){S.wlHid=true;try{localStorage.setItem('mb_wl','1');}catch
 
 function renderSources(){
   renderWelcome();
+  renderAiOnly();
   const w=document.getElementById('srcRow'); if(!w)return;
   w.innerHTML=srcState().map(x=>`
     <div class="src-c${x.live?' live':''}">
@@ -1341,15 +1988,13 @@ function ytSecs(d){
 }
 async function fetchYT(query,days){
   const after=new Date(Date.now()-days*864e5).toISOString();
-  const r1=await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&order=viewCount&maxResults=25&publishedAfter=${after}&key=${S.keys.yt}`);
-  if(!r1.ok){const e=await r1.json().catch(()=>({}));throw new Error(e.error?.message||'HTTP '+r1.status);}
+  const r1=await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&order=viewCount&maxResults=25&publishedAfter=${after}&key=${(S.keys.yt||'').trim()}`,{},'YouTube');
   const search=await r1.json();
   if(!search.items?.length)return[];
 
   setLd(50,t('ld_yt_st'));
   const ids=search.items.map(i=>i.id.videoId).filter(Boolean).join(',');
-  const r2=await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet,contentDetails&id=${ids}&key=${S.keys.yt}`);
-  if(!r2.ok){const e=await r2.json().catch(()=>({}));throw new Error(e.error?.message||'HTTP '+r2.status);}
+  const r2=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet,contentDetails&id=${ids}&key=${(S.keys.yt||'').trim()}`,{},'YouTube');
   const stats=await r2.json();
 
   return (stats.items||[]).map(v=>{
@@ -1377,7 +2022,7 @@ async function fetchYT(query,days){
 // ═══════════════════════════════════════
 // RAPIDAPI — INSTAGRAM / TIKTOK (real)
 // ═══════════════════════════════════════
-function rapHeaders(host){return{'X-RapidAPI-Key':S.keys.rap,'X-RapidAPI-Host':host};}
+function rapHeaders(host){return{'X-RapidAPI-Key':(S.keys.rap||'').trim(),'X-RapidAPI-Host':host};}
 function deepFind(obj,keys,depth=0){
   if(!obj||depth>6)return null;
   if(Array.isArray(obj)){for(const o of obj){const r=deepFind(o,keys,depth+1);if(r)return r;}return null;}
@@ -1391,8 +2036,7 @@ function num(v){const n=parseInt(v);return Number.isFinite(n)?n:0;}
 async function fetchIG(query){
   const host=S.keys.igHost||'instagram-scraper-api2.p.rapidapi.com';
   const tag=query.split(',')[0].trim().replace(/^#/,'').replace(/\s+/g,'');
-  const r=await fetch(`https://${host}/v1/hashtag?hashtag=${encodeURIComponent(tag)}`,{headers:rapHeaders(host)});
-  if(!r.ok)throw new Error('RapidAPI HTTP '+r.status+(r.status===403?' — перевір підписку на скрапер':''));
+  const r=await apiFetch(`https://${host}/v1/hashtag?hashtag=${encodeURIComponent(tag)}`,{headers:rapHeaders(host)},'RapidAPI');
   const j=await r.json();
   const arr=deepFind(j,['items','edges','posts','data']);
   if(!arr)throw new Error('Невідомий формат відповіді — зміни хост скрапера в налаштуваннях');
@@ -1420,11 +2064,41 @@ async function fetchIG(query){
   }).filter(x=>x.likes||x.views).sort((a,b)=>(b.views||b.likes)-(a.views||a.likes));
 }
 
+// LinkedIn: офіційне API не віддає чужі сторінки, тому пости беремо скрапером через RapidAPI.
+// Статистика власної сторінки можлива лише з бекендом і OAuth — позначено в панелі джерел.
+async function fetchLI(query){
+  const host=S.keys.liHost||'linkedin-api8.p.rapidapi.com';
+  const kw=query.split(',')[0].trim().replace(/^#/,'');
+  const r=await apiFetch(`https://${host}/search-posts?keyword=${encodeURIComponent(kw)}&sortBy=date`,
+    {headers:rapHeaders(host)},'RapidAPI/LinkedIn');
+  const j=await r.json();
+  const arr=deepFind(j,['data','items','posts','elements']);
+  if(!arr)throw new Error('Невідомий формат відповіді — зміни хост LinkedIn у налаштуваннях');
+  return arr.slice(0,25).map(n=>{
+    const likes=num(n.totalReactionCount||n.numLikes||n.socialCount?.numLikes||n.reactions||0);
+    const comments=num(n.commentsCount||n.numComments||n.socialCount?.numComments||0);
+    const shares=num(n.repostsCount||n.numShares||n.socialCount?.numShares||0);
+    // LinkedIn не віддає перегляди для чужих постів — лишаємо null, а не вигадуємо
+    const eng=likes+comments+shares;
+    return{
+      title:String(n.text||n.commentary||n.title||'LinkedIn post').slice(0,90),
+      author:(n.author?.name)||(n.actor?.name)||(n.authorName)||'',
+      platform:'linkedin',format:n.contentType||'Post',
+      views:null,likes,comments,shares,
+      er:null, saves:null,cpr:null,ctr:null,cpm:null,
+      publishedAt:n.postedDate||n.publishedAt||n.date||null,
+      thumb:n.image||null,
+      url:n.postUrl||n.url||null,
+      srcName:'RapidAPI · '+host,
+      isReal:true, engOnly:true,
+    };
+  }).filter(x=>x.likes||x.comments).sort((a,b)=>(b.likes+b.comments)-(a.likes+a.comments));
+}
+
 async function fetchTT(query){
   const host=S.keys.ttHost||'tiktok-scraper7.p.rapidapi.com';
   const tag=query.split(',')[0].trim().replace(/^#/,'').replace(/\s+/g,'');
-  const r=await fetch(`https://${host}/challenge/posts?challenge_name=${encodeURIComponent(tag)}&count=25`,{headers:rapHeaders(host)});
-  if(!r.ok)throw new Error('RapidAPI HTTP '+r.status+(r.status===403?' — перевір підписку на скрапер':''));
+  const r=await apiFetch(`https://${host}/challenge/posts?challenge_name=${encodeURIComponent(tag)}&count=25`,{headers:rapHeaders(host)},'RapidAPI');
   const j=await r.json();
   const arr=deepFind(j,['videos','items','data','aweme_list']);
   if(!arr)throw new Error('Невідомий формат відповіді — зміни хост скрапера в налаштуваннях');
@@ -1680,7 +2354,7 @@ function renderTable(items){
   b.innerHTML=items.slice(off,off+TBL_PER).map((it,i0)=>{
     const i=off+i0;
     const ber=it.er>4?'b-ok':it.er>2?'b-wn':'b-bd';
-    const eng=(it.likes||0)+(it.comments||0);
+    const eng=(it.likes||0)+(it.comments||0)+(it.shares||0);
     return`<tr onclick="openItem(${i})">
       <td class="td-r">${i+1}</td>
       <td><div class="td-t" title="${esc(it.title)}">${esc(it.title)}</div>
@@ -1952,13 +2626,15 @@ function exportCSV(){
 // CHARTS
 // ═══════════════════════════════════════
 let cTrend,cFmt,cScatter,cER;
+function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#252836';}
 function initCharts(){
-  Chart.defaults.color='#8b90a8';Chart.defaults.borderColor='#252836';Chart.defaults.font.family='Inter';
+  Chart.defaults.color=cssVar('--t2');Chart.defaults.borderColor=cssVar('--grid');Chart.defaults.font.family='Inter';
+  const GRID=cssVar('--grid');
   const o={responsive:true,maintainAspectRatio:false};
-  cTrend=new Chart(document.getElementById('cTrend').getContext('2d'),{type:'line',data:{labels:[],datasets:[]},options:{...o,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:12}}},scales:{x:{grid:{color:'#252836'}},y:{grid:{color:'#252836'},ticks:{callback:v=>fmtN(v)}}}}});
-  cFmt=new Chart(document.getElementById('cFmt').getContext('2d'),{type:'bar',data:{labels:[],datasets:[]},options:{...o,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#252836'}},y:{grid:{color:'#252836'}}}}});
-  cScatter=new Chart(document.getElementById('cScatter').getContext('2d'),{type:'scatter',data:{datasets:[]},options:{...o,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.label||''} | CPR: ${money(c.parsed.x)} | ER: ${c.parsed.y.toFixed(1)}%`}}},scales:{x:{title:{display:true,text:'CPR ('+curSym()+')'},grid:{color:'#252836'}},y:{title:{display:true,text:'ER (%)'},grid:{color:'#252836'}}}}});
-  cER=new Chart(document.getElementById('cER').getContext('2d'),{type:'bar',data:{labels:[],datasets:[]},options:{...o,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#252836'}},y:{grid:{color:'#252836'},ticks:{callback:v=>v+'%'}}}}});
+  cTrend=new Chart(document.getElementById('cTrend').getContext('2d'),{type:'line',data:{labels:[],datasets:[]},options:{...o,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:12}}},scales:{x:{grid:{color:GRID}},y:{grid:{color:GRID},ticks:{callback:v=>fmtN(v)}}}}});
+  cFmt=new Chart(document.getElementById('cFmt').getContext('2d'),{type:'bar',data:{labels:[],datasets:[]},options:{...o,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:GRID}},y:{grid:{color:GRID}}}}});
+  cScatter=new Chart(document.getElementById('cScatter').getContext('2d'),{type:'scatter',data:{datasets:[]},options:{...o,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.label||''} | CPR: ${money(c.parsed.x)} | ER: ${c.parsed.y.toFixed(1)}%`}}},scales:{x:{title:{display:true,text:'CPR ('+curSym()+')'},grid:{color:GRID}},y:{title:{display:true,text:'ER (%)'},grid:{color:GRID}}}}});
+  cER=new Chart(document.getElementById('cER').getContext('2d'),{type:'bar',data:{labels:[],datasets:[]},options:{...o,plugins:{legend:{display:false}},scales:{x:{grid:{color:GRID}},y:{grid:{color:GRID},ticks:{callback:v=>v+'%'}}}}});
 }
 
 // Реальний тренд: групуємо фактичні дати публікації
@@ -2012,14 +2688,13 @@ async function autoFindComps(){
   const query=S.tags.map(x=>x.replace('#','')).join(', ')||document.getElementById('si').value.trim()||prompt(t('pr_niche_c'));
   if(!query)return;
   if(!S.tags.length)addTag(query);
-  showLd(aiName()+' '+t('ld_comp'));
+  showLd(t('ld_comp'));
   try{
     const data=await gptAnalyzeNiche(query);
     S.nicheData=data; S.compPage=0;
     hideLd();
     renderFoundComps(data.competitors||[]);
-    goPage('comp',document.querySelectorAll('.nav')[1]);
-    document.querySelectorAll('.nav').forEach((n,x)=>n.classList.toggle('on',x===1));
+    goPage('comp');
     notify('✅',`${t('found_n')} ${data.competitors?.length||0}`);
   }catch(e){hideLd();notify('❌',t('n_err')+' '+e.message);}
 }
@@ -2028,7 +2703,7 @@ async function moreComps(){
   if(!hasAI())return;
   const query=S.tags.map(x=>x.replace('#','')).join(', ');
   if(!query)return;
-  showLd(aiName()+' '+t('ld_comp'));
+  showLd(t('ld_comp'));
   try{
     const known=S.foundComps.map(c=>c.name);
     const data=await gptAnalyzeNiche(query,known);
@@ -2172,8 +2847,7 @@ function delComp(id){
 
 function analyzeComp(handle,name){
   S.tags=[];addTag(handle);
-  goPage('dash',document.querySelectorAll('.nav')[0]);
-  document.querySelectorAll('.nav').forEach((n,i)=>n.classList.toggle('on',i===0));
+  goPage('dash');
   doAnalyze();
 }
 
@@ -2201,9 +2875,9 @@ async function genCreatives(more){
 
   const btn=document.getElementById('genBtn'); if(btn)btn.disabled=true;
   if(!more){
-    document.getElementById('creoWrap').innerHTML=`<div class="empty"><div class="spin" style="margin:0 auto 12px"></div><div class="et">${aiName()} ${t('creo_gen')}</div><div class="es">${t('creo_gen_s')} «${esc(topic)}»</div></div>`;
+    document.getElementById('creoWrap').innerHTML=`<div class="empty"><div class="spin" style="margin:0 auto 12px"></div><div class="et">${t('creo_gen')}</div><div class="es">${t('creo_gen_s')} «${esc(topic)}»</div></div>`;
   }else{
-    notify('⏳',aiName()+' '+t('creo_gen_more'));
+    notify('⏳',t('creo_gen_more'));
   }
 
   try{
@@ -2246,7 +2920,7 @@ ALL user-facing text MUST be written in ${aiLangName()}. Be specific to "${topic
       S.creoCat='all'; S.creoPage=0;
     }
     drawCreo();
-    notify('✅',aiName()+' '+t('n_creo_ok'));
+    notify('✅','Drivovo '+t('n_creo_ok'));
   }catch(e){
     if(!more)document.getElementById('creoWrap').innerHTML=`<div class="empty"><div class="ei">❌</div><div class="et">${t('chat_err')}</div><div class="es">${esc(e.message)}</div></div>`;
     notify('❌',t('n_err')+' '+e.message);
@@ -2268,6 +2942,7 @@ function creoList(k){
 function drawCreo(){
   const w=document.getElementById('creoWrap'); if(!w)return;
   const d=creativesCache;
+  w.className=(S.creoCat&&S.creoCat!=='all')?'cat-open':'';
   if(!d){
     w.innerHTML=`<div class="empty"><div class="ei">✨</div><div class="et">${t('creo_e_t')}</div><div class="es">${t('creo_e_s')}</div></div>`;
     return;
@@ -2405,7 +3080,7 @@ function renderAIIns(){
     </div>`;
   }else{
     html+=`<div class="ai-card">
-      <div class="ai-ct">${t('ins_t')} «${esc(topic)}"</div>
+      <div class="ai-ct">${t('ins_t')} «${esc(topic)}»</div>
       <div class="empty" style="padding:22px 0"><div class="ei">🔌</div><div class="et">${t('empty_src_t')}</div><div class="es">${t('empty_src_s')}</div></div>
     </div>`;
   }
@@ -2471,7 +3146,9 @@ async function sendMsg(){
     bubble.innerHTML=reply;
     S.chatHist.push({role:'assistant',content:reply.replace(/<[^>]+>/g,'')});
   }catch(err){
-    bubble.innerHTML=`❌ <strong>${t('chat_err')} ${aiName()}:</strong> ${err.message}<br>${t('chat_err_s')}`;
+    bubble.innerHTML=`❌ <strong>${t('chat_err')} ${aiName()}:</strong> ${esc(err.message)}<br>${esc(err.hint||t('chat_err_s'))}
+      <br><br><button class="btn btn-s" onclick="openMo();setTimeout(runDiag,250)"><i class="fa-solid fa-stethoscope"></i>${t('dg_run')}</button>`;
+    showErr(err);
   }finally{
     S.chatBusy=false;
     document.getElementById('sendBtn').disabled=false;
@@ -2527,12 +3204,11 @@ ${nd?`NICHE CONTEXT (your own qualitative knowledge, NOT measured data — say s
   }
 
   const msgs=[{role:'system',content:sysPrompt},...hist,{role:'user',content:userMsg}];
-  const res=await fetch('https://api.openai.com/v1/chat/completions',{
+  const res=await apiFetch('https://api.openai.com/v1/chat/completions',{
     method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.keys.oai}`},
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${(S.keys.oai||'').trim()}`},
     body:JSON.stringify({model:'gpt-4o-mini',messages:msgs,max_tokens:600,temperature:.8}),
-  });
-  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+  },'OpenAI');
   const j=await res.json();
   return(j.choices[0].message.content||'').replace(/\n/g,'<br>');
 }
@@ -2547,46 +3223,95 @@ async function gptJSON(messages){
   const rest=messages.filter(m=>m.role!=='system');
 
   if(S.prov==='claude'){
-    const txt=await anthropicCall({
-      system: sys+'\n\nReturn ONLY a valid JSON object. No markdown fences, no explanations.',
-      messages:[...rest,{role:'assistant',content:'{'}],
-      max_tokens:8000, temperature:.5,
+    // ВАЖЛИВО: без assistant prefill — нові моделі його не приймають (HTTP 400)
+    const ask=async (mt)=>await anthropicCall({
+      system: sys+'\n\nCRITICAL: respond with a single raw JSON object and nothing else. No prose before or after, no markdown code fences.',
+      messages: rest, max_tokens: mt, temperature:.5,
     });
-    const raw=('{'+txt).replace(/```json|```/g,'').trim();
-    const cut=raw.slice(0, raw.lastIndexOf('}')+1);
-    try{return JSON.parse(cut);}
-    catch(e){throw new Error('Claude '+t('err_json')+' '+cut.slice(0,120));}
+    let txt=await ask(8000);
+    try{ return extractJSON(txt); }
+    catch(e1){
+      // одна повторна спроба з жорсткішою вимогою
+      try{
+        txt=await anthropicCall({
+          system:'You output raw JSON only. No prose, no code fences, no explanation.',
+          messages:[...rest,{role:'user',content:'Output the JSON object now. Raw JSON only.'}],
+          max_tokens:8000, temperature:0,
+        });
+        return extractJSON(txt);
+      }catch(e2){
+        throw new Error('Claude '+t('err_json')+' '+String(txt).slice(0,200));
+      }
+    }
   }
 
-  const res=await fetch('https://api.openai.com/v1/chat/completions',{
+  const res=await apiFetch('https://api.openai.com/v1/chat/completions',{
     method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':`Bearer ${S.keys.oai}`},
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${(S.keys.oai||'').trim()}`},
     body:JSON.stringify({model:'gpt-4o-mini',messages,max_tokens:8000,temperature:.5,response_format:{type:'json_object'}}),
-  });
-  if(!res.ok){
-    const e=await res.json().catch(()=>({}));
-    throw new Error(e.error?.message||`OpenAI HTTP ${res.status}`);
-  }
+  },'OpenAI');
   const j=await res.json();
   const content=j.choices[0].message.content||'{}';
   try{return JSON.parse(content);}catch(e){throw new Error('GPT '+t('err_json')+' '+content.slice(0,100));}
 }
 
 // Прямой вызов Anthropic API из браузера
-async function anthropicCall({system,messages,max_tokens=1000,temperature=.7}){
-  const res=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{
-      'content-type':'application/json',
-      'x-api-key':S.keys.ant,
-      'anthropic-version':'2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true',
-    },
-    body:JSON.stringify({model:aiModel(),max_tokens,temperature,system,messages}),
-  });
-  if(!res.ok){
-    const e=await res.json().catch(()=>({}));
-    throw new Error(e.error?.message||`Anthropic HTTP ${res.status}`);
+// Витягує з тексту помилки реальну межу вихідних токенів.
+// Приклад: "max_tokens: 8000 > 4096, which is the maximum allowed number of output tokens"
+function parseTokenCap(raw,requested){
+  const txt=String(raw||'');
+  const cands=[];
+  let m;
+  const pats=[/>\s*(\d{2,7})/g, /(\d{2,7})\s*,?\s*which is the maximum/gi, /maximum[^0-9]{0,60}(\d{2,7})/gi];
+  for(const rx of pats){ while((m=rx.exec(txt))) cands.push(parseInt(m[1],10)); }
+  const valid=cands.filter(n=>n>=64 && n<requested);
+  if(!valid.length) return null;
+  return Math.min(...valid);
+}
+
+// Кожна модель має власну межу вихідних токенів. Перевищення = HTTP 400.
+function capTokens(model,want){
+  const m=String(model||'');
+  const hard=/haiku/i.test(m)?8192:/opus/i.test(m)?32000:64000;
+  return Math.max(64,Math.min(want||1000,hard));
+}
+async function anthropicCall({system,messages,max_tokens=1000,temperature=.7,_retry,_tokRetry}){
+  const model=aiModel();
+  const mt=capTokens(model,max_tokens);
+  const body={model,max_tokens:mt,temperature,system,messages};
+  let res;
+  try{
+    res=await apiFetch('https://api.anthropic.com/v1/messages',
+      {method:'POST',headers:antHeaders(),body:JSON.stringify(body)},'Anthropic',{model,max_tokens:mt});
+  }catch(e){
+    // сервер сам назвав межу — беремо її і пробуємо ще раз
+    if(e.status===400 && !_tokRetry && /max_tokens/i.test(e.raw||'')){
+      const cap=parseTokenCap(e.raw,mt);
+      if(cap){
+        notify('🔄',`max_tokens → ${cap}`);
+        return await anthropicCall({system,messages,max_tokens:cap,temperature,_retry,_tokRetry:true});
+      }
+    }
+    // модель недоступна для цього ключа — беремо робочу зі списку і пробуємо ще раз
+    const badModel = e.status===404 || (e.status===400 && /model|not_found/i.test(e.raw||''));
+    if(badModel && !_retry){
+      const before=S.amodel;
+      try{
+        const models=await antModels();
+        let pick=null;
+        if(models){ S.antModels=models; fillModelSelect(models); pick=pickModel(models); }
+        else { pick=await antFindWorkingModel(); }
+        if(pick&&pick!==before){
+          S.amodel=pick;
+          try{localStorage.setItem('mb_amodel',pick);}catch(_){}
+          updStatus();
+          notify('🔄',`${t('dg_models_n')}: ${pick}`);
+          return await anthropicCall({system,messages,max_tokens,temperature,_retry:true});
+        }
+      }catch(inner){ S.amodel=before; }
+      S.amodel=before;
+    }
+    throw e;
   }
   const j=await res.json();
   return (j.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
@@ -2595,6 +3320,46 @@ async function anthropicCall({system,messages,max_tokens=1000,temperature=.7}){
 // ═══════════════════════════════════════
 // MODAL
 // ═══════════════════════════════════════
+function openAcct(){
+  const now=[t('acc_l1'),t('acc_l2'),t('acc_l3')];
+  const next=[t('acc_n1'),t('acc_n2'),t('acc_n3'),t('acc_n4'),t('acc_n5')];
+  document.getElementById('dmw').innerHTML=`
+    <div class="dm-h">
+      <div style="min-width:0">
+        <div class="dm-t">${t('acc_t')}</div>
+        <div class="dm-s">${t('acc_guest')} · ${t('acc_soon')}</div>
+      </div>
+      <button class="dm-x" onclick="closeDm()">✕</button>
+    </div>
+    <div class="dm-p">${t('acc_txt')}</div>
+    <div class="dm-sec">${t('acc_now')}</div>
+    ${now.map(x=>`<div class="ins-i"><div class="ins-ico" style="background:rgba(0,212,170,.13)">✓</div><div class="ins-t">${esc(x)}</div></div>`).join('')}
+    <div class="dm-sec">${t('acc_next')}</div>
+    ${next.map(x=>`<div class="ins-i"><div class="ins-ico" style="background:rgba(108,99,255,.13)">•</div><div class="ins-t">${esc(x)}</div></div>`).join('')}
+    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+      <button class="btn btn-s" onclick="closeDm();openMo()"><i class="fa-solid fa-key"></i>${t('sb_keys')}</button>
+      <button class="btn btn-s" onclick="exportSettings()"><i class="fa-solid fa-download"></i>${t('acc_exp')}</button>
+      <button class="btn btn-s" style="color:var(--bad)" onclick="wipeLocal()"><i class="fa-solid fa-trash"></i>${t('acc_wipe')}</button>
+    </div>`;
+  document.getElementById('dm').classList.add('open');
+}
+function exportSettings(){
+  const data={lang:S.lang,theme:S.theme,cur:S.cur,rate:S.rate,rateEur:S.rateEur,ui:S.ui,
+    prov:S.prov,amodel:S.amodel,kpiOn:S.kpiOn,savedComps:S.savedComps,tags:S.tags,
+    exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='drivovo-settings.json'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  notify('✅',t('acc_exp'));
+}
+function wipeLocal(){
+  if(!confirm(t('acc_conf')))return;
+  try{['mb_k','mb_comps','mb_prov','mb_amodel','mb_lang','mb_cur','mb_rate','mb_rate_eur','mb_ui','mb_kpi','mb_wl','mb_theme'].forEach(k=>localStorage.removeItem(k));}catch(e){}
+  notify('✅',t('acc_wiped'));
+  setTimeout(()=>location.reload(),600);
+}
+
 function openMo(){document.getElementById('mo').classList.add('open');}
 function closeMo(){document.getElementById('mo').classList.remove('open');}
 
